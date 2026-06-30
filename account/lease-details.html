@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lease Contract | XM Digital Console</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- AlpineJS CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .neon-glow-yellow {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
+        }
+        .neon-glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Premium Light Mode Styles */
+        body.theme-light {
+            background-color: #F8FAFC !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        }
+        body.theme-light h1,
+        body.theme-light h2,
+        body.theme-light h3,
+        body.theme-light h4,
+        body.theme-light .text-white {
+            color: #0F172A !important;
+        }
+        body.theme-light .text-slate-200,
+        body.theme-light .text-slate-300,
+        body.theme-light .text-slate-400 {
+            color: #475569 !important;
+        }
+        body.theme-light .text-slate-500 {
+            color: #64748B !important;
+        }
+        body.theme-light nav {
+            background-color: rgba(248, 250, 252, 0.8) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .border-white\/5,
+        body.theme-light .border-white\/10 {
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+        body.theme-light .bg-white\/5 {
+            background-color: rgba(0, 0, 0, 0.03) !important;
+        }
+        body.theme-light .bg-white\/10 {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .bg-black\/40 {
+            background-color: rgba(0, 0, 0, 0.02) !important;
+        }
+        body.theme-light .bg-black\/30 {
+            background-color: rgba(0, 0, 0, 0.01) !important;
+        }
+        body.theme-light .bg-black\/60 {
+            background-color: #E2E8F0 !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .text-emerald-400 {
+            color: #15803D !important;
+        }
+        body.theme-light .text-purple-400 {
+            color: #7E22CE !important;
+        }
+        body.theme-light .text-[#FFD700] {
+            color: #B45309 !important;
+        }
+    </style>
+</head>
+
+<body x-data="{
+    tier: 'volt-hashing-node-(v1)',
+    balance: 0.00,
+    hasActiveLease: false,
+    spec: {
+        'volt-hashing-node-(v1)': { name: 'Volt Hashing Node (V1)', price: 3000, rate: 3.0, duration: 14, speed: '10.0 MH/s', desc: 'Good starter machine to begin mining daily with optimized hashing cycles.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-500', textClass: 'text-blue-400', bgClass: 'bg-blue-500/5', buttonClass: 'bg-blue-500 hover:bg-blue-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
+        'pulse-matrix-node-(p2)': { name: 'Pulse Matrix Node (P2)', price: 8500, rate: 3.2, duration: 14, speed: '25.0 MH/s', desc: 'Starter machine with improved hashing yields and micro-processors.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+        'quantum-cobalt-v3': { name: 'Quantum Cobalt V3', price: 15000, rate: 3.5, duration: 30, speed: '48.0 MH/s', desc: 'Solid performance entry-level quantum computation array.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-500', textClass: 'text-blue-400', bgClass: 'bg-blue-500/5', buttonClass: 'bg-blue-500 hover:bg-blue-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
+        'aero-grid-core': { name: 'Aero Grid Core', price: 30000, rate: 3.8, duration: 30, speed: '95.0 MH/s', desc: 'High-density computational core for solid daily yields.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+        'hyperion-reactor': { name: 'Hyperion Reactor', price: 55000, rate: 4.0, duration: 45, speed: '180.0 MH/s', desc: 'Medium-size machine with stable daily yields and gas cooling.', image: '../public/images/hybrid_node.png', borderClass: 'border-cyan-500', textClass: 'text-cyan-400', bgClass: 'bg-cyan-500/5', buttonClass: 'bg-cyan-500 hover:bg-cyan-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(6,182,212,0.25)]' },
+        'solar-storm-mainframe': { name: 'Solar Storm Mainframe', price: 92000, rate: 4.2, duration: 45, speed: '320.0 MH/s', desc: 'High power mainframe for stable yields across global loops.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+        'deep-ocean-server': { name: 'Deep Ocean Server', price: 140000, rate: 4.5, duration: 180, speed: '512.0 MH/s', desc: 'Liquid-cooled enterprise machine for maximum daily returns.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-600', textClass: 'text-blue-500', bgClass: 'bg-blue-600/5', buttonClass: 'bg-blue-600 hover:bg-blue-700 text-white', glowClass: 'shadow-[0_0_20px_rgba(37,99,235,0.25)]' },
+        'aurora-prime-node': { name: 'Aurora Prime Node', price: 220000, rate: 4.8, duration: 180, speed: '850.0 MH/s', desc: 'Aurora-grade processor node with premium yields and neural nets.', image: '../public/images/hybrid_node.png', borderClass: 'border-purple-500', textClass: 'text-purple-400', bgClass: 'bg-purple-500/5', buttonClass: 'bg-purple-500 hover:bg-purple-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(168,85,247,0.25)]' },
+        'nebula-fusion-grid': { name: 'Nebula Fusion Grid', price: 380000, rate: 5.2, duration: 180, speed: '1,600.0 MH/s', desc: 'Maximum efficiency fusion node grid for extreme processing.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+        'apex-void-titan': { name: 'Apex Void Titan', price: 650000, rate: 5.6, duration: 180, speed: '3,000.0 MH/s', desc: 'Large enterprise mainframe for maximum returns and hyper-threading.', image: '../public/images/hybrid_node.png', borderClass: 'border-emerald-500', textClass: 'text-emerald-400', bgClass: 'bg-emerald-500/5', buttonClass: 'bg-emerald-500 hover:bg-emerald-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(16,185,129,0.25)]' }
+    },
+    get current() {
+        return this.spec[this.tier] || this.spec['volt-hashing-node-(v1)'];
+    },
+    sliderValue: 0,
+    isConfirming: false,
+    maturityDate: '',
+    lightMode: false,
+    
+    // API Request Wrapper
+    async fetchAPI(endpoint, options = {}) {
+        const token = localStorage.getItem('xm_jwt_token');
+        if (!token) {
+            window.location.href = '../public/signin.html';
+            return null;
+        }
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            ...(options.headers || {})
+        };
+        try {
+            const response = await fetch(endpoint, { ...options, headers });
+            if (response.status === 401) {
+                localStorage.removeItem('xm_jwt_token');
+                window.location.href = '../public/signin.html';
+                return null;
+            }
+            return response;
+        } catch (err) {
+            console.error('API call error:', err);
+            return null;
+        }
+    },
+    
+    async init() {
+        // Read theme settings on start
+        if (localStorage.getItem('xm_theme') === 'light') {
+            this.lightMode = true;
+            document.body.classList.add('theme-light');
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const t = params.get('tier');
+        if (t && this.spec[t]) {
+            this.tier = t;
+        } else {
+            this.tier = 'volt-hashing-node-(v1)';
+        }
+        
+        // Fetch Live profile balance
+        const profileRes = await this.fetchAPI('/api/user/profile');
+        if (profileRes) {
+            const profile = await profileRes.json();
+            this.balance = parseFloat(profile.balance);
+        }
+
+        // Check active leases
+        const leasesRes = await this.fetchAPI('/api/user/leases');
+        if (leasesRes) {
+            const allLeases = await leasesRes.json();
+            const activeCount = allLeases.filter(l => parseInt(l.remaining) > 0).length;
+            this.hasActiveLease = activeCount >= 3;
+        }
+        
+        // Calculate maturity date
+        const today = new Date();
+        const mat = new Date(today.getTime() + this.current.duration * 24 * 60 * 60 * 1000);
+        this.maturityDate = mat.toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    
+    toggleTheme() {
+        this.lightMode = !this.lightMode;
+        if (this.lightMode) {
+            document.body.classList.add('theme-light');
+            localStorage.setItem('xm_theme', 'light');
+        } else {
+            document.body.classList.remove('theme-light');
+            localStorage.setItem('xm_theme', 'dark');
+        }
+    },
+    
+    handleSlider(e) {
+        this.sliderValue = e.target.value;
+        if (this.sliderValue >= 100) {
+            this.confirmLease();
+        }
+    },
+    
+    async confirmLease() {
+        if (this.hasActiveLease) {
+            alert('You can only rent up to three machines at a time. Please wait for one of your active machines to finish.');
+            this.sliderValue = 0;
+            return;
+        }
+        if (this.balance < this.current.price) {
+            alert('Insufficient computational balance. Please top up your wallet.');
+            this.sliderValue = 0;
+            return;
+        }
+        
+        this.isConfirming = true;
+        
+        const res = await this.fetchAPI('/api/user/leases', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: this.current.name,
+                type: this.tier.split('-')[0],
+                speed: this.current.speed,
+                duration: this.current.duration,
+                cost: this.current.price,
+                rate: this.current.rate,
+                daily_earnings: this.current.price * (this.current.rate / 100),
+                image: this.current.image
+            })
+        });
+        
+        if (res && res.ok) {
+            this.isConfirming = false;
+            alert('Hardware allocated and contract signed successfully!');
+            window.location.href = 'dashboard.html';
+        } else {
+            this.isConfirming = false;
+            this.sliderValue = 0;
+            const body = await res.json();
+            alert(body.message || 'Error executing lease contract.');
+        }
+    }
+}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── NAVIGATION BAR ─── -->
+    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="dashboard.html" class="flex items-center space-x-2 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    XM
+                </div>
+                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
+                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
+                </div>
+            </a>
+
+            <!-- Balance Summary -->
+            <div class="flex items-center space-x-3">
+                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-1">
+                    <svg x-show="!lightMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <svg x-show="lightMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <div class="text-right hidden sm:block">
+                    <span class="text-[9px] font-mono text-slate-500 uppercase">Available Cash</span>
+                    <p class="text-xs font-bold text-white" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2})"></p>
+                </div>
+                <a href="dashboard.html" class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-xs font-medium hover:bg-white/10 transition cursor-pointer">
+                    Dashboard Cockpit
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── CONTRACT BODY ─── -->
+    <main class="max-w-4xl mx-auto px-6 py-10 space-y-8">
+        
+        <!-- Back navigation -->
+        <a href="dashboard.html" class="flex items-center space-x-2 text-sm text-slate-400 hover:text-[#FFD700] transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Return to dashboard catalog</span>
+        </a>
+
+        <!-- Hardware & Contract Header -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row gap-6 relative overflow-hidden" :class="current.glowClass">
+            <!-- Machine graphic -->
+            <div class="w-full md:w-1/3 rounded-2xl overflow-hidden border border-white/5">
+                <img :src="current.image" :alt="current.name" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech" x-text="current.name"></h2>
+                        <span class="text-xs px-2.5 py-1 rounded-full font-bold bg-[#FFD700]/10 border border-[#FFD700]/20" :class="current.textClass" x-text="current.rate + '% Daily Interest'"></span>
+                    </div>
+                    <p class="text-slate-400 text-xs sm:text-sm font-light mt-2" x-text="current.desc"></p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 border-t border-white/5 pt-6">
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Processor Cost</span>
+                        <span class="text-sm font-extrabold text-white font-tech" x-text="'KSh ' + current.price.toLocaleString()"></span>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Daily Yield</span>
+                        <span class="text-sm font-extrabold text-emerald-400 font-tech" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></span>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Total Net Profit</span>
+                        <span class="text-sm font-extrabold text-purple-400 font-tech" x-text="'KSh ' + (current.price * current.rate / 100 * current.duration).toLocaleString()"></span>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Contract Period</span>
+                        <span class="text-sm font-extrabold text-slate-200 font-tech" x-text="current.duration + ' Days'"></span >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contract Locking Policy Alert -->
+        <div class="bg-amber-500/5 border border-dashed border-amber-500/20 rounded-3xl p-6 space-y-4">
+            <div class="flex items-center space-x-3 text-[#FFD700]">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <h4 class="font-bold text-white text-sm uppercase tracking-wide font-tech">Computational Capital Lockup Policy</h4>
+            </div>
+            <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
+                By signing this lease contract, you authorize the escrow lock of your lease capital (<strong class="text-white font-semibold" x-text="'KSh ' + current.price.toLocaleString()"></strong>) in the mining consensus pool. This capital is utilized to secure network computing slots.
+            </p>
+            <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
+                <strong>Withdrawal Eligibility:</strong> You are eligible to withdraw <span class="text-[#FFD700] font-bold">ALL your initial lease capital (principal) AND all accumulated profits</span> immediately upon contract maturity. Maturity date is scheduled for <strong class="text-white font-semibold" x-text="maturityDate"></strong>. No partial early liquidations of principal are allowed.
+            </p>
+        </div>
+
+        <!-- Daily Interest Step Table -->
+        <div class="glass-card rounded-3xl p-6 space-y-4">
+            <h3 class="text-base font-bold text-white tracking-tight font-tech">Interest Accumulation Matrix</h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="text-slate-500 font-mono border-b border-white/5">
+                            <th class="pb-3 font-semibold">Timeline</th>
+                            <th class="pb-3 font-semibold">Accumulated Rate</th>
+                            <th class="pb-3 font-semibold text-right">Daily Return</th>
+                            <th class="pb-3 font-semibold text-right">Total Profit Accrued</th>
+                            <th class="pb-3 font-semibold text-right">Escrow Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 font-mono text-[11px]">
+                        <tr class="hover:bg-white/[0.01]">
+                            <td class="py-3.5 text-slate-300">Day 1</td>
+                            <td class="py-3.5 text-slate-400" x-text="current.rate.toFixed(1) + '%'"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 1).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.01]">
+                            <td class="py-3.5 text-slate-300">Day 5</td>
+                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 5).toFixed(1) + '%'"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 5).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.01]">
+                            <td class="py-3.5 text-slate-300">Day 10</td>
+                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 10).toFixed(1) + '%'"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 10).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.01]">
+                            <td class="py-3.5 text-slate-300">Day 15</td>
+                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 15).toFixed(1) + '%'"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 15).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
+                        </tr>
+                        <tr class="hover:bg-white/[0.01] bg-emerald-500/[0.02]">
+                            <td class="py-3.5 text-[#FFD700] font-bold">Day 21 (Maturity)</td>
+                            <td class="py-3.5 text-[#FFD700] font-bold" x-text="(current.rate * 21).toFixed(1) + '%'"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-bold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-[#FFD700] font-bold" x-text="'KSh ' + (current.price * current.rate / 100 * 21).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-bold">🔓 Unlocked / Cashout</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total Settlement Projection Card -->
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono mt-4">
+                <div class="space-y-1">
+                    <span class="text-slate-500 uppercase text-[9px] block">Maturity Settlement Value</span>
+                    <p class="text-base font-extrabold text-[#FFD700] font-tech" x-text="'KSh ' + (current.price + (current.price * current.rate / 100 * current.duration)).toLocaleString('en-US', {minimumFractionDigits: 2})"></p>
+                </div>
+                <div class="text-right text-slate-400 font-light leading-relaxed max-w-sm text-center sm:text-right">
+                    Includes your returned principal of <span class="text-white font-bold" x-text="'KSh ' + current.price.toLocaleString()"></span> and yield profit of <span class="text-emerald-400 font-bold" x-text="'KSh ' + (current.price * current.rate / 100 * current.duration).toLocaleString()"></span>.
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── SLIDE TO SIGN SMART CONTRACT ─── -->
+        <div class="glass-card rounded-3xl p-6 relative max-w-lg mx-auto">
+            <template x-if="isConfirming">
+                <div class="flex flex-col items-center justify-center py-6 space-y-3">
+                    <span class="w-8 h-8 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin"></span>
+                    <p class="text-xs font-mono text-[#FFD700] uppercase tracking-widest animate-pulse">Syncing smart lease nodes...</p>
+                </div>
+            </template>
+            
+            <template x-if="!isConfirming">
+                <div class="space-y-4">
+                    <p class="text-center text-[10px] font-mono uppercase tracking-widest text-slate-500">Slide to sign contract & pay lease</p>
+                    
+                    <!-- Slider Container -->
+                    <div class="relative w-full h-16 bg-black/60 border border-white/10 rounded-2xl overflow-hidden flex items-center justify-center group">
+                        <!-- Sliding Handle Label -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none text-xs font-bold font-tech text-slate-400 group-hover:text-white transition duration-300">
+                            SIGN CONTRACT & INITIATE
+                        </div>
+                        
+                        <!-- Track Fill -->
+                        <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-purple-500/20 to-emerald-500/20" :style="'width: ' + sliderValue + '%'"></div>
+                        
+                        <!-- Range Input -->
+                        <input type="range" min="0" max="100" x-model="sliderValue" @input="handleSlider"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
+                        
+                        <!-- Sliding Indicator thumb (visible mock) -->
+                        <div class="absolute left-1 top-1 bottom-1 w-14 rounded-xl bg-[#FFD700] flex items-center justify-center transition-all duration-75 pointer-events-none shadow-[0_0_15px_rgba(255,215,0,0.3)] text-black font-extrabold text-sm"
+                            :style="'left: calc(' + sliderValue + '% * 0.82 + 4px)'">
+                            →
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

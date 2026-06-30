@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miner Console | XM Digital Console</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- AlpineJS for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- ApexCharts for dynamic charting -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease-in-out;
+        }
+        .glass-input:focus {
+            border-color: #FFD700;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            outline: none;
+        }
+        
+        /* Hide default native scrollbars but retain swipe capabilities */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .neon-glow-yellow {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
+        }
+        .neon-glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+        }
+        
+        /* Custom scrollbar for logs panel */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 999px;
+        }
+
+        /* Premium Light Mode Styles */
+        body.theme-light {
+            background-color: #F8FAFC !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        }
+        body.theme-light h1,
+        body.theme-light h2,
+        body.theme-light h3,
+        body.theme-light h4,
+        body.theme-light .text-white {
+            color: #0F172A !important;
+        }
+        body.theme-light .text-slate-200,
+        body.theme-light .text-slate-300,
+        body.theme-light .text-slate-400 {
+            color: #475569 !important;
+        }
+        body.theme-light .text-slate-500 {
+            color: #64748B !important;
+        }
+        body.theme-light nav {
+            background-color: rgba(248, 250, 252, 0.8) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .border-white\/5,
+        body.theme-light .border-white\/10 {
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+        body.theme-light .bg-white\/5 {
+            background-color: rgba(0, 0, 0, 0.03) !important;
+        }
+        body.theme-light .bg-white\/10 {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .bg-black\/40 {
+            background-color: rgba(0, 0, 0, 0.02) !important;
+        }
+        body.theme-light .bg-black\/30 {
+            background-color: rgba(0, 0, 0, 0.01) !important;
+        }
+        body.theme-light .bg-black\/60 {
+            background-color: #E2E8F0 !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .text-emerald-400 {
+            color: #15803D !important;
+        }
+        body.theme-light .text-purple-400 {
+            color: #7E22CE !important;
+        }
+        body.theme-light .text-[#FFD700] {
+            color: #B45309 !important;
+        }
+    </style>
+</head>
+
+<body x-data="{
+    navDropdownOpen: false,
+    notificationsOpen: false,
+    copied: false,
+    balance: 0.00,
+    leasedEarnings: 0.00,
+    dailyGrowth: 0.00,
+    username: 'Miner',
+    lightMode: false,
+    
+    // Leases Array
+    leases: [],
+    get hasActiveLease() {
+        const activeCount = this.leases.filter(l => parseInt(l.remaining) > 0).length;
+        return activeCount >= 3;
+    },
+
+    // Rented machines catalog (10 Machines)
+    catalog: [
+        { name: 'Volt Hashing Node (V1)', price: 3000, rate: 3.0, duration: 14, speed: '10.0 MH/s', daily: 90, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]', slots: 3, timer: { hours: 1, mins: 24, secs: 5, text: '01h 24m 05s' } },
+        { name: 'Pulse Matrix Node (P2)', price: 8500, rate: 3.2, duration: 14, speed: '25.0 MH/s', daily: 272, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 5, timer: { hours: 2, mins: 12, secs: 44, text: '02h 12m 44s' } },
+        { name: 'Quantum Cobalt V3', price: 15000, rate: 3.5, duration: 30, speed: '48.0 MH/s', daily: 525, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]', slots: 2, timer: { hours: 0, mins: 45, secs: 19, text: '00h 45m 19s' } },
+        { name: 'Aero Grid Core', price: 30000, rate: 3.8, duration: 30, speed: '95.0 MH/s', daily: 1140, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 4, timer: { hours: 3, mins: 15, secs: 2, text: '03h 15m 02s' } },
+        { name: 'Hyperion Reactor', price: 55000, rate: 4.0, duration: 45, speed: '180.0 MH/s', daily: 2200, image: '../public/images/hybrid_node.png', borderClass: 'border-t-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.25)]', slots: 6, timer: { hours: 1, mins: 55, secs: 30, text: '01h 55m 30s' } },
+        { name: 'Solar Storm Mainframe', price: 92000, rate: 4.2, duration: 45, speed: '320.0 MH/s', daily: 3864, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 3, timer: { hours: 0, mins: 59, secs: 59, text: '00h 59m 59s' } },
+        { name: 'Deep Ocean Server', price: 140000, rate: 4.5, duration: 180, speed: '512.0 MH/s', daily: 6300, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.25)]', slots: 2, timer: { hours: 4, mins: 10, secs: 15, text: '04h 10m 15s' } },
+        { name: 'Aurora Prime Node', price: 220000, rate: 4.8, duration: 180, speed: '850.0 MH/s', daily: 10560, image: '../public/images/hybrid_node.png', borderClass: 'border-t-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)]', slots: 4, timer: { hours: 2, mins: 30, secs: 40, text: '02h 30m 40s' } },
+        { name: 'Nebula Fusion Grid', price: 380000, rate: 5.2, duration: 180, speed: '1600.0 MH/s', daily: 19760, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 1, timer: { hours: 1, mins: 5, secs: 12, text: '01h 05m 12s' } },
+        { name: 'Apex Void Titan', price: 650000, rate: 5.6, duration: 180, speed: '3000.0 MH/s', daily: 36400, image: '../public/images/hybrid_node.png', borderClass: 'border-t-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.25)]', slots: 2, timer: { hours: 0, mins: 42, secs: 8, text: '00h 42m 08s' } }
+    ],
+
+    // Styling helper
+    getLeaseStyle(type) {
+        const styles = {
+            volt: { borderClass: 'border-t-blue-500', colorClass: 'text-blue-400', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
+            pulse: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+            quantum: { borderClass: 'border-t-blue-500', colorClass: 'text-blue-400', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
+            aero: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+            hyperion: { borderClass: 'border-t-cyan-500', colorClass: 'text-cyan-400', glowClass: 'shadow-[0_0_20px_rgba(6,182,212,0.25)]' },
+            solar: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+            ocean: { borderClass: 'border-t-blue-600', colorClass: 'text-blue-500', glowClass: 'shadow-[0_0_20px_rgba(37,99,235,0.25)]' },
+            aurora: { borderClass: 'border-t-purple-500', colorClass: 'text-purple-400', glowClass: 'shadow-[0_0_20px_rgba(168,85,247,0.25)]' },
+            nebula: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
+            apex: { borderClass: 'border-t-emerald-500', colorClass: 'text-emerald-400', glowClass: 'shadow-[0_0_20px_rgba(16,185,129,0.25)]' }
+        };
+        return styles[type] || styles.volt;
+    },
+
+    tryRentMachine(machine) {
+        const activeLease = this.leases.find(l => parseInt(l.remaining) > 0);
+        if (activeLease) {
+            alert('You can only rent one machine at a time. Please wait for your active machine to finish.');
+            return;
+        }
+        window.location.href = 'lease-details.html?tier=' + machine.name.toLowerCase().replace(/\s+/g, '-');
+    },
+    
+    // Interactive Terminal logs
+    showTerminal: false,
+    activeTerminalNode: '',
+    terminalLogs: [],
+    logsInterval: null,
+    
+    // Chart filter
+    chartRange: '7D',
+    chart: null,
+    
+    // Hashrate Estimator
+    estimatorHashrate: 250,
+    
+    notifications: [
+        { id: 1, text: 'Payout node allocation successfully synchronized', time: '1 hr ago', read: false },
+        { id: 2, text: 'Authorized hardware optimization speed boost', time: '3 hrs ago', read: false }
+    ],
+    get unreadNotificationsCount() {
+        return this.notifications.filter(n => !n.read).length;
+    },
+    
+    // API Request Wrapper
+    async fetchAPI(endpoint, options = {}) {
+        const token = localStorage.getItem('xm_jwt_token');
+        if (!token) {
+            window.location.href = '../public/signin.html';
+            return null;
+        }
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            ...(options.headers || {})
+        };
+        try {
+            const response = await fetch(endpoint, { ...options, headers });
+            if (response.status === 401) {
+                localStorage.removeItem('xm_jwt_token');
+                window.location.href = '../public/signin.html';
+                return null;
+            }
+            return response;
+        } catch (err) {
+            console.error('API call error:', err);
+            return null;
+        }
+    },
+    
+    async init() {
+        // Read theme settings on start
+        if (localStorage.getItem('xm_theme') === 'light') {
+            this.lightMode = true;
+            document.body.classList.add('theme-light');
+        }
+
+        // Fetch Live profile stats
+        const profileRes = await this.fetchAPI('/api/user/profile');
+        if (profileRes) {
+            const profile = await profileRes.json();
+            this.username = profile.username;
+            this.balance = parseFloat(profile.balance);
+            this.leasedEarnings = parseFloat(profile.leased_earnings);
+            this.dailyGrowth = parseFloat(profile.daily_growth);
+        }
+        
+        // Fetch Active leases
+        await this.loadLeases();
+        
+        // Start timers & load ApexCharts
+        this.startAvailabilityCountdowns();
+        await this.initChart();
+    },
+    
+    toggleTheme() {
+        this.lightMode = !this.lightMode;
+        if (this.lightMode) {
+            document.body.classList.add('theme-light');
+            localStorage.setItem('xm_theme', 'light');
+        } else {
+            document.body.classList.remove('theme-light');
+            localStorage.setItem('xm_theme', 'dark');
+        }
+        // Update ApexCharts axes colors if chart is loaded
+        if (this.chart) {
+            this.chart.updateOptions({
+                chart: { foreColor: this.lightMode ? '#475569' : '#64748B' }
+            });
+        }
+    },
+    
+    async loadLeases() {
+        const leasesRes = await this.fetchAPI('/api/user/leases');
+        if (leasesRes) {
+            this.leases = await leasesRes.json();
+        }
+    },
+    
+    startAvailabilityCountdowns() {
+        setInterval(() => {
+            this.catalog.forEach(machine => {
+                let item = machine.timer;
+                if (item.secs > 0) {
+                    item.secs--;
+                } else {
+                    if (item.mins > 0) {
+                        item.mins--;
+                        item.secs = 59;
+                    } else {
+                        if (item.hours > 0) {
+                            item.hours--;
+                            item.mins = 59;
+                            item.secs = 59;
+                        } else {
+                            item.hours = Math.floor(Math.random() * 4);
+                            item.mins = Math.floor(Math.random() * 60);
+                            item.secs = Math.floor(Math.random() * 60);
+                            machine.slots = Math.floor(1 + Math.random() * 6);
+                        }
+                    }
+                }
+                item.text = String(item.hours).padStart(2, '0') + 'h ' + String(item.mins).padStart(2, '0') + 'm ' + String(item.secs).padStart(2, '0') + 's';
+            });
+        }, 1000);
+    },
+    
+    async initChart() {
+        const res = await this.fetchAPI('/api/user/earnings-chart?range=7D');
+        let labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        let data = [0, 0, 0, 0, 0, 0, 0];
+        
+        if (res) {
+            const body = await res.json();
+            labels = body.labels;
+            data = body.data;
+        }
+        
+        const options = {
+            series: [{
+                name: 'Earnings Yield (KSh)',
+                data: data
+            }],
+            chart: {
+                type: 'area',
+                height: '100%',
+                toolbar: { show: false },
+                background: 'transparent',
+                foreColor: this.lightMode ? '#475569' : '#64748B'
+            },
+            stroke: { curve: 'smooth', width: 2, colors: ['#FFD700'] },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.3,
+                    opacityTo: 0.05,
+                    colorStops: [
+                        { offset: 0, color: '#FFD700', opacity: 0.3 },
+                        { offset: 100, color: '#FFD700', opacity: 0.0 }
+                    ]
+                }
+            },
+            dataLabels: { enabled: false },
+            grid: { borderColor: 'rgba(255,255,255,0.05)' },
+            xaxis: {
+                categories: labels,
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return 'KSh ' + value.toLocaleString();
+                    }
+                }
+            },
+            tooltip: { theme: 'dark' }
+        };
+        this.chart = new ApexCharts(document.querySelector('#earningsChart'), options);
+        this.chart.render();
+    },
+    
+    async updateChartRange(range) {
+        this.chartRange = range;
+        const res = await this.fetchAPI('/api/user/earnings-chart?range=' + range);
+        if (res) {
+            const body = await res.json();
+            this.chart.updateOptions({
+                xaxis: { categories: body.labels }
+            });
+            this.chart.updateSeries([{
+                data: body.data
+            }]);
+        }
+    },
+    
+    async rebootNode(index) {
+        const node = this.leases[index];
+        node.status = 'Rebooting...';
+        node.speed = '0.0 MH/s';
+        
+        await this.fetchAPI(`/api/user/leases/${node.id}/reboot`, { method: 'POST' });
+        
+        setTimeout(async () => {
+            await this.loadLeases();
+            
+            // Add notification
+            this.notifications.unshift({
+                id: Date.now(),
+                text: `${node.node_id || 'Node'} has completed soft-reboot sequence.`,
+                time: 'Just now',
+                read: false
+            });
+        }, 2500);
+    },
+    
+    async optimizeNode(index) {
+        const node = this.leases[index];
+        if (node.status === 'Optimizing...') return;
+        
+        node.status = 'Optimizing...';
+        
+        await this.fetchAPI(`/api/user/leases/${node.id}/optimize`, { method: 'POST' });
+        
+        setTimeout(async () => {
+            await this.loadLeases();
+            
+            // Add notification
+            this.notifications.unshift({
+                id: Date.now(),
+                text: `${node.node_id || 'Node'} has completed optimization boost check.`,
+                time: 'Just now',
+                read: false
+            });
+        }, 2000);
+    },
+    
+    openTerminal(nodeId) {
+        this.activeTerminalNode = nodeId;
+        this.showTerminal = true;
+        this.terminalLogs = [
+            `[${new Date().toLocaleTimeString()}] ${nodeId}: Core operational boot initialized.`,
+            `[${new Date().toLocaleTimeString()}] ${nodeId}: Secure SSL handshake with pool successful.`,
+            `[${new Date().toLocaleTimeString()}] ${nodeId}: Hashing thread engines started.`
+        ];
+        this.startLogsInterval();
+    },
+    
+    startLogsInterval() {
+        if (this.logsInterval) clearInterval(this.logsInterval);
+        this.logsInterval = setInterval(() => {
+            if (!this.showTerminal) return;
+            const node = this.leases.find(l => l.node_id === this.activeTerminalNode);
+            const speedVal = node ? node.speed : '55.2 MH/s';
+            const statusVal = node ? node.status : 'Hashing';
+            
+            const events = [
+                `Mempool scan complete. Checked 12 new block transactions.`,
+                `Hashing rate aligned. Operating at output speed: ${speedVal}.`,
+                `Giga-hash efficiency parameters check: Core stable (Temp: ${55 + Math.floor(Math.random()*15)}°C).`,
+                `Block slot validation job accepted. Epoch #${512 + Math.floor(Math.random()*10)}.`,
+                `Cryptographic share verified by pool nodes. Latency: ${20 + Math.floor(Math.random()*30)}ms.`,
+                `Memory allocator heap optimization completed.`,
+                `State verification: Node Status is current [${statusVal}].`
+            ];
+            
+            const randomEvent = events[Math.floor(Math.random() * events.length)];
+            const time = new Date().toLocaleTimeString();
+            this.terminalLogs.push(`[${time}] ${this.activeTerminalNode}: ${randomEvent}`);
+            
+            if (this.terminalLogs.length > 50) this.terminalLogs.shift();
+            
+            this.$nextTick(() => {
+                const el = document.getElementById('terminal-body');
+                if (el) el.scrollTop = el.scrollHeight;
+            });
+        }, 1500);
+    },
+    
+    closeTerminal() {
+        this.showTerminal = false;
+        if (this.logsInterval) {
+            clearInterval(this.logsInterval);
+            this.logsInterval = null;
+        }
+    }
+}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── NAVIGATION BAR ─── -->
+    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="../public/index.html" class="flex items-center space-x-2 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    XM
+                </div>
+                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
+                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-4">
+                <!-- Notifications Bell -->
+                <div class="relative">
+                    <button @click="notificationsOpen = !notificationsOpen" @click.away="notificationsOpen = false"
+                        class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-300 hover:text-white relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <template x-if="unreadNotificationsCount > 0">
+                            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#06070B]"></span>
+                        </template>
+                    </button>
+
+                    <!-- Notifications Dropdown -->
+                    <div x-show="notificationsOpen" x-transition
+                        class="absolute right-0 mt-2 w-80 glass-card rounded-xl p-3 shadow-2xl space-y-2 z-50 text-xs"
+                        style="display: none;">
+                        <div class="flex justify-between items-center pb-2 border-b border-white/5">
+                            <span class="font-bold text-white uppercase tracking-wider font-tech">Notifications</span>
+                            <button @click="notifications.forEach(n => n.read = true)" class="text-slate-400 hover:text-[#FFD700] cursor-pointer">Clear all</button>
+                        </div>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            <template x-for="item in notifications" :key="item.id">
+                                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.04]">
+                                    <p class="text-slate-200" x-text="item.text"></p>
+                                    <span class="text-[10px] text-slate-500 mt-1 block" x-text="item.time"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle Switch -->
+                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
+                    <svg x-show="!lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <svg x-show="lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+
+                <!-- Profile Menu -->
+                <div class="relative">
+                    <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
+                        class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="font-code text-xs text-slate-200" x-text="username"></span>
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-show="navDropdownOpen" x-transition
+                        class="absolute right-0 mt-2 w-48 glass-card rounded-xl p-2 shadow-2xl space-y-1 z-50"
+                        style="display: none;">
+                        <a href="../public/index.html"
+                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Landing Interface</a>
+                        <a href="admin.html"
+                            class="block px-4 py-2 text-sm text-slate-400 hover:text-[#FFD700] rounded-lg hover:bg-white/5 transition">Admin Dashboard</a>
+                        <hr class="border-white/5 my-1">
+                        <a href="../public/signin.html" @click="localStorage.removeItem('xm_jwt_token')"
+                            class="block px-4 py-2 text-sm text-red-400 font-medium rounded-lg hover:bg-red-500/10 transition">Terminate Session</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="max-w-7xl mx-auto px-6 py-10 space-y-8">
+
+        <!-- Welcoming Alert card -->
+        <header class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl"></div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech">Welcome, <span x-text="username"></span>!</h1>
+                <p class="text-slate-400 text-xs sm:text-sm font-light mt-0.5">Your rented machines are online and running.</p>
+            </div>
+            <div class="text-xs font-mono bg-white/5 px-3 py-1.5 border border-white/5 rounded-lg text-slate-400 shrink-0">
+                Last Synced: Just now
+            </div>
+        </header>
+
+        <!-- Stats overview section -->
+        <section class="grid md:grid-cols-3 gap-6">
+            <!-- Balance Card -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-20 h-20 bg-[#FFD700]/5 rounded-full blur-xl"></div>
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">My Wallet Balance</span>
+                    <h2 class="text-3xl font-black text-white mt-1 tracking-tight" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h2>
+                </div>
+                <div class="text-[11px] text-slate-500 font-mono tracking-wide">● Ready for withdrawal</div>
+            </div>
+
+            <!-- Total Earnings -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/5 rounded-full blur-xl"></div>
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Total Earnings</span>
+                    <h2 class="text-3xl font-black text-slate-300 mt-1 tracking-tight" x-text="'KSh ' + parseFloat(leasedEarnings).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h2>
+                </div>
+                <div class="text-[11px] text-emerald-400 font-mono tracking-wide" x-text="'↑ +' + parseFloat(dailyGrowth).toLocaleString('en-US', {minimumFractionDigits: 2}) + ' KSh earned today'"></div>
+            </div>
+
+            <!-- Trigger Payout Card -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-dashed border-white/10 hover:border-[#FFD700]/30 transition group">
+                <p class="text-xs text-slate-400 mb-3.5 font-light max-w-[220px]">Do you want to withdraw your money?</p>
+                <a href="withdraw.html"
+                    class="w-full py-3.5 px-6 font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition text-center shadow-[0_4px_15px_rgba(255,215,0,0.15)] cursor-pointer font-tech">
+                    Withdraw Cash
+                </a>
+            </div>
+        </section>
+
+        <!-- Earnings Visualization / Graph Panel -->
+        <section class="glass-card rounded-3xl p-6 relative">
+            <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-4">
+                <div>
+                    <h3 class="text-base font-bold text-white tracking-tight font-tech">Earnings History</h3>
+                    <p class="text-slate-400 text-xs font-light mt-0.5">Real-time graph of your earnings.</p>
+                </div>
+                <!-- Chart filter controls -->
+                <div class="flex space-x-1.5 bg-black/40 border border-white/5 rounded-lg p-1 text-[10px] font-mono">
+                    <button @click="updateChartRange('24H')" :class="chartRange === '24H' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">24H</button>
+                    <button @click="updateChartRange('7D')" :class="chartRange === '7D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">7D</button>
+                    <button @click="updateChartRange('30D')" :class="chartRange === '30D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">30D</button>
+                </div>
+            </div>
+            
+            <!-- ApexCharts Mount Node -->
+            <div class="w-full h-72">
+                <div id="earningsChart"></div>
+            </div>
+        </section>
+
+        <!-- Active hardware computational leases -->
+        <section class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <div>
+                    <h3 class="text-base font-bold text-white tracking-tight font-tech">My Rented Machines</h3>
+                    <p class="text-slate-400 text-xs font-light">Scroll sideways to see your running machines.</p>
+                </div>
+                <div class="text-xs font-mono text-purple-400 hidden sm:block">Swipe Track ──→</div>
+            </div>
+
+            <!-- Cards Container -->
+            <div class="flex gap-6 overflow-x-auto pb-4 pt-1 snap-x no-scrollbar">
+                
+                <template x-for="(lease, index) in leases" :key="lease.id">
+                    <div class="w-[280px] sm:w-[320px] shrink-0 snap-start glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border-t-2 transition-all duration-300"
+                        :class="[getLeaseStyle(lease.type).borderClass, getLeaseStyle(lease.type).glowClass]">
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-extrabold text-white tracking-tight text-sm font-tech" x-text="lease.name"></h4>
+                                    <span class="text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-md mt-1 inline-block"
+                                        :class="{
+                                            'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': lease.status === 'Hashing' || lease.status === 'Optimized',
+                                            'bg-yellow-500/10 text-[#FFD700] border border-yellow-500/20 animate-pulse': lease.status === 'Rebooting...' || lease.status === 'Optimizing...'
+                                        }"
+                                        x-text="lease.status"></span>
+                                </div>
+                                <span class="text-[10px] font-code text-slate-500" x-text="lease.node_id"></span>
+                            </div>
+
+                            <!-- Real pictures used for active leases! -->
+                            <div class="w-full h-32 rounded-xl border border-white/5 relative overflow-hidden group">
+                                <img :src="lease.image || '../public/images/blue_mainframe.png'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Rig Image">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between px-3 pb-2">
+                                    <span class="text-[9px] text-slate-300 font-mono tracking-widest uppercase">Machine Stats</span>
+                                    <span class="text-[10px] font-code font-bold text-[#FFD700]" x-text="lease.speed"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress indicator and actions -->
+                        <div class="space-y-4 pt-4 border-t border-white/5 mt-4">
+                            <div class="space-y-1.5 text-xs font-mono">
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Daily Profit Rate:</span>
+                                    <span class="text-white font-bold" x-text="lease.rate + '%'"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Daily Earnings:</span>
+                                    <span class="text-emerald-400 font-bold" x-text="'KSh ' + parseFloat(lease.daily_earnings).toLocaleString()"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Purchase Value:</span>
+                                    <span class="text-white font-semibold" x-text="'KSh ' + parseFloat(lease.cost).toLocaleString()"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Expected Settlement:</span>
+                                    <span class="text-[#FFD700] font-semibold" x-text="'KSh ' + (parseFloat(lease.daily_earnings) * parseInt(lease.duration)).toLocaleString()"></span>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
+                                    <span>Time Remaining:</span>
+                                    <span :class="getLeaseStyle(lease.type).colorClass" class="font-bold" x-text="lease.remaining + ' Days Left'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Hardware Control Panel -->
+                            <div class="grid grid-cols-3 gap-1">
+                                <button @click="rebootNode(index)" :disabled="lease.status !== 'Hashing' && lease.status !== 'Optimized'"
+                                    class="py-1.5 px-2 bg-white/5 hover:bg-white/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-white/5 hover:border-white/10 text-slate-300 hover:text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                                    Reboot
+                                </button>
+                                <button @click="optimizeNode(index)" :disabled="lease.status !== 'Hashing'"
+                                    class="py-1.5 px-2 bg-[#FFD700]/5 hover:bg-[#FFD700]/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-[#FFD700]/10 hover:border-[#FFD700]/20 text-[#FFD700] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                                    Optimize
+                                </button>
+                                <button @click="openTerminal(lease.node_id)"
+                                    class="py-1.5 px-2 bg-purple-500/5 hover:bg-purple-500/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-purple-500/10 hover:border-purple-500/20 text-purple-400 cursor-pointer">
+                                    Logs
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
+
+            </div>
+        </section>
+
+        <!-- Available hardware mainframes catalog -->
+        <section class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2">
+                <div>
+                    <h3 class="text-base font-bold text-white tracking-tight font-tech">Machines Available to Rent</h3>
+                    <p class="text-slate-400 text-xs font-light">Select a machine below to rent and start earning.</p>
+                </div>
+            </div>
+
+            <!-- Active Lease Limit Notification Banner -->
+            <div x-show="hasActiveLease" x-transition
+                class="p-4 bg-purple-950/30 border border-purple-500/20 text-purple-300 text-xs font-mono rounded-xl flex items-center justify-between shadow-[0_0_15px_rgba(168,85,247,0.05)]"
+                style="display: none;">
+                <div class="flex items-center space-x-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-ping"></span>
+                    <span>⚠️ <strong>HARDWARE CONTRACT LOCKED:</strong> You currently have 3 active contracts running. You can only rent up to 3 machines at a time.</span>
+                </div>
+            </div>
+
+            <!-- Rentable Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="machine in catalog" :key="machine.name">
+                    <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-t-2 hover:scale-[1.01] transition duration-200 relative overflow-hidden" :class="machine.borderClass">
+                        <!-- Brutalist Tech Corners -->
+                        <div class="tech-corner -top-0.5 -left-0.5 border-t border-l opacity-25"></div>
+                        <div class="tech-corner -top-0.5 -right-0.5 border-t border-r opacity-25"></div>
+                        <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l opacity-25"></div>
+                        <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r opacity-25"></div>
+
+                        <div>
+                            <div class="relative rounded-xl overflow-hidden mb-4 border border-white/5 bg-black/40">
+                                <img :src="machine.image" :alt="machine.name" class="w-full h-44 object-cover">
+                                <span class="absolute top-2 right-2 bg-yellow-500/10 border border-yellow-500/20 text-[#FFD700] font-mono text-[9px] px-2 py-0.5 rounded-full font-bold">Only <span x-text="machine.slots"></span> Left</span>
+                            </div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-extrabold text-white text-sm font-tech" x-text="machine.name"></h4>
+                                <span class="text-[10px] font-mono text-slate-400" x-text="machine.rate + '% Daily Profit'"></span>
+                            </div>
+                            <p class="text-slate-400 text-xs font-light mb-4 leading-relaxed font-sans" x-text="'Rent Duration: ' + machine.duration + ' Days'"></p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-black/30 border border-white/5 rounded-xl p-3 space-y-1.5 text-[11px] font-mono">
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Mining Speed:</span>
+                                    <span class="text-white" x-text="machine.speed"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Duration:</span>
+                                    <span class="text-white" x-text="machine.duration + ' Days'"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500">
+                                    <span>Daily Earnings:</span>
+                                    <span class="text-emerald-400" x-text="'KSh ' + machine.daily.toLocaleString()"></span>
+                                </div>
+                                <div class="flex justify-between text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
+                                    <span>Time Left to Rent:</span>
+                                    <span class="text-purple-400" x-text="machine.timer.text"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-base font-extrabold text-white font-tech" x-text="'KSh ' + machine.price.toLocaleString()"></span>
+                                <button @click="tryRentMachine(machine)"
+                                    :disabled="hasActiveLease"
+                                    :class="hasActiveLease ? 'bg-slate-800/40 text-slate-500 border border-slate-800 cursor-not-allowed' : 'bg-[#FFD700] hover:bg-[#FFE55C] text-black cursor-pointer shadow-[0_4px_15px_rgba(255,215,0,0.15)] hover:shadow-[0_4px_25px_rgba(255,215,0,0.35)]'"
+                                    class="py-2 px-4 text-[10px] font-bold uppercase rounded-lg transition font-tech">
+                                    <span x-text="hasActiveLease ? 'LOCKED' : 'Buy / Rent'"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Live Terminal logs drawer (Overlay panel on right or inline) -->
+        <section x-show="showTerminal" x-transition
+            class="glass-card rounded-3xl p-6 border-t-2 border-t-purple-500 relative" style="display: none;">
+            <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2.5 text-purple-400">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-ping"></span>
+                    <h3 class="text-sm font-bold text-white tracking-wide uppercase font-tech">Live Machine Logs: <span class="font-code text-purple-400 text-xs" x-text="activeTerminalNode"></span></h3>
+                </div>
+                <button @click="closeTerminal()" class="text-slate-400 hover:text-white font-mono text-sm cursor-pointer">✕ Close logs</button>
+            </div>
+            
+            <!-- Log output block -->
+            <div id="terminal-body" class="w-full h-44 bg-black/60 border border-white/5 rounded-2xl p-4 font-code text-[10px] text-emerald-400 overflow-y-auto leading-relaxed space-y-1.5 custom-scroll">
+                <template x-for="log in terminalLogs" :key="log">
+                    <p x-text="log" class="whitespace-pre-line"></p>
+                </template>
+            </div>
+        </section>
+
+        <!-- Dynamic Yield Estimator Calculator -->
+        <section class="glass-card rounded-3xl p-6 grid md:grid-cols-3 gap-6 items-center">
+            <div class="md:col-span-1">
+                <h3 class="text-base font-bold text-white tracking-tight font-tech">Earnings Calculator</h3>
+                <p class="text-slate-400 text-xs font-light mt-0.5">Move the slider to estimate how much you can earn.</p>
+            </div>
+            
+            <!-- Selector Sliders -->
+            <div class="md:col-span-2 grid sm:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-mono text-slate-400">
+                        <span>Mining Speed:</span>
+                        <span class="text-[#FFD700] font-bold" x-text="estimatorHashrate + ' MH/s'"></span>
+                    </div>
+                    <input type="range" min="50" max="1000" step="10" x-model="estimatorHashrate"
+                        class="w-full accent-[#FFD700] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <!-- Output statistics -->
+                <div class="grid grid-cols-3 gap-2 bg-black/40 border border-white/5 rounded-2xl p-3 text-center">
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Daily Earnings</span>
+                        <span class="text-xs font-bold text-white font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4).toFixed(0)"></span>
+                    </div>
+                    <div class="space-y-1 border-x border-white/5">
+                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Monthly Earnings</span>
+                        <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4 * 30).toLocaleString()"></span>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Yearly Earnings</span>
+                        <span class="text-xs font-bold text-purple-400 font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4 * 365).toLocaleString()"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Affiliate Section -->
+        <section class="glass-card rounded-2xl p-6 grid md:grid-cols-3 gap-6 items-center">
+            <div class="md:col-span-1">
+                <h3 class="text-base font-bold text-white tracking-tight font-tech">Invite & Earn Program</h3>
+                <p class="text-slate-400 text-xs font-light mt-0.5">Share your link below to earn bonuses when others rent machines.</p>
+            </div>
+            <div class="md:col-span-2 flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between font-mono text-xs text-[#FFD700] tracking-wider select-all">
+                    <span>https://xmdigitalproducts.com/register?ref=MINER4902</span>
+                    <svg class="w-4 h-4 text-slate-500 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2" />
+                    </svg>
+                </div>
+                <button @click="copied = true; setTimeout(() => copied = false, 2000)"
+                    class="px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-black transition cursor-pointer shrink-0 text-center"
+                    :class="copied ? 'bg-emerald-400' : 'bg-[#FFD700] hover:bg-[#FFE55C]'">
+                    <span x-text="copied ? 'Copied Success' : 'Copy Invite Link'"></span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+
+</html>

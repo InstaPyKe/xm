@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrative Authority Verification | XM digitalproducts</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- AlpineJS CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-color: #040508;
+        }
+
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-container {
+            background: rgba(6, 7, 12, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0px !important;
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease-in-out;
+            border-radius: 0px !important;
+        }
+
+        .glass-input:focus {
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .tech-corner {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: rgba(255, 215, 0, 0.4);
+            border-style: solid;
+        }
+    </style>
+</head>
+
+<body class="text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-[#FFD700] selection:text-black relative">
+
+    <!-- Glowing Header Border -->
+    <div class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#FFD700] to-purple-600"></div>
+
+    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10">
+        <a href="../public/index.html" class="flex items-center space-x-2 group">
+            <div class="w-6 h-6 bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-xs shadow-[0_0_10px_rgba(255,215,0,0.2)]">
+                XM
+            </div>
+            <div class="text-base font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-purple-400 bg-clip-text text-transparent">
+                XM DIGITAL<span class="text-slate-400 font-light text-xs ml-1 font-tech">products</span>
+            </div>
+        </a>
+        <a href="../public/index.html" class="text-xs font-semibold text-slate-400 hover:text-[#FFD700] transition">
+            [ Back to Main Portal ]
+        </a>
+    </header>
+
+    <main class="w-full flex-1 flex items-center justify-center p-6 z-10">
+        <div x-data="{ 
+                pin: '', 
+                isLoading: false,
+                errorMessage: '',
+                async handleAdminLogin() {
+                    if (this.pin.length !== 6) {
+                        this.errorMessage = 'Admin verification code must be exactly 6 digits.';
+                        return;
+                    }
+                    this.isLoading = true;
+                    this.errorMessage = '';
+                    
+                    try {
+                        const response = await fetch('/api/admin/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ pin: this.pin })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok && data.token) {
+                            localStorage.setItem('xm_admin_token', data.token);
+                            window.location.href = 'admin.html';
+                        } else {
+                            this.errorMessage = data.message || 'Signature mismatch. Verification failed.';
+                        }
+                    } catch (err) {
+                        this.errorMessage = 'Network connection handshake timing out.';
+                    } finally {
+                        this.isLoading = false;
+                    }
+                }
+             }" class="w-full max-w-md glass-container p-8 sm:p-10 shadow-2xl relative border-l-4 border-l-purple-500">
+
+            <!-- Brutalist Tech Corners -->
+            <div class="tech-corner -top-1.5 -left-1.5 border-t-2 border-l-2"></div>
+            <div class="tech-corner -top-1.5 -right-1.5 border-t-2 border-r-2"></div>
+            <div class="tech-corner -bottom-1.5 -left-1.5 border-b-2 border-l-2"></div>
+            <div class="tech-corner -bottom-1.5 -right-1.5 border-b-2 border-r-2"></div>
+
+            <div class="flex justify-between items-center mb-6 text-[9px] font-mono text-slate-500 border-b border-white/5 pb-2">
+                <span>SECURITY ZONE: ADMIN</span>
+                <span class="text-purple-400 font-bold">ACCESS LIMITED</span>
+            </div>
+
+            <div class="mb-8 text-left">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight uppercase font-tech">Admin Authority</h1>
+                <p class="text-slate-400 text-xs font-light mt-1">Enter authorized 6-digit access key to activate administrative modules.</p>
+            </div>
+
+            <div x-show="errorMessage" x-text="errorMessage" x-transition
+                class="p-3 mb-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono rounded-none"
+                style="display: none;">
+            </div>
+
+            <form @submit.prevent="handleAdminLogin()" class="space-y-5">
+                <!-- PIN Entry Block -->
+                <div class="space-y-1.5">
+                    <label for="pin" class="block text-xs font-mono uppercase tracking-wider text-slate-400">Administrative PIN</label>
+                    <input type="password" id="pin" name="pin" x-model="pin" required maxlength="6"
+                        pattern="[0-9]*" inputmode="numeric" placeholder="••••••"
+                        class="w-full glass-input px-4 py-3 text-center text-lg text-white placeholder-slate-700 tracking-[0.75em] font-code">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" :disabled="isLoading || pin.length !== 6"
+                        class="w-full py-3.5 px-4 font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_4px_20px_rgba(255,215,0,0.1)] flex items-center justify-center gap-2 cursor-pointer rounded-none font-tech">
+                        <span x-show="!isLoading">Verify Admin Key</span>
+                        <span x-show="isLoading"
+                            class="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"
+                            style="display: none;"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="w-full text-center py-6 text-[10px] font-mono tracking-widest text-slate-600 z-10">
+        [ XM SYSTEM ADMINISTRATOR SIGNATURE PORT ]
+    </footer>
+
+</body>
+</html>

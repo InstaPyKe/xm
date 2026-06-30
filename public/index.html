@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XM digitalproducts | Premium High-Performance Cloud Node Rentals</title>
+    <!-- Google Fonts: Plus Jakarta Sans & Orbitron -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- AlpineJS for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-dropdown {
+            background: rgba(8, 10, 18, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-yellow {
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+        .neon-glow-purple {
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+        }
+        .neon-glow-emerald {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-12px) rotate(1deg);
+            }
+        }
+        .floating-container {
+            animation: float 6s ease-in-out infinite;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07080E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-[#07080E] text-slate-100 antialiased selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── NAVIGATION BAR ─── -->
+    <nav x-data="{ mobileMenuOpen: false, desktopMenuOpen: false }"
+        class="sticky top-0 z-50 backdrop-blur-md bg-[#07080E]/70 border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+            <!-- Company Brand Identity -->
+            <a href="#hero" class="flex items-center space-x-2 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    XM
+                </div>
+                <div class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
+                    XM DIGITAL<span class="text-slate-400 font-light text-sm tracking-normal">products</span>
+                </div>
+                  <!-- Desktop Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#hero" class="hover:text-[#FFD700] transition-colors duration-200">Home</a>
+                <a href="#nodes" class="hover:text-[#FFD700] transition-colors duration-200">Mining Machines</a>
+                <a href="#calculator" class="hover:text-[#FFD700] transition-colors duration-200">Calculator</a>
+                <a href="#datacenters" class="hover:text-[#FFD700] transition-colors duration-200">Datacenters</a>
+                <a href="#events" class="hover:text-[#FFD700] transition-colors duration-200">Events</a>
+                <a href="#disclaimer" class="hover:text-[#FFD700] transition-colors duration-200">Risk Warning</a>
+
+                <!-- Dropdown Trigger Context -->
+                <div class="relative" @click.away="desktopMenuOpen = false">
+                    <button @click="desktopMenuOpen = !desktopMenuOpen"
+                        class="flex items-center space-x-1 hover:text-[#FFD700] transition focus:outline-none cursor-pointer">
+                        <span>Console Menu</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': desktopMenuOpen}"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Navigation Items -->
+                    <div x-show="desktopMenuOpen" x-transition
+                        class="glass-dropdown absolute right-0 mt-3 w-56 rounded-xl p-2 shadow-2xl space-y-1 z-50"
+                        style="display: none;">
+                        <a href="signup.html"
+                            class="block px-4 py-2.5 text-sm rounded-lg hover:bg-[#FFD700] hover:text-black font-semibold transition">Register Account</a>
+                        <a href="signin.html"
+                            class="block px-4 py-2.5 text-sm rounded-lg hover:bg-[#FFD700] hover:text-black font-semibold transition">Login to Account</a>
+                        <a href="../account/dashboard.html"
+                            class="block px-4 py-2.5 text-sm rounded-lg hover:bg-white/5 transition text-slate-300">Active Miner Console</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call To Action -->
+            <div class="hidden md:block">
+                <a href="signup.html"
+                    class="inline-block px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] rounded-full hover:bg-[#FFE55C] active:scale-95 transition-all shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                    Start Mining
+                </a>
+            </div>      </div>
+
+            <!-- Hamburger Trigger for Mobile Devices -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-slate-300 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div x-show="mobileMenuOpen" x-transition
+            class="md:hidden mt-4 bg-[#0D0F18]/95 border border-white/10 rounded-xl p-4 space-y-3"
+            style="display: none;">
+            <a href="#hero" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Home</a>
+            <a href="#nodes" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Mining Machines</a>
+            <a href="#calculator" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Calculator</a>
+            <a href="#datacenters" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Datacenters</a>
+            <a href="#events" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Events</a>
+            <a href="#disclaimer" @click="mobileMenuOpen = false"
+                class="block py-1 text-slate-300 hover:text-[#FFD700]">Risk Warning</a>
+            <hr class="border-white/5 my-2">
+            <a href="signup.html" class="block text-sm font-semibold text-[#FFD700]">Register Account</a>
+            <a href="signin.html" class="block text-sm font-semibold text-slate-300">Login to Account</a>
+            <a href="../account/dashboard.html" class="block text-sm text-slate-400">Miner Console</a>
+        </div>
+    </nav>
+
+    <!-- ─── HERO SECTION ─── -->
+    <header id="hero" class="relative max-w-7xl mx-auto px-6 pt-12 pb-24 flex flex-col lg:flex-row items-center gap-12 overflow-hidden">
+
+        <!-- Glowing Atmosphere -->
+        <div class="absolute top-1/4 left-1/4 -translate-x-1/2 w-[350px] h-[350px] bg-purple-600/10 rounded-full blur-[130px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 w-[350px] h-[350px] bg-emerald-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <!-- Left Context Content Layout -->
+        <div class="flex-1 text-center lg:text-left space-y-6 z-10">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-code font-bold text-[#FFD700] bg-[#FFD700]/10 border border-[#FFD700]/20 rounded-full backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                MINING MACHINES ACTIVE AND RUNNING
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08] text-white font-tech">
+                Rent Power.<br>
+                <span class="bg-gradient-to-r from-[#FFD700] via-yellow-100 to-emerald-400 bg-clip-text text-transparent">
+                    Mine Easily.
+                </span>
+            </h1>
+            <p class="text-slate-400 max-w-xl text-base sm:text-lg font-light leading-relaxed">
+                Rent high-power virtual mining machines instantly. No setup configuration problems, no physical heat, and no maintenance costs. Get premium mining power easily.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-3">
+                <a href="signup.html"
+                    class="w-full sm:w-auto px-8 py-4 font-bold text-center text-black bg-[#FFD700] rounded-xl hover:bg-[#FFE55C] active:scale-95 transition shadow-[0_4px_30px_rgba(255,215,0,0.25)]">
+                    Start Mining Now
+                </a>
+                <a href="#nodes"
+                    class="w-full sm:w-auto px-8 py-4 font-semibold text-center text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition backdrop-blur-md">
+                    See Machine Specs
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Visual Showcase -->
+        <div class="flex-1 relative flex items-center justify-center w-full min-h-[400px] z-10">
+            <div class="floating-container relative w-full max-w-[420px] rounded-3xl glass-panel p-4 flex flex-col justify-between shadow-2xl border border-white/10">
+                <!-- Glowing accent -->
+                <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-purple-500/10 via-transparent to-amber-500/10 pointer-events-none"></div>
+                
+                <!-- Main Image wrapper -->
+                <div class="relative w-full h-[280px] rounded-2xl overflow-hidden bg-black/40 border border-white/5">
+                    <img src="public/images/hero_node.png" alt="Futuristic Hashing Node Unit" class="w-full h-full object-cover">
+                    <!-- Subtle dark gradient overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+                    
+                    <!-- Dynamic Badges -->
+                    <div class="absolute top-3 left-3 bg-[#07080E]/80 border border-white/10 px-3 py-1 rounded-md text-[10px] font-code text-purple-400 backdrop-blur-sm">
+                        MODEL: XM-PRO-NODE V5
+                    </div>
+                    <div class="absolute top-3 right-3 bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-md text-[10px] font-code text-emerald-400 backdrop-blur-sm flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        ONLINE
+                    </div>
+
+                    <!-- Bottom Info overlay inside image -->
+                    <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                        <div>
+                            <p class="text-[9px] font-code text-slate-400 uppercase tracking-widest">Liquid-Cooled Compute Chassis</p>
+                            <p class="text-sm font-bold text-white">Quantum Hashing Core</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-code text-slate-500 uppercase">SYS STAGE</p>
+                            <p class="text-xs font-bold text-[#FFD700] font-tech">ACTIVE // 3W</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Node Live Analytics -->
+                <div class="mt-4 pt-3 border-t border-white/5 grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-white/[0.01] border border-white/5 rounded-xl p-2">
+                        <p class="text-[9px] font-code text-slate-500 uppercase">Hashrate</p>
+                        <p class="text-xs font-bold text-white font-tech">234 TH/s</p>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 rounded-xl p-2">
+                        <p class="text-[9px] font-code text-slate-500 uppercase">Temp</p>
+                        <p class="text-xs font-bold text-emerald-400 font-tech">38°C</p>
+                    </div>
+                    <div class="bg-white/[0.01] border border-white/5 rounded-xl p-2">
+                        <p class="text-[9px] font-code text-slate-500 uppercase">Power PUE</p>
+                        <p class="text-xs font-bold text-purple-400 font-tech">1.04</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── PLATFORM LIVE STATS SECTION ─── -->
+    <section class="max-w-7xl mx-auto px-6 py-12 border-y border-white/5 bg-gradient-to-r from-transparent via-white/[0.01] to-transparent">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs font-code uppercase tracking-widest text-slate-500">// TOTAL NETWORK POWER</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#FFD700] font-tech">245.8 PH/s</h3>
+                <p class="text-xs text-emerald-400 font-code flex items-center justify-center md:justify-start gap-1">
+                    <span>↑ +12.4% this week</span>
+                </p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs font-code uppercase tracking-widest text-slate-500">// MACHINES RENTED</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white font-tech">4,912 Units</h3>
+                <p class="text-xs text-slate-400 font-code">Currently online and operational</p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs font-code uppercase tracking-widest text-slate-500">// TOTAL PAID OUT</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white font-tech">$24.9M <span class="text-xs text-purple-400">USDT</span></h3>
+                <p class="text-xs text-slate-400 font-code">Secure settlements</p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs font-code uppercase tracking-widest text-slate-500">// SYSTEM EFFICIENCY</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-tech">1.05 PUE</h3>
+                <p class="text-xs text-emerald-400 font-code">Green compute clusters</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── HARDWARE NODES CATALOGUE ─── -->
+    <section id="nodes" class="max-w-7xl mx-auto px-6 py-24">
+        <div class="mb-16 text-center">
+            <p class="text-xs font-code uppercase tracking-widest text-purple-400 mb-2">// Choose Your Machine</p>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-tech">Rented Mining Machines Available</h2>
+            <p class="text-slate-400 mt-3 max-w-2xl mx-auto font-light text-sm sm:text-base">
+                Check out our virtual mining machines. Rent the right power for your needs.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Node Alpha Card -->
+            <div class="glass-panel rounded-3xl overflow-hidden hover:border-[#FFD700]/30 transition-all duration-300 flex flex-col group relative">
+                <div class="h-56 bg-black/40 overflow-hidden border-b border-white/5 relative">
+                    <img src="public/images/node_asic.png" alt="Bitmain Antminer ASIC Miner" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-transparent to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-md text-[10px] font-code text-amber-400">SHA-256 / BTC</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-[#FFD700] transition-colors">Node Alpha (Bitcoin Miner)</h3>
+                            <span class="text-xs font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">Available</span>
+                        </div>
+                        <p class="text-slate-400 text-xs font-light leading-relaxed">
+                            Heavy-duty machines made specifically for high-efficiency Bitcoin mining.
+                        </p>
+                        
+                        <!-- Specs List -->
+                        <div class="mt-6 space-y-2 font-code text-xs">
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Hardware Profile</span>
+                                <span class="text-white font-semibold">Bitmain Antminer S21 Pro</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Node Hashrate</span>
+                                <span class="text-[#FFD700] font-semibold">234 TH/s ±5%</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Efficiency</span>
+                                <span class="text-white">22 Joules / TH</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Power Consumption</span>
+                                <span class="text-white">3,500 Watts</span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-slate-500">Setup Time</span>
+                                <span class="text-purple-400">Instant (< 60s)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
+                                <p class="text-2xl font-extrabold text-white font-tech">$29 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                            </div>
+                            <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
+                        </div>
+                        <a href="signup.html" class="block w-full py-3.5 text-center font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition">
+                            Rent Node Alpha
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Node Beta Card -->
+            <div class="glass-panel rounded-3xl overflow-hidden hover:border-purple-500/30 transition-all duration-300 flex flex-col group relative">
+                <div class="h-56 bg-black/40 overflow-hidden border-b border-white/5 relative">
+                    <img src="public/images/node_gpu.png" alt="Multi-GPU Server Cluster" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-transparent to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-md text-[10px] font-code text-purple-400">Multi-Algo / ETHASH</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-[#FFD700] transition-colors">Node Beta (Multi-GPU Machine)</h3>
+                            <span class="text-xs font-code text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md">High Demand</span>
+                        </div>
+                        <p class="text-slate-400 text-xs font-light leading-relaxed">
+                            High-power GPU machines optimized for mining altcoins and processing data.
+                        </p>
+                        
+                        <!-- Specs List -->
+                        <div class="mt-6 space-y-2 font-code text-xs">
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Hardware Profile</span>
+                                <span class="text-white font-semibold">8x NVIDIA RTX 4090 (24GB)</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Node Hashrate</span>
+                                <span class="text-purple-400 font-semibold">820 MH/s ±8%</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Total VRAM Pool</span>
+                                <span class="text-white">192 GB GDDR6X</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Power Consumption</span>
+                                <span class="text-white">2,800 Watts</span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-slate-500">Setup Time</span>
+                                <span class="text-[#FFD700]">Instant (< 120s)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
+                                <p class="text-2xl font-extrabold text-white font-tech">$79 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                            </div>
+                            <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
+                        </div>
+                        <a href="signup.html" class="block w-full py-3.5 text-center font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition">
+                            Rent Node Beta
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Node Gamma Card -->
+            <div class="glass-panel rounded-3xl overflow-hidden hover:border-emerald-500/30 transition-all duration-300 flex flex-col group relative">
+                <div class="h-56 bg-black/40 overflow-hidden border-b border-white/5 relative">
+                    <img src="public/images/node_ai.png" alt="NVIDIA H100 Server Node" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-transparent to-transparent"></div>
+                    <span class="absolute top-4 left-4 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-md text-[10px] font-code text-emerald-400">AI Compute / Tensor</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-[#FFD700] transition-colors">Node Gamma (AI Processor)</h3>
+                            <span class="text-xs font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">Available</span>
+                        </div>
+                        <p class="text-slate-400 text-xs font-light leading-relaxed">
+                            Top-grade machines for high-speed AI tasks and advanced computing.
+                        </p>
+                        
+                        <!-- Specs List -->
+                        <div class="mt-6 space-y-2 font-code text-xs">
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Hardware Profile</span>
+                                <span class="text-white font-semibold">NVIDIA H100 PCIe (80GB)</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Tensor Compute</span>
+                                <span class="text-emerald-400 font-semibold">700 TFLOPS (FP8)</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">On-Card Memory</span>
+                                <span class="text-white">80GB HBM3 VRAM</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-white/5">
+                                <span class="text-slate-500">Power Consumption</span>
+                                <span class="text-white">700 Watts</span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-slate-500">Setup Time</span>
+                                <span class="text-purple-400">Instant (< 180s)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
+                                <p class="text-2xl font-extrabold text-white font-tech">$199 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                            </div>
+                            <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
+                        </div>
+                        <a href="signup.html" class="block w-full py-3.5 text-center font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition">
+                            Rent Node Gamma
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── INTERACTIVE RENTAL & PROFITABILITY CALCULATOR ─── -->
+    <section id="calculator" class="max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
+        <div x-data="{
+            selectedNode: 'asic',
+            durationWeeks: 3,
+            electricityRate: 0.05,
+            nodes: {
+                asic: {
+                    name: 'Node Alpha (Dedicated ASIC)',
+                    hashrate: '234 TH/s',
+                    power: 3.5,
+                    weeklyCost: 29,
+                    estWeeklyYield: 48.50
+                },
+                gpu: {
+                    name: 'Node Beta (Multi-GPU Cluster)',
+                    hashrate: '820 MH/s',
+                    power: 2.8,
+                    weeklyCost: 79,
+                    estWeeklyYield: 118.20
+                },
+                ai: {
+                    name: 'Node Gamma (AI Tensor Compute)',
+                    hashrate: '700 TFLOPS Compute',
+                    power: 0.7,
+                    weeklyCost: 199,
+                    estWeeklyYield: 295.00
+                }
+            },
+            get current() {
+                return this.nodes[this.selectedNode];
+            },
+            get powerCost() {
+                return (this.current.power * 24 * 7 * this.durationWeeks * this.electricityRate).toFixed(2);
+            },
+            get rentCost() {
+                return (this.current.weeklyCost * this.durationWeeks).toFixed(2);
+            },
+            get totalCost() {
+                return (parseFloat(this.rentCost) + parseFloat(this.powerCost)).toFixed(2);
+            },
+            get grossYield() {
+                return (this.current.estWeeklyYield * this.durationWeeks).toFixed(2);
+            },
+            get netProfit() {
+                const net = parseFloat(this.grossYield) - parseFloat(this.totalCost);
+                return net.toFixed(2);
+            },
+            get roi() {
+                const cost = parseFloat(this.totalCost);
+                if (cost === 0) return 0;
+                const profit = parseFloat(this.netProfit);
+                return ((profit / cost) * 100).toFixed(1);
+            }
+        }" class="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden">
+            <!-- Glow background -->
+            <div class="absolute -right-32 -top-32 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute -left-32 -bottom-32 w-80 h-80 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="grid lg:grid-cols-12 gap-10 items-start">
+                
+                <!-- Calculator Controls (Left column) -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div>
+                        <span class="text-xs font-code uppercase tracking-widest text-[#FFD700]">// Profit Simulator</span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 font-tech">Calculate Your Profit</h2>
+                        <p class="text-slate-400 mt-2 font-light text-sm">
+                            Change the settings below to estimate how much you can make based on current network speeds.
+                        </p>
+                    </div>
+
+                    <!-- Step 1: Select Node Type -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-code uppercase tracking-wider text-slate-400">1. Choose Your Machine</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button @click="selectedNode = 'asic'" 
+                                :class="selectedNode === 'asic' ? 'border-[#FFD700] bg-[#FFD700]/10 text-white font-semibold' : 'border-white/10 hover:bg-white/5 text-slate-400'"
+                                class="px-4 py-3 rounded-xl border text-center text-xs transition duration-200 cursor-pointer">
+                                Node Alpha <span class="block text-[10px] opacity-60 font-code font-normal">ASIC Miner</span>
+                            </button>
+                            <button @click="selectedNode = 'gpu'" 
+                                :class="selectedNode === 'gpu' ? 'border-purple-500 bg-purple-500/10 text-white font-semibold' : 'border-white/10 hover:bg-white/5 text-slate-400'"
+                                class="px-4 py-3 rounded-xl border text-center text-xs transition duration-200 cursor-pointer">
+                                Node Beta <span class="block text-[10px] opacity-60 font-code font-normal">GPU Rig</span>
+                            </button>
+                            <button @click="selectedNode = 'ai'" 
+                                :class="selectedNode === 'ai' ? 'border-emerald-500 bg-emerald-500/10 text-white font-semibold' : 'border-white/10 hover:bg-white/5 text-slate-400'"
+                                class="px-4 py-3 rounded-xl border text-center text-xs transition duration-200 cursor-pointer">
+                                Node Gamma <span class="block text-[10px] opacity-60 font-code font-normal">AI Rack</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Duration Slider -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-code">
+                            <span class="uppercase tracking-wider text-slate-400">2. Rent Duration</span>
+                            <span class="text-white font-bold" x-text="durationWeeks + ' Weeks (' + (durationWeeks * 7) + ' Days)'"></span>
+                        </div>
+                        <input type="range" min="3" max="12" step="3" x-model="durationWeeks" 
+                            class="w-full h-1.5 rounded-full bg-white/10 accent-[#FFD700] cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 font-code">
+                            <span>Min 3 Weeks (Sprint)</span>
+                            <span>6 Weeks</span>
+                            <span>9 Weeks</span>
+                            <span>Max 12 Weeks (Quarterly)</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Optional Power Costs -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs font-code">
+                            <span class="uppercase tracking-wider text-slate-400">3. Power Cost (Optional)</span>
+                            <span class="text-white font-bold" x-text="'$' + parseFloat(electricityRate).toFixed(2) + ' / kWh'"></span>
+                        </div>
+                        <input type="range" min="0.00" max="0.15" step="0.01" x-model="electricityRate" 
+                            class="w-full h-1.5 rounded-full bg-white/10 accent-purple-500 cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-slate-500 font-code">
+                            <span>$0.00/kWh (Green Free-cooling)</span>
+                            <span>$0.07/kWh (Standard)</span>
+                            <span>$0.15/kWh (High Grid Load)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs Panel (Right column) -->
+                <div class="lg:col-span-5 bg-black/40 border border-white/5 rounded-3xl p-6 md:p-8 space-y-6">
+                    <div class="border-b border-white/5 pb-4">
+                        <h3 class="text-lg font-bold text-white tracking-tight font-tech">Profit Estimate</h3>
+                        <p class="text-slate-400 text-xs font-light" x-text="'Active Node Model: ' + current.name"></p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
+                            <span class="text-slate-400">Machine Speed</span>
+                            <span class="text-white font-semibold" x-text="current.hashrate"></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
+                            <span class="text-slate-400">Rental Cost</span>
+                            <span class="text-white font-semibold font-tech" x-text="'$' + rentCost + ' USDT'"></span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
+                            <span class="text-slate-400">Estimated Power Cost</span>
+                            <span class="text-purple-400 font-semibold font-tech" x-text="'$' + powerCost + ' USDT'"></span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
+                            <span class="text-slate-400">Total Rent Cost</span>
+                            <span class="text-white font-semibold font-tech" x-text="'$' + totalCost + ' USDT'"></span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
+                            <span class="text-slate-400">Estimated Gross Payout</span>
+                            <span class="text-[#FFD700] font-semibold font-tech" x-text="'$' + grossYield + ' USDT'"></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/[0.02] border border-white/10 rounded-2xl p-5 space-y-2">
+                        <span class="text-[10px] font-code uppercase tracking-wider text-slate-500">Estimated Net Profit</span>
+                        <div class="flex items-baseline justify-between">
+                            <span class="text-3xl font-extrabold text-white font-tech" x-text="'$' + netProfit + ' USDT'"></span>
+                            <span class="text-xs font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded" x-text="'+' + roi + '% ROI'"></span>
+                        </div>
+                    </div>
+
+                    <a href="signup.html" class="block w-full py-4 text-center font-bold text-sm uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-2xl transition shadow-[0_4px_20px_rgba(255,215,0,0.15)]">
+                        Rent This Machine Now
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── DATA CENTERS & ENERGY SPECIFICATION SECTION ─── -->
+    <section id="datacenters" class="max-w-7xl mx-auto px-6 py-24">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Left Info Block -->
+            <div class="space-y-6">
+                <div>
+                    <span class="text-xs font-code uppercase tracking-widest text-[#FFD700]">// Datacenter Locations</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-tech">Green Datacenters</h2>
+                    <p class="text-slate-400 mt-4 font-light text-sm sm:text-base leading-relaxed">
+                        Our mining machines are located in clean data centers worldwide, using renewable energy like solar and geothermal power.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass-panel p-5 rounded-2xl border border-white/5 flex gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center font-bold text-purple-400 font-tech shrink-0">IS</div>
+                        <div>
+                            <h4 class="font-bold text-white">Reykjavik Cluster, Iceland</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">100% Geothermal energy using cold Arctic air to cool our machines. Very reliable power output.</p>
+                            <span class="inline-block mt-2 text-[10px] font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">PUE 1.04 // Active</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/5 flex gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-amber-400 font-tech shrink-0">US</div>
+                        <div>
+                            <h4 class="font-bold text-white">Dallas Solar Array, Texas</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">Solar-powered battery bank designed to run our GPU modules. Optimized for high capacity workloads.</p>
+                            <span class="inline-block mt-2 text-[10px] font-code text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">PUE 1.08 // Active</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/5 flex gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-bold text-emerald-400 font-tech shrink-0">NO</div>
+                        <div>
+                            <h4 class="font-bold text-white">Oslo Hydro-Mining, Norway</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">Using water power and modern cooling systems for high energy efficiency and stability.</p>
+                            <span class="inline-block mt-2 text-[10px] font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">PUE 1.03 // Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Visual representation of Datacenter Infrastructure -->
+            <div class="relative w-full h-[450px] rounded-3xl overflow-hidden glass-panel p-3 border border-white/10 flex flex-col justify-between shadow-2xl">
+                <!-- Glowing Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none z-10"></div>
+                
+                <!-- Live Network Status Panel -->
+                <div class="relative w-full h-full rounded-2xl overflow-hidden bg-black/50 border border-white/5">
+                    <img src="public/images/node_gpu.png" alt="High Tech Server Room Architecture" class="w-full h-full object-cover opacity-60">
+                    
+                    <!-- Live Ticker Overlay -->
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between z-20">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/30 text-[9px] font-code text-emerald-400">
+                                    <span class="w-1 h-1 bg-emerald-400 rounded-full animate-ping"></span>
+                                    ALL REGIONS OPERATIONAL
+                                </span>
+                            </div>
+                            <span class="text-[10px] font-code text-slate-400">API PING: 12ms</span>
+                        </div>
+
+                        <!-- Hashing Stats Feed (Alpine Simulation) -->
+                        <div x-data="{
+                            blocks: [
+                                { height: '849,204', txs: 3412, miner: 'XM_NODE_IS_09', time: '1s ago' },
+                                { height: '849,203', txs: 2981, miner: 'XM_NODE_NO_14', time: '10m ago' },
+                                { height: '849,202', txs: 3108, miner: 'XM_NODE_US_22', time: '21m ago' }
+                            ]
+                        }" class="space-y-3 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10">
+                            <p class="text-[9px] font-code uppercase tracking-wider text-[#FFD700]">Live Node Verification Log</p>
+                            <div class="space-y-2">
+                                <template x-for="block in blocks">
+                                    <div class="flex justify-between text-[11px] font-code border-b border-white/5 pb-1">
+                                        <span class="text-white" x-text="'Block #' + block.height"></span>
+                                        <span class="text-purple-400" x-text="block.miner"></span>
+                                        <span class="text-slate-400" x-text="block.time"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ─── CONFERENCES & ECOSYSTEM SUMMITS SECTION ─── -->
+    <section id="events" class="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+        <div class="mb-12 text-center lg:text-left flex flex-col lg:flex-row justify-between items-end gap-4">
+            <div>
+                <p class="text-xs uppercase font-mono tracking-widest text-purple-400 mb-2">// Summits and Conferences</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-tech">Conferences and Events</h2>
+                <p class="text-slate-400 mt-2 max-w-xl font-light text-sm sm:text-base">
+                    See where our physical hardware is shown and how our team works with global mining networks.
+                </p>
+            </div>
+            <a href="signup.html" class="inline-flex items-center gap-2 text-xs font-code text-[#FFD700] border border-[#FFD700]/20 bg-[#FFD700]/5 px-4 py-2.5 rounded-full hover:bg-[#FFD700] hover:text-black transition">
+                Register Account
+            </a>
+        </div>
+
+        <!-- Grid Layout for Timeline Milestones -->
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <!-- Event Card 1 -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                    <div class="text-xs font-code text-[#FFD700] mb-3 tracking-widest uppercase">OCTOBER 2026 // UPCOMING</div>
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#FFD700] transition-colors">Crypto Cloud Mining Summit</h3>
+                    <p class="text-slate-400 text-sm font-light leading-relaxed">
+                        Unveiling our high-capacity virtual container layers. Our keynote address will feature live 3-week lifecycle performance tests on GPU structures.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 text-xs text-slate-500 flex justify-between items-center">
+                    <span>📍 Tokyo, Japan</span>
+                    <span class="text-purple-400 font-medium">Stage Alpha</span>
+                </div>
+            </div>
+
+            <!-- Event Card 2 -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-[#FFD700]/30 transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                    <div class="text-xs font-code text-emerald-400 mb-3 tracking-widest uppercase">MAY 2026 // COMPLETED</div>
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#FFD700] transition-colors">Global Web3 Node Conference</h3>
+                    <p class="text-slate-400 text-sm font-light leading-relaxed">
+                        XM Digital Products completed live local demonstrations of our automated node deployment stacks and decentralized multi-account ledger distributions.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 text-xs text-slate-500 flex justify-between items-center">
+                    <span>📍 Austin, TX</span>
+                    <span class="text-emerald-400 font-medium">Panel Presentation</span>
+                </div>
+            </div>
+
+            <!-- Event Card 3 -->
+            <div class="glass-panel rounded-2xl p-6 hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                    <div class="text-xs font-code text-slate-500 mb-3 tracking-widest uppercase">NOVEMBER 2025 // ARCHIVED</div>
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#FFD700] transition-colors">Global Decentralized Mining Convention</h3>
+                    <p class="text-slate-400 text-sm font-light leading-relaxed">
+                        Initial release of our virtual compute rental frameworks. Finalized preliminary engineering safety guides for remote node administration.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 text-xs text-slate-500 flex justify-between items-center">
+                    <span>📍 Berlin, Germany</span>
+                    <span class="text-slate-400">Exhibition Hub</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── TRUSTED TECHNOLOGY PARTNERS ─── -->
+    <section class="max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
+        <p class="text-center text-xs font-code text-slate-500 uppercase tracking-widest mb-6">// SUPPORTED COMPUTE NETWORKS & HARDWARE MANUFACTURERS</p>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center opacity-40">
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">BITCOIN</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">ETHEREUM</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">NVIDIA</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">AMD TECH</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">INTEL SILICON</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">LITECOIN</span>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER WITH DISCLAIMERS & NAVIGATION HUB ─── -->
+    <footer class="bg-[#040509] border-t border-white/5 pt-16 pb-12 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <!-- Branding Context -->
+                <div class="space-y-4">
+                    <div class="text-lg font-black tracking-wider text-white font-tech">XM DIGITALPRODUCTS</div>
+                    <p class="text-xs text-slate-400 font-light leading-relaxed">
+                        Premium hardware-as-a-service cloud allocations providing frictionless virtual node rentals. No technological barriers.
+                    </p>
+                </div>
+
+                <!-- Platform Columns -->
+                <div>
+                    <h4 class="text-xs uppercase font-code text-[#FFD700] tracking-widest mb-4">Application Console</h4>
+                    <ul class="space-y-2 text-sm text-slate-400 font-light">
+                        <li><a href="signup.html" class="hover:text-white transition">Create Node Profile</a></li>
+                        <li><a href="signin.html" class="hover:text-white transition">Login to Account</a></li>
+                        <li><a href="../account/dashboard.html" class="hover:text-white transition">Active Miner Console</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Columns -->
+                <div>
+                    <h4 class="text-xs uppercase font-code text-purple-400 tracking-widest mb-4">Company Links</h4>
+                    <ul class="space-y-2 text-sm text-slate-400 font-light">
+                        <li><a href="#events" class="hover:text-white transition">Conferences</a></li>
+                        <li><a href="mailto:support@xmdigitalproducts.com" class="hover:text-white transition">Architecture Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social Handles -->
+                <div>
+                    <h4 class="text-xs uppercase font-code text-emerald-400 tracking-widest mb-4">Network Communities</h4>
+                    <div class="flex flex-col space-y-2 text-sm text-slate-400 font-light">
+                        <a href="#" class="hover:text-[#FFD700] transition">Telegram Channels</a>
+                        <a href="#" class="hover:text-[#FFD700] transition">X / Twitter Handle</a>
+                        <a href="#" class="hover:text-[#FFD700] transition">Discord Developer Server</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal Disclaimers Box -->
+            <div id="disclaimer" class="border-t border-white/5 pt-8 bg-white/[0.01] p-6 rounded-2xl border border-white/5 text-[11px] text-slate-500 leading-relaxed space-y-3">
+                <p class="font-bold text-slate-400 uppercase tracking-wider text-xs font-tech">⚠️ Risk Warning & Payout Notice</p>
+                <p>
+                    Crypto mining and renting cloud machines carry high risks. Difficulty can change, power prices can fluctuate, and market prices can drop. XM Digital Products does not guarantee daily returns. Please make sure mining is legal in your country before renting.
+                </p>
+                <p>
+                    Ensure you evaluate the speculative nature of algorithmic processing configurations prior to deploying account balances. Platform access is limited to users whose local regulatory parameters permit the execution of leased virtual system processes.
+                </p>
+            </div>
+
+            <!-- Absolute Footer Close -->
+            <div class="mt-8 pt-4 border-t border-white/5 text-center text-xs text-slate-600 font-light">
+                &copy; 2026 XM digitalproducts Inc. System architecture built for premium dark glassmorphism. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

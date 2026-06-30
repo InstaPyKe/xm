@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Settlements | XM Digital Console</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- AlpineJS CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease-in-out;
+        }
+        .glass-input:focus {
+            border-color: #FFD700;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+            outline: none;
+        }
+        .neon-glow-yellow {
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
+        }
+        .neon-glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+        }
+        .neon-glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
+        }
+        
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06070B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.4);
+        }
+
+        /* Premium Light Mode Styles */
+        body.theme-light {
+            background-color: #F8FAFC !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        }
+        body.theme-light h1,
+        body.theme-light h2,
+        body.theme-light h3,
+        body.theme-light h4,
+        body.theme-light .text-white {
+            color: #0F172A !important;
+        }
+        body.theme-light .text-slate-200,
+        body.theme-light .text-slate-300,
+        body.theme-light .text-slate-400 {
+            color: #475569 !important;
+        }
+        body.theme-light .text-slate-500 {
+            color: #64748B !important;
+        }
+        body.theme-light nav {
+            background-color: rgba(248, 250, 252, 0.8) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .border-white\/5,
+        body.theme-light .border-white\/10 {
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+        body.theme-light .bg-white\/5 {
+            background-color: rgba(0, 0, 0, 0.03) !important;
+        }
+        body.theme-light .bg-white\/10 {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        body.theme-light .bg-black\/40 {
+            background-color: rgba(0, 0, 0, 0.02) !important;
+        }
+        body.theme-light .bg-black\/30 {
+            background-color: rgba(0, 0, 0, 0.01) !important;
+        }
+        body.theme-light .bg-black\/60 {
+            background-color: #E2E8F0 !important;
+            color: #0F172A !important;
+        }
+        body.theme-light .text-emerald-400 {
+            color: #15803D !important;
+        }
+        body.theme-light .text-purple-400 {
+            color: #7E22CE !important;
+        }
+        body.theme-light .text-[#FFD700] {
+            color: #B45309 !important;
+        }
+    </style>
+</head>
+
+<body x-data="{
+    navDropdownOpen: false,
+    notificationsOpen: false,
+    copied: false,
+    balance: 0.00,
+    username: 'Miner',
+    lightMode: false,
+    selectedNetwork: 'MPESA',
+    networks: {
+        MPESA: { name: 'M-Pesa Express', fee: 50.00, duration: 'Instant', placeholder: 'Enter M-Pesa registered number (e.g. 0712345678)' },
+        AIRTEL: { name: 'Airtel Money', fee: 30.00, duration: 'Instant', placeholder: 'Enter Airtel registered number (e.g. 0732345678)' },
+        BANK: { name: 'Equity/KCB/Co-op Transfer', fee: 150.00, duration: '1-2 hrs', placeholder: 'Enter Bank, Branch & Account Number' }
+    },
+    address: '',
+    amount: '',
+    show2FA: false,
+    otpCode: '',
+    otpError: '',
+    isSubmitting: false,
+    showReceipt: false,
+    txHash: '',
+    receiptAmount: 0,
+    receiptNetwork: '',
+    receiptAddress: '',
+    receiptFee: 0,
+    withdrawals: [
+        { id: 'TX-89021', date: '2026-06-25 14:22', amount: 45500.00, network: 'MPESA', address: '254712***789', fee: 50.00, status: 'Completed' },
+        { id: 'TX-72104', date: '2026-06-18 09:15', amount: 106600.00, network: 'BANK', address: 'Equity Bank - 120***78', fee: 150.00, status: 'Completed' }
+    ],
+    notifications: [
+        { id: 1, text: 'Payout node allocation successfully synchronized', time: '1 hr ago', read: false },
+        { id: 2, text: 'Authorized hardware optimization speed boost', time: '3 hrs ago', read: false }
+    ],
+    get unreadNotificationsCount() {
+        return this.notifications.filter(n => !n.read).length;
+    },
+    
+    // API Request Wrapper
+    async fetchAPI(endpoint, options = {}) {
+        const token = localStorage.getItem('xm_jwt_token');
+        if (!token) {
+            window.location.href = '../public/signin.html';
+            return null;
+        }
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            ...(options.headers || {})
+        };
+        try {
+            const response = await fetch(endpoint, { ...options, headers });
+            if (response.status === 401) {
+                localStorage.removeItem('xm_jwt_token');
+                window.location.href = '../public/signin.html';
+                return null;
+            }
+            return response;
+        } catch (err) {
+            console.error('API call error:', err);
+            return null;
+        }
+    },
+    
+    async init() {
+        // Read theme settings on start
+        if (localStorage.getItem('xm_theme') === 'light') {
+            this.lightMode = true;
+            document.body.classList.add('theme-light');
+        }
+
+        // Load live profile balance
+        const profileRes = await this.fetchAPI('/api/user/profile');
+        if (profileRes) {
+            const profile = await profileRes.json();
+            this.username = profile.username;
+            this.balance = parseFloat(profile.balance);
+        }
+    },
+    
+    toggleTheme() {
+        this.lightMode = !this.lightMode;
+        if (this.lightMode) {
+            document.body.classList.add('theme-light');
+            localStorage.setItem('xm_theme', 'light');
+        } else {
+            document.body.classList.remove('theme-light');
+            localStorage.setItem('xm_theme', 'dark');
+        }
+    },
+    
+    validateWithdrawal() {
+        if (!this.address) return alert('Please enter a valid withdrawal destination.');
+        if (!this.amount || this.amount < 1000) return alert('Minimum withdrawal amount is KSh 1,000.');
+        
+        const netInfo = this.networks[this.selectedNetwork];
+        const totalDeduction = parseFloat(this.amount) + netInfo.fee;
+        if (totalDeduction > this.balance) return alert('Insufficient computational balance available.');
+        
+        // Trigger 2FA Simulation Modal
+        this.show2FA = true;
+        this.otpCode = '';
+        this.otpError = '';
+    },
+    
+    async submitWithdrawal() {
+        if (this.otpCode.length !== 6 || isNaN(this.otpCode)) {
+            this.otpError = 'Verification code must be exactly 6 digits.';
+            return;
+        }
+        
+        this.isSubmitting = true;
+        const netInfo = this.networks[this.selectedNetwork];
+        
+        const res = await this.fetchAPI('/api/user/withdraw', {
+            method: 'POST',
+            body: JSON.stringify({
+                amount: parseFloat(this.amount),
+                fee: netInfo.fee,
+                channel: this.selectedNetwork,
+                destination: this.address
+            })
+        });
+        
+        if (res && res.ok) {
+            const body = await res.json();
+            this.isSubmitting = false;
+            this.show2FA = false;
+            
+            // Deduct balance locally
+            const amt = parseFloat(this.amount);
+            this.balance = (this.balance - (amt + netInfo.fee)).toFixed(2);
+            
+            // Save receipt details
+            this.receiptAmount = amt;
+            this.receiptNetwork = this.selectedNetwork;
+            this.receiptAddress = this.address;
+            this.receiptFee = netInfo.fee;
+            this.txHash = body.reference; // Backend reference code
+            
+            // Prepend to transaction table
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0') + ' ' + String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0');
+            
+            this.withdrawals.unshift({
+                id: body.reference,
+                date: dateStr,
+                amount: amt,
+                network: this.selectedNetwork,
+                address: this.address,
+                fee: netInfo.fee,
+                status: 'Completed'
+            });
+            
+            // Reset input form
+            this.address = '';
+            this.amount = '';
+            
+            // Display digital receipt
+            this.showReceipt = true;
+        } else {
+            this.isSubmitting = false;
+            this.show2FA = false;
+            const body = await res.json();
+            alert(body.message || 'Error processing payout.');
+        }
+    }
+    }
+}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── NAVIGATION BAR ─── -->
+    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="dashboard.html" class="flex items-center space-x-2 group">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                    XM
+                </div>
+                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
+                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-4">
+                <!-- Notifications Bell -->
+                <div class="relative">
+                    <button @click="notificationsOpen = !notificationsOpen" @click.away="notificationsOpen = false"
+                        class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-300 hover:text-white relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <template x-if="unreadNotificationsCount > 0">
+                            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#06070B]"></span>
+                        </template>
+                    </button>
+
+                    <!-- Notifications Dropdown -->
+                    <div x-show="notificationsOpen" x-transition
+                        class="absolute right-0 mt-2 w-80 glass-card rounded-xl p-3 shadow-2xl space-y-2 z-50 text-xs"
+                        style="display: none;">
+                        <div class="flex justify-between items-center pb-2 border-b border-white/5">
+                            <span class="font-bold text-white uppercase tracking-wider font-tech">Notifications</span>
+                            <button @click="notifications.forEach(n => n.read = true)" class="text-slate-400 hover:text-[#FFD700]">Clear all</button>
+                        </div>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            <template x-for="item in notifications" :key="item.id">
+                                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.04]">
+                                    <p class="text-slate-200" x-text="item.text"></p>
+                                    <span class="text-[10px] text-slate-500 mt-1 block" x-text="item.time"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle Switch -->
+                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
+                    <svg x-show="!lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <svg x-show="lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+
+                <!-- Profile Menu -->
+                <div class="relative">
+                    <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
+                        class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="font-code text-xs text-slate-200" x-text="username"></span>
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-show="navDropdownOpen" x-transition
+                        class="absolute right-0 mt-2 w-48 glass-card rounded-xl p-2 shadow-2xl space-y-1 z-50"
+                        style="display: none;">
+                        <a href="dashboard.html"
+                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Dashboard</a>
+                        <a href="../public/index.html"
+                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Landing Page</a>
+                        <hr class="border-white/5 my-1">
+                        <a href="../public/signin.html"
+                            class="block px-4 py-2 text-sm text-red-400 font-medium rounded-lg hover:bg-red-500/10 transition">Terminate Session</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-10 space-y-8">
+        
+        <!-- Breadcrumb / Back Navigation -->
+        <div class="flex items-center justify-between">
+            <a href="dashboard.html" class="flex items-center space-x-2 text-sm text-slate-400 hover:text-[#FFD700] transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Return to Console cockpit</span>
+            </a>
+            <div class="text-xs font-mono bg-white/5 border border-white/5 px-3 py-1.5 rounded-lg text-slate-400">
+                ACTIVE STATUS: SECURED DEPLOYMENT
+            </div>
+        </div>
+
+        <section class="grid lg:grid-cols-3 gap-8">
+            
+            <!-- Left & Middle: Withdrawal Form Setup -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Main Form Glass Card -->
+                <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#FFD700]/5 rounded-full blur-3xl"></div>
+                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
+
+                    <div class="mb-6 border-b border-white/5 pb-4">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech">Request Settlement Payout</h2>
+                        <p class="text-slate-400 text-xs sm:text-sm font-light mt-1">Export accumulated mining rewards directly to your M-Pesa, Airtel Money, or Bank Account.</p>
+                    </div>
+
+                    <!-- Channel Selectors -->
+                    <div class="space-y-3 mb-6">
+                        <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Select Payout Channel</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <template x-for="(net, code) in networks" :key="code">
+                                <button @click="selectedNetwork = code"
+                                    class="p-4 rounded-2xl border text-center transition duration-200 cursor-pointer flex flex-col items-center justify-center space-y-1 relative"
+                                    :class="selectedNetwork === code ? 'border-[#FFD700] bg-[#FFD700]/5 text-white' : 'border-white/5 bg-white/[0.01] text-slate-400 hover:border-white/10 hover:bg-white/[0.03]'">
+                                    <span class="text-xs font-bold" x-text="code"></span>
+                                    <span class="text-[9px] font-mono text-slate-500" x-text="net.duration"></span>
+                                    <template x-if="selectedNetwork === code">
+                                        <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFD700] shadow-[0_0_8px_#FFD700]"></span>
+                                    </template>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Destination Details -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Destination Details</label>
+                                <span class="text-[10px] font-mono text-purple-400" x-text="networks[selectedNetwork].name"></span>
+                            </div>
+                            <input type="text" x-model="address" :placeholder="networks[selectedNetwork].placeholder"
+                                class="w-full glass-input rounded-2xl px-4 py-4 text-xs font-mono text-white placeholder-slate-600">
+                        </div>
+
+                        <!-- Amount Input -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Liquidity Volume (KES)</label>
+                                <span class="text-[11px] font-mono text-slate-400">Max limit: <button @click="amount = balance" class="text-[#FFD700] font-bold hover:underline" x-text="'KSh ' + parseFloat(balance).toLocaleString()"></button></span>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-xs">KSh</span>
+                                <input type="number" step="1" min="1000" x-model="amount" placeholder="0"
+                                    class="w-full glass-input rounded-2xl pl-12 pr-16 py-4 text-sm font-semibold text-white placeholder-slate-600">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">KES</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Ledger breakdown -->
+                        <div class="bg-black/30 border border-white/5 rounded-2xl p-4 space-y-2.5 text-xs">
+                            <div class="flex justify-between text-slate-400 font-light">
+                                <span>Requested Gross Output:</span>
+                                <span class="text-white font-mono" x-text="amount ? 'KSh ' + parseFloat(amount).toLocaleString() + ' KES' : 'KSh 0.00 KES'"></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400 font-light">
+                                <span>Channel Processing Fee:</span>
+                                <span class="text-white font-mono" x-text="'KSh ' + networks[selectedNetwork].fee.toFixed(2) + ' KES'"></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400 font-light border-b border-white/5 pb-2">
+                                <span>Estimated processing delta:</span>
+                                <span class="text-purple-400 font-mono" x-text="networks[selectedNetwork].duration"></span>
+                            </div>
+                            <div class="flex justify-between font-bold text-white pt-1">
+                                <span>Net Settlement Received:</span>
+                                <span class="text-[#FFD700] font-mono" x-text="amount && amount > networks[selectedNetwork].fee ? 'KSh ' + (parseFloat(amount) - networks[selectedNetwork].fee).toLocaleString() + ' KES' : 'KSh 0.00 KES'"></span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button @click="validateWithdrawal"
+                            class="w-full py-4 rounded-2xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] active:scale-[0.99] transition duration-200 text-center cursor-pointer shadow-[0_4px_20px_rgba(255,215,0,0.15)] font-tech">
+                            Launch Extraction Sequence
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transaction Ledger Table -->
+                <div class="glass-card rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-white tracking-tight mb-4 font-tech">Payout Execution Ledger</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="text-slate-500 font-mono border-b border-white/5">
+                                    <th class="pb-3 font-semibold">Transaction ID</th>
+                                    <th class="pb-3 font-semibold">Timeline (UTC)</th>
+                                    <th class="pb-3 font-semibold">Payout Channel</th>
+                                    <th class="pb-3 font-semibold text-right">Volume (KSh)</th>
+                                    <th class="pb-3 font-semibold text-center">Channel Fee</th>
+                                    <th class="pb-3 font-semibold text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                <template x-for="tx in withdrawals" :key="tx.id">
+                                    <tr class="hover:bg-white/[0.01] transition-colors">
+                                        <td class="py-4 font-code text-[11px] text-slate-300" x-text="tx.id"></td>
+                                        <td class="py-4 text-slate-400 font-light" x-text="tx.date"></td>
+                                        <td class="py-4 font-mono">
+                                            <span class="text-xs px-2 py-0.5 rounded-md bg-white/5 border border-white/5 text-slate-200" x-text="tx.network"></span>
+                                        </td>
+                                        <td class="py-4 text-right text-white font-mono font-bold" x-text="'KSh ' + parseFloat(tx.amount).toLocaleString()"></td>
+                                        <td class="py-4 text-center font-mono text-slate-500" x-text="'KSh ' + parseFloat(tx.fee).toLocaleString()"></td>
+                                        <td class="py-4 text-right">
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-block"
+                                                :class="{
+                                                    'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': tx.status === 'Completed',
+                                                    'bg-purple-500/10 text-purple-400 border border-purple-500/20 animate-pulse': tx.status === 'Processing',
+                                                    'bg-red-500/10 text-red-400 border border-red-500/20': tx.status === 'Rejected'
+                                                }"
+                                                x-text="tx.status"></span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Sidebar Stats & Instructions -->
+            <div class="space-y-6">
+                
+                <!-- Computational Net Balance Display -->
+                <div class="glass-card rounded-3xl p-6 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Computational Balance Available</span>
+                            <div class="flex items-baseline space-x-2 mt-1">
+                                <h3 class="text-3xl font-extrabold text-white tracking-tight" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h3>
+                                <span class="text-[#FFD700] text-sm font-mono font-bold">KES</span>
+                            </div>
+                        </div>
+                        <div class="h-[1px] bg-white/5"></div>
+                        <div class="space-y-2 text-xs font-light text-slate-400">
+                            <div class="flex justify-between">
+                                <span>Security Level:</span>
+                                <span class="text-emerald-400 font-semibold font-mono">Quantum Guard v4</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Locked Assets:</span>
+                                <span class="text-slate-300 font-mono">KSh 0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Processing Fee Cap:</span>
+                                <span class="text-slate-300 font-mono">0.00%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Performance / Notice -->
+                <div class="glass-card rounded-3xl p-6 border border-dashed border-white/10 space-y-4">
+                    <div class="flex items-center space-x-3 text-amber-400">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h4 class="font-bold text-white text-sm uppercase tracking-wide font-tech">Security Protocol Notice</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-400 font-light list-disc pl-4 leading-relaxed">
+                        <li>Withdrawal settlements are queued and verified by mobile money API links.</li>
+                        <li>Verify phone numbers and account numbers carefully. Sent amounts are non-refundable once transaction IDs are dispatched.</li>
+                        <li>Initial network processing takes approximately 2 minutes to 1 hour depending on network congestion.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ─── 2FA VERIFICATION MODAL ─── -->
+    <div x-show="show2FA" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="display: none;" x-transition>
+        <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative shadow-2xl">
+            
+            <div class="flex justify-between items-center mb-5 border-b border-white/5 pb-3">
+                <div class="flex items-center space-x-2 text-[#FFD700]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <h3 class="text-md font-bold text-white tracking-tight uppercase font-tech">OTP SMS Protection</h3>
+                </div>
+                <button @click="show2FA = false" class="text-slate-400 hover:text-white font-mono text-sm cursor-pointer">✕</button>
+            </div>
+
+            <p class="text-slate-400 text-xs font-light mb-4">A transaction extraction of <strong class="text-white font-semibold font-mono" x-text="'KSh ' + parseFloat(amount).toLocaleString() + ' KES'"></strong> has been initialized. Enter your SMS verification OTP code sent to your registered phone number to authorize payout.</p>
+
+            <form @submit.prevent="submitWithdrawal" class="space-y-4">
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400">6-Digit SMS Verification Code</label>
+                    <input type="text" maxlength="6" x-model="otpCode" placeholder="000000" required
+                        class="w-full glass-input rounded-2xl px-4 py-4 text-center text-xl font-bold tracking-[0.75em] text-[#FFD700]">
+                    <template x-if="otpError">
+                        <span class="text-[11px] text-red-400 font-mono mt-1 block" x-text="otpError"></span>
+                    </template>
+                </div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" @click="show2FA = false"
+                        class="w-1/3 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer">
+                        Abort
+                    </button>
+                    <button type="submit" :disabled="isSubmitting"
+                        class="w-2/3 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center space-x-2 cursor-pointer font-tech">
+                        <template x-if="isSubmitting">
+                            <span class="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                        </template>
+                        <span x-text="isSubmitting ? 'Authenticating...' : 'Sign & Broadcast'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── DIGITAL RECEIPT MODAL ─── -->
+    <div x-show="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="display: none;" x-transition>
+        <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative shadow-2xl border-t-4 border-t-emerald-500">
+            
+            <div class="text-center space-y-2 mb-6">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl neon-glow-emerald">
+                    ✓
+                </div>
+                <h3 class="text-lg font-bold text-white tracking-tight font-tech">Payout Dispatch Sent</h3>
+                <p class="text-slate-400 text-xs font-light">Payout successfully initiated to local payout network.</p>
+            </div>
+
+            <!-- Receipt Card Detail -->
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3 font-mono text-[11px] leading-relaxed mb-6">
+                <div class="flex justify-between border-b border-white/5 pb-2">
+                    <span class="text-slate-500">Receipt TxID:</span>
+                    <span class="text-slate-300 font-bold" x-text="'XM-' + Math.floor(100000 + Math.random() * 900000)"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Payout Volume:</span>
+                    <span class="text-white font-bold" x-text="'KSh ' + receiptAmount.toLocaleString() + ' KES'"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Payout Channel:</span>
+                    <span class="text-slate-300" x-text="receiptNetwork"></span>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-2">
+                    <span class="text-slate-500">Channel Fee:</span>
+                    <span class="text-slate-300" x-text="'KSh ' + receiptFee.toFixed(2) + ' KES'"></span>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-slate-500 block">Target Account / Phone:</span>
+                    <span class="text-purple-400 break-all select-all font-code block" x-text="receiptAddress"></span>
+                </div>
+                <div class="space-y-1 pt-1">
+                    <span class="text-slate-500 block">Transaction Reference ID:</span>
+                    <span class="text-slate-400 break-all select-all font-code block" x-text="'REF-' + txHash.substring(2, 12).toUpperCase()"></span>
+                </div>
+            </div>
+
+            <button @click="showReceipt = false"
+                class="w-full py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] transition text-center cursor-pointer font-tech">
+                Close Invoice View
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
