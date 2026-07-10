@@ -12,6 +12,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Currency Switcher utility -->
+    <script src="../public/js/currency.js"></script>
     <!-- AlpineJS for interactivity -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- ApexCharts for dynamic charting -->
@@ -265,6 +267,24 @@
         // Start timers & load ApexCharts
         this.startAvailabilityCountdowns();
         await this.initChart();
+
+        window.addEventListener('currency-changed', () => {
+            if (this.chart) {
+                this.chart.updateOptions({
+                    yaxis: {
+                        labels: {
+                            formatter: function (value) {
+                                const currentCurrency = localStorage.getItem('xm_currency') || 'KSh';
+                                if (currentCurrency === 'USD') {
+                                    return '$' + (value / 130).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                                }
+                                return 'KSh ' + value.toLocaleString();
+                            }
+                        }
+                    }
+                });
+            }
+        });
     },
     
     toggleTheme() {
@@ -365,6 +385,10 @@
             yaxis: {
                 labels: {
                     formatter: function (value) {
+                        const currentCurrency = localStorage.getItem('xm_currency') || 'KSh';
+                        if (currentCurrency === 'USD') {
+                            return '$' + (value / 130).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        }
                         return 'KSh ' + value.toLocaleString();
                     }
                 }
@@ -525,6 +549,11 @@
                     </div>
                 </div>
 
+                <!-- Currency Switcher Toggle -->
+                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2 text-xs font-mono font-bold">
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                </button>
+
                 <!-- Theme Toggle Switch -->
                 <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
                     <svg x-show="!lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -584,7 +613,7 @@
                 <div class="absolute -right-8 -top-8 w-20 h-20 bg-[#FFD700]/5 rounded-full blur-xl"></div>
                 <div>
                     <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">My Wallet Balance</span>
-                    <h2 class="text-3xl font-black text-white mt-1 tracking-tight" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h2>
+                    <h2 class="text-3xl font-black text-white mt-1 tracking-tight" x-text="$store.currency.format(balance)"></h2>
                 </div>
                 <div class="text-[11px] text-slate-500 font-mono tracking-wide">● Ready for withdrawal</div>
             </div>
@@ -594,9 +623,9 @@
                 <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/5 rounded-full blur-xl"></div>
                 <div>
                     <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Total Earnings</span>
-                    <h2 class="text-3xl font-black text-slate-300 mt-1 tracking-tight" x-text="'KSh ' + parseFloat(leasedEarnings).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h2>
+                    <h2 class="text-3xl font-black text-slate-300 mt-1 tracking-tight" x-text="$store.currency.format(leasedEarnings)"></h2>
                 </div>
-                <div class="text-[11px] text-emerald-400 font-mono tracking-wide" x-text="'↑ +' + parseFloat(dailyGrowth).toLocaleString('en-US', {minimumFractionDigits: 2}) + ' KSh earned today'"></div>
+                <div class="text-[11px] text-emerald-400 font-mono tracking-wide" x-text="$store.currency.current === 'USD' ? '↑ +$' + (dailyGrowth / 130).toFixed(2) + ' earned today' : '↑ +' + dailyGrowth.toLocaleString() + ' KSh earned today'"></div>
             </div>
 
             <!-- Trigger Payout Card -->
@@ -680,15 +709,15 @@
                                 </div>
                                 <div class="flex justify-between text-slate-500">
                                     <span>Daily Earnings:</span>
-                                    <span class="text-emerald-400 font-bold" x-text="'KSh ' + parseFloat(lease.daily_earnings).toLocaleString()"></span>
+                                    <span class="text-emerald-400 font-bold" x-text="$store.currency.format(lease.daily_earnings)"></span>
                                 </div>
                                 <div class="flex justify-between text-slate-500">
                                     <span>Purchase Value:</span>
-                                    <span class="text-white font-semibold" x-text="'KSh ' + parseFloat(lease.cost).toLocaleString()"></span>
+                                    <span class="text-white font-semibold" x-text="$store.currency.format(lease.cost)"></span>
                                 </div>
                                 <div class="flex justify-between text-slate-500">
                                     <span>Expected Settlement:</span>
-                                    <span class="text-[#FFD700] font-semibold" x-text="'KSh ' + (parseFloat(lease.daily_earnings) * parseInt(lease.duration)).toLocaleString()"></span>
+                                    <span class="text-[#FFD700] font-semibold" x-text="$store.currency.format(lease.daily_earnings * lease.duration)"></span>
                                 </div>
                                 <div class="flex justify-between text-[10px] text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
                                     <span>Time Remaining:</span>
@@ -772,7 +801,7 @@
                                 </div>
                                 <div class="flex justify-between text-slate-500">
                                     <span>Daily Earnings:</span>
-                                    <span class="text-emerald-400" x-text="'KSh ' + machine.daily.toLocaleString()"></span>
+                                    <span class="text-emerald-400" x-text="$store.currency.format(machine.daily)"></span>
                                 </div>
                                 <div class="flex justify-between text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
                                     <span>Time Left to Rent:</span>
@@ -781,7 +810,7 @@
                             </div>
                             
                             <div class="flex items-center justify-between mt-4">
-                                <span class="text-base font-extrabold text-white font-tech" x-text="'KSh ' + machine.price.toLocaleString()"></span>
+                                <span class="text-base font-extrabold text-white font-tech" x-text="$store.currency.format(machine.price)"></span>
                                 <button @click="tryRentMachine(machine)"
                                     :disabled="hasActiveLease"
                                     :class="hasActiveLease ? 'bg-slate-800/40 text-slate-500 border border-slate-800 cursor-not-allowed' : 'bg-[#FFD700] hover:bg-[#FFE55C] text-black cursor-pointer shadow-[0_4px_15px_rgba(255,215,0,0.15)] hover:shadow-[0_4px_25px_rgba(255,215,0,0.35)]'"
@@ -836,15 +865,15 @@
                 <div class="grid grid-cols-3 gap-2 bg-black/40 border border-white/5 rounded-2xl p-3 text-center">
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 block uppercase">Daily Earnings</span>
-                        <span class="text-xs font-bold text-white font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4).toFixed(0)"></span>
+                        <span class="text-xs font-bold text-white font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4)"></span>
                     </div>
                     <div class="space-y-1 border-x border-white/5">
                         <span class="text-[9px] font-mono text-slate-500 block uppercase">Monthly Earnings</span>
-                        <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4 * 30).toLocaleString()"></span>
+                        <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4 * 30)"></span>
                     </div>
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 block uppercase">Yearly Earnings</span>
-                        <span class="text-xs font-bold text-purple-400 font-tech" x-text="'KSh ' + (estimatorHashrate * 10.4 * 365).toLocaleString()"></span>
+                        <span class="text-xs font-bold text-purple-400 font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4 * 365)"></span>
                     </div>
                 </div>
             </div>

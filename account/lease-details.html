@@ -12,6 +12,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Currency Switcher utility -->
+    <script src="../public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -262,6 +264,9 @@
 
             <!-- Balance Summary -->
             <div class="flex items-center space-x-3">
+                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-1 text-xs font-mono font-bold">
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                </button>
                 <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-1">
                     <svg x-show="!lightMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
@@ -272,7 +277,7 @@
                 </button>
                 <div class="text-right hidden sm:block">
                     <span class="text-[9px] font-mono text-slate-500 uppercase">Available Cash</span>
-                    <p class="text-xs font-bold text-white" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2})"></p>
+                    <p class="text-xs font-bold text-white" x-text="$store.currency.format(balance)"></p>
                 </div>
                 <a href="dashboard.html" class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-xs font-medium hover:bg-white/10 transition cursor-pointer">
                     Dashboard Cockpit
@@ -311,15 +316,15 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 border-t border-white/5 pt-6">
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 uppercase block">Processor Cost</span>
-                        <span class="text-sm font-extrabold text-white font-tech" x-text="'KSh ' + current.price.toLocaleString()"></span>
+                        <span class="text-sm font-extrabold text-white font-tech" x-text="$store.currency.format(current.price)"></span>
                     </div>
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 uppercase block">Daily Yield</span>
-                        <span class="text-sm font-extrabold text-emerald-400 font-tech" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></span>
+                        <span class="text-sm font-extrabold text-emerald-400 font-tech" x-text="$store.currency.format(current.price * current.rate / 100)"></span>
                     </div>
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 uppercase block">Total Net Profit</span>
-                        <span class="text-sm font-extrabold text-purple-400 font-tech" x-text="'KSh ' + (current.price * current.rate / 100 * current.duration).toLocaleString()"></span>
+                        <span class="text-sm font-extrabold text-purple-400 font-tech" x-text="$store.currency.format(current.price * current.rate / 100 * current.duration)"></span>
                     </div>
                     <div class="space-y-1">
                         <span class="text-[9px] font-mono text-slate-500 uppercase block">Contract Period</span>
@@ -338,7 +343,7 @@
                 <h4 class="font-bold text-white text-sm uppercase tracking-wide font-tech">Computational Capital Lockup Policy</h4>
             </div>
             <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
-                By signing this lease contract, you authorize the escrow lock of your lease capital (<strong class="text-white font-semibold" x-text="'KSh ' + current.price.toLocaleString()"></strong>) in the mining consensus pool. This capital is utilized to secure network computing slots.
+                By signing this lease contract, you authorize the escrow lock of your lease capital (<strong class="text-white font-semibold" x-text="$store.currency.format(current.price)"></strong>) in the mining consensus pool. This capital is utilized to secure network computing slots.
             </p>
             <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
                 <strong>Withdrawal Eligibility:</strong> You are eligible to withdraw <span class="text-[#FFD700] font-bold">ALL your initial lease capital (principal) AND all accumulated profits</span> immediately upon contract maturity. Maturity date is scheduled for <strong class="text-white font-semibold" x-text="maturityDate"></strong>. No partial early liquidations of principal are allowed.
@@ -364,36 +369,36 @@
                         <tr class="hover:bg-white/[0.01]">
                             <td class="py-3.5 text-slate-300">Day 1</td>
                             <td class="py-3.5 text-slate-400" x-text="current.rate.toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
-                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 1).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
+                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 1)"></td>
                             <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
                         </tr>
                         <tr class="hover:bg-white/[0.01]">
                             <td class="py-3.5 text-slate-300">Day 5</td>
                             <td class="py-3.5 text-slate-400" x-text="(current.rate * 5).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
-                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 5).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
+                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 5)"></td>
                             <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
                         </tr>
                         <tr class="hover:bg-white/[0.01]">
                             <td class="py-3.5 text-slate-300">Day 10</td>
                             <td class="py-3.5 text-slate-400" x-text="(current.rate * 10).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
-                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 10).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
+                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 10)"></td>
                             <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
                         </tr>
                         <tr class="hover:bg-white/[0.01]">
                             <td class="py-3.5 text-slate-300">Day 15</td>
                             <td class="py-3.5 text-slate-400" x-text="(current.rate * 15).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
-                            <td class="py-3.5 text-right text-white" x-text="'KSh ' + (current.price * current.rate / 100 * 15).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
+                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 15)"></td>
                             <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
                         </tr>
                         <tr class="hover:bg-white/[0.01] bg-emerald-500/[0.02]">
                             <td class="py-3.5 text-[#FFD700] font-bold">Day 21 (Maturity)</td>
                             <td class="py-3.5 text-[#FFD700] font-bold" x-text="(current.rate * 21).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-bold" x-text="'KSh ' + (current.price * current.rate / 100).toLocaleString()"></td>
-                            <td class="py-3.5 text-right text-[#FFD700] font-bold" x-text="'KSh ' + (current.price * current.rate / 100 * 21).toLocaleString()"></td>
+                            <td class="py-3.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
+                            <td class="py-3.5 text-right text-[#FFD700] font-bold" x-text="$store.currency.format(current.price * current.rate / 100 * 21)"></td>
                             <td class="py-3.5 text-right text-emerald-400 font-bold">🔓 Unlocked / Cashout</td>
                         </tr>
                     </tbody>
@@ -404,10 +409,10 @@
             <div class="bg-black/40 border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono mt-4">
                 <div class="space-y-1">
                     <span class="text-slate-500 uppercase text-[9px] block">Maturity Settlement Value</span>
-                    <p class="text-base font-extrabold text-[#FFD700] font-tech" x-text="'KSh ' + (current.price + (current.price * current.rate / 100 * current.duration)).toLocaleString('en-US', {minimumFractionDigits: 2})"></p>
+                    <p class="text-base font-extrabold text-[#FFD700] font-tech" x-text="$store.currency.format(current.price + (current.price * current.rate / 100 * current.duration))"></p>
                 </div>
                 <div class="text-right text-slate-400 font-light leading-relaxed max-w-sm text-center sm:text-right">
-                    Includes your returned principal of <span class="text-white font-bold" x-text="'KSh ' + current.price.toLocaleString()"></span> and yield profit of <span class="text-emerald-400 font-bold" x-text="'KSh ' + (current.price * current.rate / 100 * current.duration).toLocaleString()"></span>.
+                    Includes your returned principal of <span class="text-white font-bold" x-text="$store.currency.format(current.price)"></span> and yield profit of <span class="text-emerald-400 font-bold" x-text="$store.currency.format(current.price * current.rate / 100 * current.duration)"></span>.
                 </div>
             </div>
         </div>

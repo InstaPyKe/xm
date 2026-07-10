@@ -12,6 +12,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Currency Switcher utility -->
+    <script src="js/currency.js"></script>
     <!-- AlpineJS for interactivity -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -115,8 +117,12 @@
                 </div>
             </div>
 
-            <!-- Call To Action -->
-            <div class="hidden md:block">
+            <!-- Call To Action & Currency Switcher -->
+            <div class="hidden md:flex items-center space-x-4">
+                <button @click="$store.currency.toggle()" 
+                    class="px-4 py-2 text-xs font-bold font-tech uppercase tracking-wider text-slate-300 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 cursor-pointer">
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                </button>
                 <a href="signup.html"
                     class="inline-block px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] rounded-full hover:bg-[#FFE55C] active:scale-95 transition-all shadow-[0_0_20px_rgba(255,215,0,0.3)]">
                     Start Mining
@@ -148,6 +154,11 @@
                 class="block py-1 text-slate-300 hover:text-[#FFD700]">Events</a>
             <a href="#disclaimer" @click="mobileMenuOpen = false"
                 class="block py-1 text-slate-300 hover:text-[#FFD700]">Risk Warning</a>
+            <button @click="$store.currency.toggle()" 
+                class="w-full text-left py-1 text-slate-300 hover:text-[#FFD700] flex items-center justify-between cursor-pointer focus:outline-none">
+                <span>Currency</span>
+                <span class="text-xs font-mono font-bold text-[#FFD700]" x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+            </button>
             <hr class="border-white/5 my-2">
             <a href="signup.html" class="block text-sm font-semibold text-[#FFD700]">Register Account</a>
             <a href="signin.html" class="block text-sm font-semibold text-slate-300">Login to Account</a>
@@ -243,7 +254,7 @@
     </header>
 
     <!-- ─── PLATFORM LIVE STATS SECTION ─── -->
-    <section class="max-w-7xl mx-auto px-6 py-12 border-y border-white/5 bg-gradient-to-r from-transparent via-white/[0.01] to-transparent">
+    <section x-data="{}" class="max-w-7xl mx-auto px-6 py-12 border-y border-white/5 bg-gradient-to-r from-transparent via-white/[0.01] to-transparent">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div class="text-center md:text-left space-y-1">
                 <span class="text-xs font-code uppercase tracking-widest text-slate-500">// TOTAL NETWORK POWER</span>
@@ -259,7 +270,10 @@
             </div>
             <div class="text-center md:text-left space-y-1">
                 <span class="text-xs font-code uppercase tracking-widest text-slate-500">// TOTAL PAID OUT</span>
-                <h3 class="text-2xl sm:text-3xl font-extrabold text-white font-tech">$24.9M <span class="text-xs text-purple-400">USDT</span></h3>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-white font-tech">
+                    <span x-text="$store.currency.current === 'KSh' ? 'KSh 3.23B' : '$24.9M'"></span>
+                    <span class="text-xs text-purple-400" x-text="$store.currency.current === 'KSh' ? 'KES' : 'USDT'"></span>
+                </h3>
                 <p class="text-xs text-slate-400 font-code">Secure settlements</p>
             </div>
             <div class="text-center md:text-left space-y-1">
@@ -271,7 +285,7 @@
     </section>
 
     <!-- ─── HARDWARE NODES CATALOGUE ─── -->
-    <section id="nodes" class="max-w-7xl mx-auto px-6 py-24">
+    <section id="nodes" x-data="{}" class="max-w-7xl mx-auto px-6 py-24">
         <div class="mb-16 text-center">
             <p class="text-xs font-code uppercase tracking-widest text-purple-400 mb-2">// Choose Your Machine</p>
             <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight font-tech">Rented Mining Machines Available</h2>
@@ -327,7 +341,7 @@
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
-                                <p class="text-2xl font-extrabold text-white font-tech">$29 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                                <p class="text-2xl font-extrabold text-white font-tech"><span x-text="$store.currency.formatUSD(29)"></span> <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
                             </div>
                             <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
                         </div>
@@ -384,7 +398,7 @@
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
-                                <p class="text-2xl font-extrabold text-white font-tech">$79 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                                <p class="text-2xl font-extrabold text-white font-tech"><span x-text="$store.currency.formatUSD(79)"></span> <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
                             </div>
                             <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
                         </div>
@@ -441,7 +455,7 @@
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-[10px] font-code text-slate-500 uppercase">Lease Term Cost</p>
-                                <p class="text-2xl font-extrabold text-white font-tech">$199 <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
+                                <p class="text-2xl font-extrabold text-white font-tech"><span x-text="$store.currency.formatUSD(199)"></span> <span class="text-xs text-slate-400 font-sans font-normal">/ Week</span></p>
                             </div>
                             <p class="text-[10px] font-code text-emerald-400">Rent Period: 3 Weeks</p>
                         </div>
@@ -594,29 +608,29 @@
                         
                         <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
                             <span class="text-slate-400">Rental Cost</span>
-                            <span class="text-white font-semibold font-tech" x-text="'$' + rentCost + ' USDT'"></span>
+                            <span class="text-white font-semibold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + (rentCost * 130).toLocaleString('en-US', {minimumFractionDigits: 2}) : '$' + rentCost + ' USDT'"></span>
                         </div>
 
                         <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
                             <span class="text-slate-400">Estimated Power Cost</span>
-                            <span class="text-purple-400 font-semibold font-tech" x-text="'$' + powerCost + ' USDT'"></span>
+                            <span class="text-purple-400 font-semibold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + (powerCost * 130).toLocaleString('en-US', {minimumFractionDigits: 2}) : '$' + powerCost + ' USDT'"></span>
                         </div>
 
                         <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
                             <span class="text-slate-400">Total Rent Cost</span>
-                            <span class="text-white font-semibold font-tech" x-text="'$' + totalCost + ' USDT'"></span>
+                            <span class="text-white font-semibold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + (totalCost * 130).toLocaleString('en-US', {minimumFractionDigits: 2}) : '$' + totalCost + ' USDT'"></span>
                         </div>
 
                         <div class="flex justify-between items-center text-xs font-code border-b border-white/5 pb-2">
                             <span class="text-slate-400">Estimated Gross Payout</span>
-                            <span class="text-[#FFD700] font-semibold font-tech" x-text="'$' + grossYield + ' USDT'"></span>
+                            <span class="text-[#FFD700] font-semibold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + (grossYield * 130).toLocaleString('en-US', {minimumFractionDigits: 2}) : '$' + grossYield + ' USDT'"></span>
                         </div>
                     </div>
 
                     <div class="bg-white/[0.02] border border-white/10 rounded-2xl p-5 space-y-2">
                         <span class="text-[10px] font-code uppercase tracking-wider text-slate-500">Estimated Net Profit</span>
                         <div class="flex items-baseline justify-between">
-                            <span class="text-3xl font-extrabold text-white font-tech" x-text="'$' + netProfit + ' USDT'"></span>
+                            <span class="text-3xl font-extrabold text-white font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + (netProfit * 130).toLocaleString('en-US', {minimumFractionDigits: 2}) : '$' + netProfit + ' USDT'"></span>
                             <span class="text-xs font-code text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded" x-text="'+' + roi + '% ROI'"></span>
                         </div>
                     </div>

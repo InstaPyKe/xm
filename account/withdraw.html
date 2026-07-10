@@ -12,6 +12,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Currency Switcher utility -->
+    <script src="../public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -222,11 +224,19 @@
     
     validateWithdrawal() {
         if (!this.address) return alert('Please enter a valid withdrawal destination.');
-        if (!this.amount || this.amount < 1000) return alert('Minimum withdrawal amount is KSh 1,000.');
+        
+        const isUSD = (Alpine.store('currency').current === 'USD');
+        const amountInKES = parseFloat(this.amount) * (isUSD ? 130 : 1);
+        const minWithdrawalKES = 1000;
+        
+        if (!this.amount || amountInKES < minWithdrawalKES) {
+            const minText = isUSD ? '$' + (minWithdrawalKES / 130).toFixed(2) : 'KSh 1,000';
+            return alert('Minimum withdrawal amount is ' + minText + '.');
+        }
         
         const netInfo = this.networks[this.selectedNetwork];
-        const totalDeduction = parseFloat(this.amount) + netInfo.fee;
-        if (totalDeduction > this.balance) return alert('Insufficient computational balance available.');
+        const totalDeductionKES = amountInKES + netInfo.fee;
+        if (totalDeductionKES > this.balance) return alert('Insufficient computational balance available.');
         
         // Trigger 2FA Simulation Modal
         this.show2FA = true;
@@ -242,11 +252,13 @@
         
         this.isSubmitting = true;
         const netInfo = this.networks[this.selectedNetwork];
+        const isUSD = (Alpine.store('currency').current === 'USD');
+        const amountInKES = parseFloat(this.amount) * (isUSD ? 130 : 1);
         
         const res = await this.fetchAPI('/api/user/withdraw', {
             method: 'POST',
             body: JSON.stringify({
-                amount: parseFloat(this.amount),
+                amount: amountInKES,
                 fee: netInfo.fee,
                 channel: this.selectedNetwork,
                 destination: this.address
@@ -259,11 +271,10 @@
             this.show2FA = false;
             
             // Deduct balance locally
-            const amt = parseFloat(this.amount);
-            this.balance = (this.balance - (amt + netInfo.fee)).toFixed(2);
+            this.balance = (this.balance - (amountInKES + netInfo.fee)).toFixed(2);
             
             // Save receipt details
-            this.receiptAmount = amt;
+            this.receiptAmount = amountInKES;
             this.receiptNetwork = this.selectedNetwork;
             this.receiptAddress = this.address;
             this.receiptFee = netInfo.fee;
@@ -276,7 +287,7 @@
             this.withdrawals.unshift({
                 id: body.reference,
                 date: dateStr,
-                amount: amt,
+                amount: amountInKES,
                 network: this.selectedNetwork,
                 address: this.address,
                 fee: netInfo.fee,
@@ -342,6 +353,11 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Currency Switcher Toggle -->
+                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2 text-xs font-mono font-bold">
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                </button>
 
                 <!-- Theme Toggle Switch -->
                 <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
@@ -442,14 +458,14 @@
                         <!-- Amount Input -->
                         <div class="space-y-2">
                             <div class="flex justify-between items-center">
-                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Liquidity Volume (KES)</label>
-                                <span class="text-[11px] font-mono text-slate-400">Max limit: <button @click="amount = balance" class="text-[#FFD700] font-bold hover:underline" x-text="'KSh ' + parseFloat(balance).toLocaleString()"></button></span>
+                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Liquidity Volume (<span x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>)</label>
+                                <span class="text-[11px] font-mono text-slate-400">Max limit: <button @click="amount = $store.currency.current === 'USD' ? (balance / 130).toFixed(2) : balance" class="text-[#FFD700] font-bold hover:underline" x-text="$store.currency.format(balance)"></button></span>
                             </div>
                             <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-xs">KSh</span>
-                                <input type="number" step="1" min="1000" x-model="amount" placeholder="0"
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-xs" x-text="$store.currency.current === 'USD' ? '$' : 'KSh'"></span>
+                                <input type="number" step="0.01" :min="$store.currency.current === 'USD' ? 7.69 : 1000" x-model="amount" placeholder="0"
                                     class="w-full glass-input rounded-2xl pl-12 pr-16 py-4 text-sm font-semibold text-white placeholder-slate-600">
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">KES</span>
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs" x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>
                             </div>
                         </div>
 
@@ -457,11 +473,11 @@
                         <div class="bg-black/30 border border-white/5 rounded-2xl p-4 space-y-2.5 text-xs">
                             <div class="flex justify-between text-slate-400 font-light">
                                 <span>Requested Gross Output:</span>
-                                <span class="text-white font-mono" x-text="amount ? 'KSh ' + parseFloat(amount).toLocaleString() + ' KES' : 'KSh 0.00 KES'"></span>
+                                <span class="text-white font-mono" x-text="amount ? $store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES' : $store.currency.format(0)"></span>
                             </div>
                             <div class="flex justify-between text-slate-400 font-light">
                                 <span>Channel Processing Fee:</span>
-                                <span class="text-white font-mono" x-text="'KSh ' + networks[selectedNetwork].fee.toFixed(2) + ' KES'"></span>
+                                <span class="text-white font-mono" x-text="$store.currency.format(networks[selectedNetwork].fee)"></span>
                             </div>
                             <div class="flex justify-between text-slate-400 font-light border-b border-white/5 pb-2">
                                 <span>Estimated processing delta:</span>
@@ -469,7 +485,7 @@
                             </div>
                             <div class="flex justify-between font-bold text-white pt-1">
                                 <span>Net Settlement Received:</span>
-                                <span class="text-[#FFD700] font-mono" x-text="amount && amount > networks[selectedNetwork].fee ? 'KSh ' + (parseFloat(amount) - networks[selectedNetwork].fee).toLocaleString() + ' KES' : 'KSh 0.00 KES'"></span>
+                                <span class="text-[#FFD700] font-mono" x-text="amount && amount > (networks[selectedNetwork].fee / ($store.currency.current === 'USD' ? 130 : 1)) ? $store.currency.format((parseFloat(amount) * ($store.currency.current === 'USD' ? 130 : 1)) - networks[selectedNetwork].fee) : $store.currency.format(0)"></span>
                             </div>
                         </div>
 
@@ -491,7 +507,7 @@
                                     <th class="pb-3 font-semibold">Transaction ID</th>
                                     <th class="pb-3 font-semibold">Timeline (UTC)</th>
                                     <th class="pb-3 font-semibold">Payout Channel</th>
-                                    <th class="pb-3 font-semibold text-right">Volume (KSh)</th>
+                                    <th class="pb-3 font-semibold text-right">Volume (<span x-text="$store.currency.current"></span>)</th>
                                     <th class="pb-3 font-semibold text-center">Channel Fee</th>
                                     <th class="pb-3 font-semibold text-right">Status</th>
                                 </tr>
@@ -504,8 +520,8 @@
                                         <td class="py-4 font-mono">
                                             <span class="text-xs px-2 py-0.5 rounded-md bg-white/5 border border-white/5 text-slate-200" x-text="tx.network"></span>
                                         </td>
-                                        <td class="py-4 text-right text-white font-mono font-bold" x-text="'KSh ' + parseFloat(tx.amount).toLocaleString()"></td>
-                                        <td class="py-4 text-center font-mono text-slate-500" x-text="'KSh ' + parseFloat(tx.fee).toLocaleString()"></td>
+                                        <td class="py-4 text-right text-white font-mono font-bold" x-text="$store.currency.format(tx.amount)"></td>
+                                        <td class="py-4 text-center font-mono text-slate-500" x-text="$store.currency.format(tx.fee)"></td>
                                         <td class="py-4 text-right">
                                             <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-block"
                                                 :class="{
@@ -534,8 +550,8 @@
                         <div>
                             <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Computational Balance Available</span>
                             <div class="flex items-baseline space-x-2 mt-1">
-                                <h3 class="text-3xl font-extrabold text-white tracking-tight" x-text="'KSh ' + parseFloat(balance).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></h3>
-                                <span class="text-[#FFD700] text-sm font-mono font-bold">KES</span>
+                                <h3 class="text-3xl font-extrabold text-white tracking-tight" x-text="$store.currency.format(balance)"></h3>
+                                <span class="text-[#FFD700] text-sm font-mono font-bold" x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>
                             </div>
                         </div>
                         <div class="h-[1px] bg-white/5"></div>
@@ -546,7 +562,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <span>Locked Assets:</span>
-                                <span class="text-slate-300 font-mono">KSh 0.00</span>
+                                <span class="text-slate-300 font-mono" x-text="$store.currency.format(0)"></span>
                             </div>
                             <div class="flex justify-between">
                                 <span>Processing Fee Cap:</span>
@@ -591,7 +607,7 @@
                 <button @click="show2FA = false" class="text-slate-400 hover:text-white font-mono text-sm cursor-pointer">✕</button>
             </div>
 
-            <p class="text-slate-400 text-xs font-light mb-4">A transaction extraction of <strong class="text-white font-semibold font-mono" x-text="'KSh ' + parseFloat(amount).toLocaleString() + ' KES'"></strong> has been initialized. Enter your SMS verification OTP code sent to your registered phone number to authorize payout.</p>
+            <p class="text-slate-400 text-xs font-light mb-4">A transaction extraction of <strong class="text-white font-semibold font-mono" x-text="$store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES'"></strong> has been initialized. Enter your SMS verification OTP code sent to your registered phone number to authorize payout.</p>
 
             <form @submit.prevent="submitWithdrawal" class="space-y-4">
                 <div class="space-y-2">
@@ -640,7 +656,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-slate-500">Payout Volume:</span>
-                    <span class="text-white font-bold" x-text="'KSh ' + receiptAmount.toLocaleString() + ' KES'"></span>
+                    <span class="text-white font-bold" x-text="$store.currency.format(receiptAmount)"></span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-slate-500">Payout Channel:</span>
@@ -648,7 +664,7 @@
                 </div>
                 <div class="flex justify-between border-b border-white/5 pb-2">
                     <span class="text-slate-500">Channel Fee:</span>
-                    <span class="text-slate-300" x-text="'KSh ' + receiptFee.toFixed(2) + ' KES'"></span>
+                    <span class="text-slate-300" x-text="$store.currency.format(receiptFee)"></span>
                 </div>
                 <div class="space-y-1">
                     <span class="text-slate-500 block">Target Account / Phone:</span>
