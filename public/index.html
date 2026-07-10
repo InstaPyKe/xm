@@ -47,17 +47,7 @@
         .neon-glow-emerald {
             box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
         }
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-12px) rotate(1deg);
-            }
-        }
-        .floating-container {
-            animation: float 6s ease-in-out infinite;
-        }
+
         /* Custom scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
@@ -175,7 +165,7 @@
         <!-- Left Context Content Layout -->
         <div class="flex-1 text-center lg:text-left space-y-6 z-10">
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 text-xs font-code font-bold text-[#FFD700] bg-[#FFD700]/10 border border-[#FFD700]/20 rounded-full backdrop-blur-sm">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                 MINING MACHINES ACTIVE AND RUNNING
             </div>
             <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.08] text-white font-tech">
@@ -201,7 +191,7 @@
 
         <!-- Right Visual Showcase -->
         <div class="flex-1 relative flex items-center justify-center w-full min-h-[400px] z-10">
-            <div class="floating-container relative w-full max-w-[420px] rounded-3xl glass-panel p-4 flex flex-col justify-between shadow-2xl border border-white/10">
+            <div class="relative w-full max-w-[420px] rounded-3xl glass-panel p-4 flex flex-col justify-between shadow-2xl border border-white/10">
                 <!-- Glowing accent -->
                 <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-purple-500/10 via-transparent to-amber-500/10 pointer-events-none"></div>
                 
@@ -216,7 +206,7 @@
                         MODEL: XM-PRO-NODE V5
                     </div>
                     <div class="absolute top-3 right-3 bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-md text-[10px] font-code text-emerald-400 backdrop-blur-sm flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                         ONLINE
                     </div>
 
@@ -698,7 +688,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/20 border border-emerald-500/30 text-[9px] font-code text-emerald-400">
-                                    <span class="w-1 h-1 bg-emerald-400 rounded-full animate-ping"></span>
+                                    <span class="w-1 h-1 bg-emerald-400 rounded-full"></span>
                                     ALL REGIONS OPERATIONAL
                                 </span>
                             </div>
@@ -837,7 +827,6 @@
                     <h4 class="text-xs uppercase font-code text-purple-400 tracking-widest mb-4">Company Links</h4>
                     <ul class="space-y-2 text-sm text-slate-400 font-light">
                         <li><a href="#events" class="hover:text-white transition">Conferences</a></li>
-                        <li><a href="mailto:support@xmdigitalproducts.com" class="hover:text-white transition">Architecture Support</a></li>
                     </ul>
                 </div>
 

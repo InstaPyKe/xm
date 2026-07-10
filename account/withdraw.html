@@ -357,7 +357,7 @@
                 <div class="relative">
                     <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
                         class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition cursor-pointer">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                         <span class="font-code text-xs text-slate-200" x-text="username"></span>
                         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="19 9l-7 7-7-7" />
@@ -510,7 +510,7 @@
                                             <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-block"
                                                 :class="{
                                                     'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': tx.status === 'Completed',
-                                                    'bg-purple-500/10 text-purple-400 border border-purple-500/20 animate-pulse': tx.status === 'Processing',
+                                                    'bg-purple-500/10 text-purple-400 border border-purple-500/20': tx.status === 'Processing',
                                                     'bg-red-500/10 text-red-400 border border-red-500/20': tx.status === 'Rejected'
                                                 }"
                                                 x-text="tx.status"></span>
