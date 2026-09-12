@@ -2,24 +2,37 @@
 <html lang="en">
 
 <head>
+    <script>
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lease Contract | XM Digital Console</title>
-    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <title>Rent a Machine | XM Digital</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Currency Switcher utility -->
-    <script src="../public/js/currency.js"></script>
+    <script src="/public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(255, 215, 0, 0.03) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.03) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         }
         .font-tech {
             font-family: 'Orbitron', sans-serif;
@@ -27,107 +40,268 @@
         .font-code {
             font-family: 'JetBrains Mono', monospace;
         }
+        
         .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 11, 25, 0.92) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .neon-glow-yellow {
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
-        }
-        .neon-glow-purple {
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
-        }
-        .neon-glow-emerald {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+        .glass-card:hover {
+            border-color: rgba(255, 215, 0, 0.25);
         }
 
-        /* Premium Light Mode Styles */
-        body.theme-light {
-            background-color: #F8FAFC !important;
-            color: #0F172A !important;
+        .glass-input {
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
         }
-        body.theme-light .glass-card {
-            background: rgba(255, 255, 255, 0.7) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        .glass-input:focus {
+            border-color: #FFD700;
+            background: rgba(3, 7, 18, 0.95);
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.18);
+            outline: none;
         }
-        body.theme-light h1,
-        body.theme-light h2,
-        body.theme-light h3,
-        body.theme-light h4,
-        body.theme-light .text-white {
-            color: #0F172A !important;
+
+        /* Light Mode Styles */
+        .theme-light {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(202, 138, 4, 0.05) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.04) 0px, transparent 50%),
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            color: #0f172a;
         }
-        body.theme-light .text-slate-200,
-        body.theme-light .text-slate-300,
-        body.theme-light .text-slate-400 {
+        .theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
+        }
+        .theme-light .glass-input {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        .theme-light h1, .theme-light h2, .theme-light h3, .theme-light h4, .theme-light .text-white {
+            color: #0f172a !important;
+        }
+        .theme-light .text-slate-100, .theme-light .text-slate-200, .theme-light .text-slate-300, .theme-light .text-slate-400 {
             color: #475569 !important;
         }
-        body.theme-light .text-slate-500 {
-            color: #64748B !important;
-        }
-        body.theme-light nav {
-            background-color: rgba(248, 250, 252, 0.8) !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .border-white\/5,
-        body.theme-light .border-white\/10 {
-            border-color: rgba(0, 0, 0, 0.06) !important;
-        }
-        body.theme-light .bg-white\/5 {
-            background-color: rgba(0, 0, 0, 0.03) !important;
-        }
-        body.theme-light .bg-white\/10 {
-            background-color: rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .bg-black\/40 {
-            background-color: rgba(0, 0, 0, 0.02) !important;
-        }
-        body.theme-light .bg-black\/30 {
-            background-color: rgba(0, 0, 0, 0.01) !important;
-        }
-        body.theme-light .bg-black\/60 {
-            background-color: #E2E8F0 !important;
-            color: #0F172A !important;
-        }
-        body.theme-light .text-emerald-400 {
-            color: #15803D !important;
-        }
-        body.theme-light .text-purple-400 {
-            color: #7E22CE !important;
-        }
-        body.theme-light .text-[#FFD700] {
-            color: #B45309 !important;
+        .theme-light nav, .theme-light header {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.07) !important;
         }
     </style>
 </head>
 
 <body x-data="{
-    tier: 'volt-hashing-node-(v1)',
+    tier: 'starter-miner-v1',
     balance: 0.00,
     hasActiveLease: false,
+    navDropdownOpen: false,
+    notificationsOpen: false,
+
+    // 10 User-Friendly Machine Plans with Real-World Physical Hardware Photos
     spec: {
-        'volt-hashing-node-(v1)': { name: 'Volt Hashing Node (V1)', price: 3000, rate: 3.0, duration: 14, speed: '10.0 MH/s', desc: 'Good starter machine to begin mining daily with optimized hashing cycles.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-500', textClass: 'text-blue-400', bgClass: 'bg-blue-500/5', buttonClass: 'bg-blue-500 hover:bg-blue-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
-        'pulse-matrix-node-(p2)': { name: 'Pulse Matrix Node (P2)', price: 8500, rate: 3.2, duration: 14, speed: '25.0 MH/s', desc: 'Starter machine with improved hashing yields and micro-processors.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-        'quantum-cobalt-v3': { name: 'Quantum Cobalt V3', price: 15000, rate: 3.5, duration: 30, speed: '48.0 MH/s', desc: 'Solid performance entry-level quantum computation array.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-500', textClass: 'text-blue-400', bgClass: 'bg-blue-500/5', buttonClass: 'bg-blue-500 hover:bg-blue-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
-        'aero-grid-core': { name: 'Aero Grid Core', price: 30000, rate: 3.8, duration: 30, speed: '95.0 MH/s', desc: 'High-density computational core for solid daily yields.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-        'hyperion-reactor': { name: 'Hyperion Reactor', price: 55000, rate: 4.0, duration: 45, speed: '180.0 MH/s', desc: 'Medium-size machine with stable daily yields and gas cooling.', image: '../public/images/hybrid_node.png', borderClass: 'border-cyan-500', textClass: 'text-cyan-400', bgClass: 'bg-cyan-500/5', buttonClass: 'bg-cyan-500 hover:bg-cyan-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(6,182,212,0.25)]' },
-        'solar-storm-mainframe': { name: 'Solar Storm Mainframe', price: 92000, rate: 4.2, duration: 45, speed: '320.0 MH/s', desc: 'High power mainframe for stable yields across global loops.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-        'deep-ocean-server': { name: 'Deep Ocean Server', price: 140000, rate: 4.5, duration: 180, speed: '512.0 MH/s', desc: 'Liquid-cooled enterprise machine for maximum daily returns.', image: '../public/images/blue_mainframe.png', borderClass: 'border-blue-600', textClass: 'text-blue-500', bgClass: 'bg-blue-600/5', buttonClass: 'bg-blue-600 hover:bg-blue-700 text-white', glowClass: 'shadow-[0_0_20px_rgba(37,99,235,0.25)]' },
-        'aurora-prime-node': { name: 'Aurora Prime Node', price: 220000, rate: 4.8, duration: 180, speed: '850.0 MH/s', desc: 'Aurora-grade processor node with premium yields and neural nets.', image: '../public/images/hybrid_node.png', borderClass: 'border-purple-500', textClass: 'text-purple-400', bgClass: 'bg-purple-500/5', buttonClass: 'bg-purple-500 hover:bg-purple-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(168,85,247,0.25)]' },
-        'nebula-fusion-grid': { name: 'Nebula Fusion Grid', price: 380000, rate: 5.2, duration: 180, speed: '1,600.0 MH/s', desc: 'Maximum efficiency fusion node grid for extreme processing.', image: '../public/images/yellow_mainframe.png', borderClass: 'border-[#FFD700]', textClass: 'text-[#FFD700]', bgClass: 'bg-[#FFD700]/5', buttonClass: 'bg-[#FFD700] hover:bg-[#FFE55C] text-black', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-        'apex-void-titan': { name: 'Apex Void Titan', price: 650000, rate: 5.6, duration: 180, speed: '3,000.0 MH/s', desc: 'Large enterprise mainframe for maximum returns and hyper-threading.', image: '../public/images/hybrid_node.png', borderClass: 'border-emerald-500', textClass: 'text-emerald-400', bgClass: 'bg-emerald-500/5', buttonClass: 'bg-emerald-500 hover:bg-emerald-600 text-white', glowClass: 'shadow-[0_0_20px_rgba(16,185,129,0.25)]' }
+        'starter-miner-v1': { 
+            name: 'Starter Miner V1', 
+            price: 3000, 
+            rate: 3.0, 
+            duration: 14, 
+            speed: '10.0 MH/s', 
+            daily: 90, 
+            totalProfit: 1260,
+            desc: 'Best for beginners. Simple and reliable mining machine with quick daily returns.', 
+            image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-blue-500/40 shadow-[0_0_25px_rgba(59,130,246,0.2)]',
+            badgeClass: 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+        },
+        'bronze-daily-miner': { 
+            name: 'Bronze Daily Miner', 
+            price: 8500, 
+            rate: 3.2, 
+            duration: 14, 
+            speed: '25.0 MH/s', 
+            daily: 272, 
+            totalProfit: 3808,
+            desc: 'Affordable mining machine with faster speed and steady daily cash returns.', 
+            image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-yellow-500/40 shadow-[0_0_25px_rgba(255,215,0,0.2)]',
+            badgeClass: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30'
+        },
+        'silver-profit-miner': { 
+            name: 'Silver Profit Miner', 
+            price: 15000, 
+            rate: 3.5, 
+            duration: 30, 
+            speed: '48.0 MH/s', 
+            daily: 525, 
+            totalProfit: 15750,
+            desc: 'Popular monthly machine. Generates KSh 525 daily income straight to your balance.', 
+            image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-indigo-500/40 shadow-[0_0_25px_rgba(99,102,241,0.2)]',
+            badgeClass: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'
+        },
+        'gold-power-miner': { 
+            name: 'Gold Power Miner', 
+            price: 30000, 
+            rate: 3.8, 
+            duration: 30, 
+            speed: '95.0 MH/s', 
+            daily: 1140, 
+            totalProfit: 34200,
+            desc: 'High-power machine making over KSh 1,140 profit every single day.', 
+            image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-yellow-500/40 shadow-[0_0_25px_rgba(255,215,0,0.2)]',
+            badgeClass: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30'
+        },
+        'platinum-super-miner': { 
+            name: 'Platinum Super Miner', 
+            price: 55000, 
+            rate: 4.0, 
+            duration: 45, 
+            speed: '180.0 MH/s', 
+            daily: 2200, 
+            totalProfit: 99000,
+            desc: 'Heavy duty machine generating KSh 2,200 pure daily profit for 45 days.', 
+            image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-cyan-500/40 shadow-[0_0_25px_rgba(6,182,212,0.2)]',
+            badgeClass: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+        },
+        'diamond-pro-miner': { 
+            name: 'Diamond Pro Miner', 
+            price: 92000, 
+            rate: 4.2, 
+            duration: 45, 
+            speed: '320.0 MH/s', 
+            daily: 3864, 
+            totalProfit: 173880,
+            desc: 'Industrial pro miner producing high daily returns of KSh 3,864.', 
+            image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-amber-500/40 shadow-[0_0_25px_rgba(245,158,11,0.2)]',
+            badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+        },
+        'emerald-master-miner': { 
+            name: 'Emerald Master Miner', 
+            price: 140000, 
+            rate: 4.5, 
+            duration: 180, 
+            speed: '512.0 MH/s', 
+            daily: 6300, 
+            totalProfit: 1134000,
+            desc: 'Long-term wealth plan generating KSh 6,300 every day for 6 months.', 
+            image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-blue-500/40 shadow-[0_0_25px_rgba(37,99,235,0.2)]',
+            badgeClass: 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+        },
+        'ruby-ultra-miner': { 
+            name: 'Ruby Ultra Miner', 
+            price: 220000, 
+            rate: 4.8, 
+            duration: 180, 
+            speed: '850.0 MH/s', 
+            daily: 10560, 
+            totalProfit: 1900800,
+            desc: 'High-earning flagship machine producing over KSh 10,000 every single day.', 
+            image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-purple-500/40 shadow-[0_0_25px_rgba(168,85,247,0.2)]',
+            badgeClass: 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+        },
+        'sapphire-giant-miner': { 
+            name: 'Sapphire Giant Miner', 
+            price: 380000, 
+            rate: 5.2, 
+            duration: 180, 
+            speed: '1600.0 MH/s', 
+            daily: 19760, 
+            totalProfit: 3556800,
+            desc: 'Enterprise machine providing massive daily income of KSh 19,760.', 
+            image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-yellow-500/40 shadow-[0_0_25px_rgba(255,215,0,0.2)]',
+            badgeClass: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30'
+        },
+        'crown-vip-titan-miner': { 
+            name: 'Crown VIP Titan Miner', 
+            price: 650000, 
+            rate: 5.6, 
+            duration: 180, 
+            speed: '3000.0 MH/s', 
+            daily: 36400, 
+            totalProfit: 6552000,
+            desc: 'VIP top-tier powerhouse yielding KSh 36,400 daily income with VIP manager support.', 
+            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
+            glowClass: 'border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.2)]',
+            badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+        }
     },
     get current() {
-        return this.spec[this.tier] || this.spec['volt-hashing-node-(v1)'];
+        return this.spec[this.tier] || this.spec['starter-miner-v1'];
     },
     sliderValue: 0,
     isConfirming: false,
     maturityDate: '',
-    lightMode: false,
+    paymentMethod: 'wallet',
+    mpesaPhone: '',
+    checkoutRequestId: '',
+    mpesaStatus: '',
+    mpesaFailureReason: '',
+    pollingInterval: null,
+    
+    // Paybill & Support Configuration
+    paybillNumber: '522533',
+    paybillAccount: '8106675',
+    paybillAccName: 'JASPER MARKETS',
+    mpesaMessage: '',
+    extractedMpesaCode: '',
+    extractedMpesaAmount: null,
+    copiedNotice: '',
+
+    copyToClipboard(text, label) {
+        navigator.clipboard.writeText(text);
+        this.copiedNotice = label;
+        setTimeout(() => {
+            if (this.copiedNotice === label) this.copiedNotice = '';
+        }, 2000);
+    },
+
+    parsePastedMessage(text) {
+        this.mpesaMessage = text;
+        if (!text || typeof text !== 'string') {
+            this.extractedMpesaCode = '';
+            this.extractedMpesaAmount = null;
+            return;
+        }
+        const trimmed = text.trim();
+        const codeMatch = trimmed.match(/\b([A-Z0-9]{10})\b/i);
+        this.extractedMpesaCode = codeMatch ? codeMatch[1].toUpperCase() : '';
+
+        const amountMatch = trimmed.match(/(?:Ksh|KES|KSH)\s*([0-9,]+(?:\.[0-9]{2})?)/i);
+        if (amountMatch) {
+            this.extractedMpesaAmount = parseFloat(amountMatch[1].replace(/,/g, ''));
+        } else {
+            this.extractedMpesaAmount = null;
+        }
+    },
+
+    get whatsappSupportUrl() {
+        const text = encodeURIComponent(`Hello XM Support, I have paid via Paybill 522533 (Account: 8106675, JASPER MARKETS) for ${this.current.name} (Amount: KSh ${this.current.price}). My M-Pesa Transaction Code is: ${this.extractedMpesaCode || 'PENDING'}. Please verify my machine.`);
+        return `https://wa.me/447455909204?text=${text}`;
+    },
+
+    get lightMode() {
+        return Alpine.store('theme').lightMode;
+    },
+    notifications: [
+        { id: 1, text: 'Daily mining profits credited to your wallet', time: '1 hr ago', read: false }
+    ],
+    get unreadNotificationsCount() {
+        return this.notifications.filter(n => !n.read).length;
+    },
+    username: 'Miner',
     
     // API Request Wrapper
     async fetchAPI(endpoint, options = {}) {
@@ -143,9 +317,9 @@
         };
         try {
             const response = await fetch(endpoint, { ...options, headers });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 503) {
                 localStorage.removeItem('xm_jwt_token');
-                window.location.href = '../public/signin.html';
+                window.location.href = '../public/signin.html?maintenance=true';
                 return null;
             }
             return response;
@@ -156,305 +330,652 @@
     },
     
     async init() {
-        // Read theme settings on start
-        if (localStorage.getItem('xm_theme') === 'light') {
-            this.lightMode = true;
-            document.body.classList.add('theme-light');
+        const params = new URLSearchParams(window.location.search);
+        const tierParam = params.get('tier');
+        
+        // Slug normalization map for backward compatibility
+        const aliasMap = {
+            'volt-hashing-node-v1': 'starter-miner-v1',
+            'volt-hashing-node-(v1)': 'starter-miner-v1',
+            'pulse-matrix-node-p2': 'bronze-daily-miner',
+            'pulse-matrix-node-(p2)': 'bronze-daily-miner',
+            'quantum-cobalt-v3': 'silver-profit-miner',
+            'aero-grid-core': 'gold-power-miner',
+            'hyperion-reactor': 'platinum-super-miner',
+            'solar-storm-mainframe': 'diamond-pro-miner',
+            'deep-ocean-server': 'emerald-master-miner',
+            'aurora-prime-node': 'ruby-ultra-miner',
+            'nebula-fusion-grid': 'sapphire-giant-miner',
+            'apex-void-titan': 'crown-vip-titan-miner'
+        };
+
+        // Dynamically fetch active machines catalog from backend
+        try {
+            const machinesRes = await fetch('/api/machines');
+            if (machinesRes.ok) {
+                const machinesList = await machinesRes.json();
+                if (Array.isArray(machinesList) && machinesList.length > 0) {
+                    machinesList.forEach(m => {
+                        this.spec[m.slug] = {
+                            name: m.name,
+                            price: parseFloat(m.price),
+                            rate: 3.0,
+                            duration: parseInt(m.duration_days) || 30,
+                            speed: m.speed || '25.0 MH/s',
+                            daily: parseFloat(m.daily_income),
+                            totalProfit: parseFloat(m.total_profit),
+                            desc: m.tagline || `${m.name} generates KSh ${parseFloat(m.daily_income).toLocaleString()} daily earnings straight to your balance.`,
+                            image: m.image,
+                            glowClass: m.badge && m.badge.includes('VIP') ? 'border-amber-500/40 shadow-[0_0_25px_rgba(255,215,0,0.2)]' : 'border-blue-500/40 shadow-[0_0_25px_rgba(59,130,246,0.2)]',
+                            badgeClass: m.badge && m.badge.includes('VIP') ? 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30' : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                        };
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('Could not fetch dynamic machines in lease-details:', e);
         }
 
-        const params = new URLSearchParams(window.location.search);
-        const t = params.get('tier');
-        if (t && this.spec[t]) {
-            this.tier = t;
-        } else {
-            this.tier = 'volt-hashing-node-(v1)';
+        if (tierParam) {
+            const cleanTier = tierParam.toLowerCase();
+            if (this.spec[cleanTier]) {
+                this.tier = cleanTier;
+            } else if (aliasMap[cleanTier]) {
+                this.tier = aliasMap[cleanTier];
+            }
         }
         
-        // Fetch Live profile balance
         const profileRes = await this.fetchAPI('/api/user/profile');
         if (profileRes) {
             const profile = await profileRes.json();
-            this.balance = parseFloat(profile.balance);
-        }
-
-        // Check active leases
-        const leasesRes = await this.fetchAPI('/api/user/leases');
-        if (leasesRes) {
-            const allLeases = await leasesRes.json();
-            const activeCount = allLeases.filter(l => parseInt(l.remaining) > 0).length;
-            this.hasActiveLease = activeCount >= 3;
+            this.username = profile.username;
+            this.balance = parseFloat(profile.balance || 0);
+            if (profile.phone) {
+                let ph = profile.phone;
+                if (ph.startsWith('+')) ph = ph.slice(1);
+                if (ph.startsWith('254')) ph = '0' + ph.slice(3);
+                this.mpesaPhone = ph;
+            }
         }
         
-        // Calculate maturity date
+        const leasesRes = await this.fetchAPI('/api/user/leases');
+        if (leasesRes) {
+            const leases = await leasesRes.json();
+            const activeCount = leases.filter(l => parseInt(l.remaining) > 0).length;
+            this.hasActiveLease = (activeCount >= 3);
+        }
+        
         const today = new Date();
-        const mat = new Date(today.getTime() + this.current.duration * 24 * 60 * 60 * 1000);
-        this.maturityDate = mat.toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        today.setDate(today.getDate() + this.current.duration);
+        this.maturityDate = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     },
     
     toggleTheme() {
-        this.lightMode = !this.lightMode;
-        if (this.lightMode) {
-            document.body.classList.add('theme-light');
-            localStorage.setItem('xm_theme', 'light');
-        } else {
-            document.body.classList.remove('theme-light');
-            localStorage.setItem('xm_theme', 'dark');
-        }
+        Alpine.store('theme').toggle();
     },
     
     handleSlider(e) {
-        this.sliderValue = e.target.value;
         if (this.sliderValue >= 100) {
-            this.confirmLease();
+            this.sliderValue = 100;
+            this.executeLease();
+        } else {
+            setTimeout(() => {
+                if (this.sliderValue < 100) this.sliderValue = 0;
+            }, 300);
         }
     },
     
-    async confirmLease() {
+    async executeLease() {
         if (this.hasActiveLease) {
-            alert('You can only rent up to three machines at a time. Please wait for one of your active machines to finish.');
-            this.sliderValue = 0;
-            return;
-        }
-        if (this.balance < this.current.price) {
-            alert('Insufficient computational balance. Please top up your wallet.');
+            alert('Limit reached: You can run up to 3 active machines simultaneously.');
             this.sliderValue = 0;
             return;
         }
         
-        this.isConfirming = true;
-        
-        const res = await this.fetchAPI('/api/user/leases', {
-            method: 'POST',
-            body: JSON.stringify({
-                name: this.current.name,
-                type: this.tier.split('-')[0],
-                speed: this.current.speed,
-                duration: this.current.duration,
-                cost: this.current.price,
-                rate: this.current.rate,
-                daily_earnings: this.current.price * (this.current.rate / 100),
-                image: this.current.image
-            })
-        });
-        
-        if (res && res.ok) {
-            this.isConfirming = false;
-            alert('Hardware allocated and contract signed successfully!');
-            window.location.href = 'dashboard.html';
-        } else {
-            this.isConfirming = false;
-            this.sliderValue = 0;
-            const body = await res.json();
-            alert(body.message || 'Error executing lease contract.');
-        }
-    }
-}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+        if (this.paymentMethod === 'wallet') {
+            if (this.balance < this.current.price) {
+                alert('Insufficient wallet balance. Please add funds via M-Pesa or choose a smaller machine.');
+                this.sliderValue = 0;
+                return;
+            }
+            
+            this.isConfirming = true;
+            const res = await this.fetchAPI('/api/user/leases', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: this.current.name,
+                    type: 'Cloud Miner',
+                    speed: this.current.speed,
+                    duration: this.current.duration,
+                    cost: this.current.price,
+                    rate: this.current.rate,
+                    daily_earnings: (this.current.price * this.current.rate) / 100,
+                    image: this.current.image
+                })
+            });
+            
+            if (res && res.ok) {
+                this.isConfirming = false;
+                alert('Success! Your machine has been rented and has started working!');
+                window.location.href = 'dashboard.html';
+            } else {
+                this.isConfirming = false;
+                this.sliderValue = 0;
+                const body = await res.json();
+                alert(body.message || 'Error activating machine.');
+            }
+        } else if (this.paymentMethod === 'paybill') {
+            if (!this.extractedMpesaCode || this.extractedMpesaCode.trim().length < 8) {
+                alert('Please paste the complete M-Pesa SMS confirmation message so we can verify your payment.');
+                this.sliderValue = 0;
+                return;
+            }
 
-    <!-- ─── NAVIGATION BAR ─── -->
-    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+            this.isConfirming = true;
+            this.mpesaStatus = 'pending_manual';
+            
+            const res = await this.fetchAPI('/api/user/leases/paybill', {
+                method: 'POST',
+                body: JSON.stringify({
+                    mpesa_message: this.mpesaMessage.trim(),
+                    mpesa_code: this.extractedMpesaCode.trim(),
+                    phone: this.mpesaPhone.trim(),
+                    tier: this.tier,
+                    name: this.current.name,
+                    type: 'Cloud Miner',
+                    speed: this.current.speed,
+                    duration: this.current.duration,
+                    cost: this.current.price,
+                    rate: this.current.rate,
+                    daily_earnings: (this.current.price * this.current.rate) / 100,
+                    image: this.current.image
+                })
+            });
+
+            if (res && res.ok) {
+                const body = await res.json();
+                this.checkoutRequestId = body.checkoutRequestId;
+                this.mpesaStatus = 'pending_manual';
+                this.startPollingStatus();
+            } else {
+                this.isConfirming = false;
+                this.sliderValue = 0;
+                this.mpesaStatus = '';
+                const body = await res.json();
+                alert(body.message || 'Error submitting Paybill payment.');
+            }
+        } else {
+            // M-Pesa STK Push
+            if (!this.mpesaPhone || this.mpesaPhone.trim().length < 9) {
+                alert('Please enter a valid M-Pesa phone number.');
+                this.sliderValue = 0;
+                return;
+            }
+
+            this.isConfirming = true;
+            this.mpesaStatus = 'initiating';
+            
+            const res = await this.fetchAPI('/api/user/leases/mpesa', {
+                method: 'POST',
+                body: JSON.stringify({
+                    phone: this.mpesaPhone.trim(),
+                    tier: this.tier,
+                    name: this.current.name,
+                    type: 'Cloud Miner',
+                    speed: this.current.speed,
+                    duration: this.current.duration,
+                    cost: this.current.price,
+                    rate: this.current.rate,
+                    daily_earnings: (this.current.price * this.current.rate) / 100,
+                    image: this.current.image
+                })
+            });
+
+            if (res && res.ok) {
+                const body = await res.json();
+                this.checkoutRequestId = body.checkoutRequestId;
+                this.mpesaStatus = 'pending';
+                this.startPollingStatus();
+            } else {
+                this.isConfirming = false;
+                this.sliderValue = 0;
+                this.mpesaStatus = '';
+                const body = await res.json();
+                alert(body.message || 'Error sending M-Pesa request.');
+            }
+        }
+    },
+
+    startPollingStatus() {
+        if (this.pollingInterval) clearInterval(this.pollingInterval);
+        this.mpesaFailureReason = '';
+        
+        this.pollingInterval = setInterval(async () => {
+            const res = await this.fetchAPI(`/api/user/leases/mpesa-status/${this.checkoutRequestId}`);
+            if (res && res.ok) {
+                const body = await res.json();
+                if (body.status === 'Completed') {
+                    clearInterval(this.pollingInterval);
+                    this.mpesaStatus = 'success';
+                    setTimeout(() => {
+                        this.isConfirming = false;
+                        alert('Payment verified! Your machine is now working and earning daily income.');
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else if (body.status === 'Failed') {
+                    clearInterval(this.pollingInterval);
+                    this.mpesaStatus = 'failed';
+                    this.mpesaFailureReason = body.failure_reason || 'Payment was cancelled or could not be verified.';
+                    setTimeout(() => {
+                        this.isConfirming = false;
+                        this.sliderValue = 0;
+                    }, 4000);
+                }
+            }
+        }, 3000);
+    }
+}" class="bg-[#030712] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── NAVIGATION HEADER ─── -->
+    <header class="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 transition-all">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="dashboard.html" class="flex items-center space-x-2 group">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                    XM
+            
+            <a href="../public/index.html" class="flex items-center space-x-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FFD700] via-amber-400 to-purple-600 p-[1.5px] shadow-[0_0_20px_rgba(255,215,0,0.3)] transition group-hover:scale-105">
+                    <div class="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center font-black text-[#FFD700] font-tech text-base tracking-tighter">
+                        XM
+                    </div>
                 </div>
-                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
-                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
+                <div>
+                    <div class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent font-tech uppercase">
+                        XM DIGITAL
+                    </div>
+                    <div class="flex items-center space-x-1.5 -mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-[9px] font-mono font-semibold text-emerald-400 uppercase tracking-widest">Rent Machine</span>
+                    </div>
                 </div>
             </a>
 
-            <!-- Balance Summary -->
-            <div class="flex items-center space-x-3">
-                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-1 text-xs font-mono font-bold">
-                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
-                </button>
-                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-1">
-                    <svg x-show="!lightMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                    </svg>
-                    <svg x-show="lightMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-                <div class="text-right hidden sm:block">
-                    <span class="text-[9px] font-mono text-slate-500 uppercase">Available Cash</span>
-                    <p class="text-xs font-bold text-white" x-text="$store.currency.format(balance)"></p>
-                </div>
-                <a href="dashboard.html" class="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-xs font-medium hover:bg-white/10 transition cursor-pointer">
-                    Dashboard Cockpit
+            <nav class="hidden md:flex items-center space-x-1.5 bg-white/[0.03] border border-white/10 rounded-full p-1 font-tech text-xs backdrop-blur-md">
+                <a href="dashboard.html" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <span>MY ACCOUNT</span>
                 </a>
+                <a href="dashboard.html#machines-catalog" class="px-4 py-2 rounded-full font-bold bg-[#FFD700] text-black shadow-[0_2px_12px_rgba(255,215,0,0.25)] flex items-center space-x-2">
+                    <span>RENT MACHINES</span>
+                </a>
+                <a href="withdraw.html" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <span>WITHDRAW CASH</span>
+                </a>
+            </nav>
+
+            <div class="flex items-center space-x-2.5">
+                <div class="hidden sm:flex items-center space-x-2 bg-white/[0.04] border border-white/10 rounded-full px-3.5 py-1.5">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Balance:</span>
+                    <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="$store.currency.format(balance)"></span>
+                </div>
+
+                <button @click="$store.currency.toggle()" 
+                    class="px-2.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 hover:border-[#FFD700]/50 text-slate-300 hover:text-[#FFD700] transition text-[11px] font-mono font-bold flex items-center space-x-1 cursor-pointer">
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KES (KSh)'"></span>
+                </button>
+
+                <button @click="toggleTheme()" 
+                    class="p-2 rounded-full bg-white/[0.05] border border-white/10 hover:border-white/20 text-slate-400 hover:text-white transition cursor-pointer">
+                    <svg x-show="!lightMode" class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                    <svg x-show="lightMode" class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                </button>
+
+                <div class="relative">
+                    <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
+                        class="flex items-center space-x-2 bg-gradient-to-r from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-full text-xs transition cursor-pointer">
+                        <div class="w-5 h-5 rounded-full bg-purple-500/20 border border-purple-400 flex items-center justify-center font-bold text-purple-300 text-[10px]">
+                            <span x-text="username.charAt(0).toUpperCase()"></span>
+                        </div>
+                        <span class="font-mono text-slate-200 font-semibold" x-text="username"></span>
+                    </button>
+
+                    <div x-show="navDropdownOpen" x-transition
+                        class="absolute right-0 mt-2 w-48 glass-card rounded-2xl p-2 shadow-2xl space-y-1 z-50 text-xs"
+                        style="display: none;">
+                        <a href="dashboard.html" class="block px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">My Account</a>
+                        <a href="withdraw.html" class="block px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">Withdraw Cash</a>
+                        <hr class="border-white/10 my-1">
+                        <a href="../public/signin.html" @click="localStorage.removeItem('xm_jwt_token')"
+                            class="block px-3 py-2 text-red-400 font-semibold rounded-xl hover:bg-red-500/10 transition">Log Out</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- ─── CONTRACT BODY ─── -->
-    <main class="max-w-4xl mx-auto px-6 py-10 space-y-8">
+    <!-- ─── CONTRACT BODY CONTENT ─── -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8">
         
-        <!-- Back navigation -->
-        <a href="dashboard.html" class="flex items-center space-x-2 text-sm text-slate-400 hover:text-[#FFD700] transition">
+        <!-- Breadcrumb -->
+        <a href="dashboard.html" class="inline-flex items-center space-x-2 text-xs font-mono text-slate-400 hover:text-[#FFD700] transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <span>Return to dashboard catalog</span>
+            <span>← Back to All Machines</span>
         </a>
 
-        <!-- Hardware & Contract Header -->
-        <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row gap-6 relative overflow-hidden" :class="current.glowClass">
-            <!-- Machine graphic -->
-            <div class="w-full md:w-1/3 rounded-2xl overflow-hidden border border-white/5">
-                <img :src="current.image" :alt="current.name" class="w-full h-full object-cover">
-            </div>
+        <!-- 2-Column Responsive Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <div class="flex-1 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech" x-text="current.name"></h2>
-                        <span class="text-xs px-2.5 py-1 rounded-full font-bold bg-[#FFD700]/10 border border-[#FFD700]/20" :class="current.textClass" x-text="current.rate + '% Daily Interest'"></span>
+            <!-- ─── LEFT: MACHINE DETAILS & PROFIT SCHEDULE (7 Cols) ─── -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Main Machine Showcase -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6 border" :class="current.glowClass">
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <!-- Real Machine Image -->
+                        <div class="w-full sm:w-48 h-44 rounded-xl overflow-hidden bg-black/60 border border-white/10 shrink-0 relative group">
+                            <img :src="current.image" :alt="current.name" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            <span class="absolute bottom-2 left-2 right-2 text-center text-[10px] font-mono font-bold text-[#FFD700] bg-black/80 px-2 py-0.5 rounded backdrop-blur-md">
+                                Real Hardware Rig
+                            </span>
+                        </div>
+
+                        <!-- Title & Description -->
+                        <div class="flex-1 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <h1 class="text-xl sm:text-2xl font-black text-white font-tech tracking-tight" x-text="current.name"></h1>
+                                <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold" :class="current.badgeClass" x-text="current.rate + '% Daily Profit'"></span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed" x-text="current.desc"></p>
+                            
+                            <div class="pt-2 flex items-center space-x-4 text-xs font-mono text-slate-400">
+                                <div>Mining Speed: <strong class="text-cyan-400 font-bold" x-text="current.speed"></strong></div>
+                                <div>Contract: <strong class="text-white font-bold" x-text="current.duration + ' Days'"></strong></div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm font-light mt-2" x-text="current.desc"></p>
+
+                    <!-- 4 Clear Profit Numbers -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/10">
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 text-center space-y-1">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Rent Price</span>
+                            <span class="text-sm font-black text-white font-tech" x-text="$store.currency.format(current.price)"></span>
+                        </div>
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 text-center space-y-1">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Daily Income</span>
+                            <span class="text-sm font-black text-emerald-400 font-tech" x-text="$store.currency.format(current.daily) + '/day'"></span>
+                        </div>
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 text-center space-y-1">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Total Profit</span>
+                            <span class="text-sm font-black text-purple-400 font-tech" x-text="$store.currency.format(current.totalProfit)"></span>
+                        </div>
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 text-center space-y-1">
+                            <span class="text-[10px] text-slate-400 uppercase font-mono block">Total You Get</span>
+                            <span class="text-sm font-black text-[#FFD700] font-tech" x-text="$store.currency.format(current.price + current.totalProfit)"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 border-t border-white/5 pt-6">
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Processor Cost</span>
-                        <span class="text-sm font-extrabold text-white font-tech" x-text="$store.currency.format(current.price)"></span>
+                <!-- Money Return Guarantee Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-2 border-emerald-500/30 bg-emerald-500/[0.02]">
+                    <div class="flex items-center space-x-2 text-emerald-400">
+                        <span class="text-lg">🛡️</span>
+                        <h3 class="font-bold text-sm uppercase font-tech text-white">Full Rent Money Return Guarantee</h3>
                     </div>
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Daily Yield</span>
-                        <span class="text-sm font-extrabold text-emerald-400 font-tech" x-text="$store.currency.format(current.price * current.rate / 100)"></span>
-                    </div>
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Total Net Profit</span>
-                        <span class="text-sm font-extrabold text-purple-400 font-tech" x-text="$store.currency.format(current.price * current.rate / 100 * current.duration)"></span>
-                    </div>
-                    <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 uppercase block">Contract Period</span>
-                        <span class="text-sm font-extrabold text-slate-200 font-tech" x-text="current.duration + ' Days'"></span >
-                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed font-light">
+                        Your rent money of <strong class="text-white" x-text="$store.currency.format(current.price)"></strong> is safely kept while your machine works.
+                    </p>
+                    <p class="text-xs text-slate-300 leading-relaxed font-light pt-1 border-t border-white/5">
+                        When the <span x-text="current.duration"></span> days finish on <strong class="text-[#FFD700]" x-text="maturityDate"></strong>, you receive your <strong class="text-white">FULL <span x-text="$store.currency.format(current.price)"></span> back</strong> plus all your <strong class="text-emerald-400"><span x-text="$store.currency.format(current.totalProfit)"></span> in profits</strong>. You can withdraw everything anytime.
+                    </p>
                 </div>
-            </div>
-        </div>
 
-        <!-- Contract Locking Policy Alert -->
-        <div class="bg-amber-500/5 border border-dashed border-amber-500/20 rounded-3xl p-6 space-y-4">
-            <div class="flex items-center space-x-3 text-[#FFD700]">
-                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <h4 class="font-bold text-white text-sm uppercase tracking-wide font-tech">Computational Capital Lockup Policy</h4>
-            </div>
-            <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
-                By signing this lease contract, you authorize the escrow lock of your lease capital (<strong class="text-white font-semibold" x-text="$store.currency.format(current.price)"></strong>) in the mining consensus pool. This capital is utilized to secure network computing slots.
-            </p>
-            <p class="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
-                <strong>Withdrawal Eligibility:</strong> You are eligible to withdraw <span class="text-[#FFD700] font-bold">ALL your initial lease capital (principal) AND all accumulated profits</span> immediately upon contract maturity. Maturity date is scheduled for <strong class="text-white font-semibold" x-text="maturityDate"></strong>. No partial early liquidations of principal are allowed.
-            </p>
-        </div>
-
-        <!-- Daily Interest Step Table -->
-        <div class="glass-card rounded-3xl p-6 space-y-4">
-            <h3 class="text-base font-bold text-white tracking-tight font-tech">Interest Accumulation Matrix</h3>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                        <tr class="text-slate-500 font-mono border-b border-white/5">
-                            <th class="pb-3 font-semibold">Timeline</th>
-                            <th class="pb-3 font-semibold">Accumulated Rate</th>
-                            <th class="pb-3 font-semibold text-right">Daily Return</th>
-                            <th class="pb-3 font-semibold text-right">Total Profit Accrued</th>
-                            <th class="pb-3 font-semibold text-right">Escrow Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5 font-mono text-[11px]">
-                        <tr class="hover:bg-white/[0.01]">
-                            <td class="py-3.5 text-slate-300">Day 1</td>
-                            <td class="py-3.5 text-slate-400" x-text="current.rate.toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
-                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 1)"></td>
-                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
-                        </tr>
-                        <tr class="hover:bg-white/[0.01]">
-                            <td class="py-3.5 text-slate-300">Day 5</td>
-                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 5).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
-                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 5)"></td>
-                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
-                        </tr>
-                        <tr class="hover:bg-white/[0.01]">
-                            <td class="py-3.5 text-slate-300">Day 10</td>
-                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 10).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
-                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 10)"></td>
-                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
-                        </tr>
-                        <tr class="hover:bg-white/[0.01]">
-                            <td class="py-3.5 text-slate-300">Day 15</td>
-                            <td class="py-3.5 text-slate-400" x-text="(current.rate * 15).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-semibold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
-                            <td class="py-3.5 text-right text-white" x-text="$store.currency.format(current.price * current.rate / 100 * 15)"></td>
-                            <td class="py-3.5 text-right text-amber-500 font-semibold">🔒 Escrow Lock</td>
-                        </tr>
-                        <tr class="hover:bg-white/[0.01] bg-emerald-500/[0.02]">
-                            <td class="py-3.5 text-[#FFD700] font-bold">Day 21 (Maturity)</td>
-                            <td class="py-3.5 text-[#FFD700] font-bold" x-text="(current.rate * 21).toFixed(1) + '%'"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.price * current.rate / 100)"></td>
-                            <td class="py-3.5 text-right text-[#FFD700] font-bold" x-text="$store.currency.format(current.price * current.rate / 100 * 21)"></td>
-                            <td class="py-3.5 text-right text-emerald-400 font-bold">🔓 Unlocked / Cashout</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Total Settlement Projection Card -->
-            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono mt-4">
-                <div class="space-y-1">
-                    <span class="text-slate-500 uppercase text-[9px] block">Maturity Settlement Value</span>
-                    <p class="text-base font-extrabold text-[#FFD700] font-tech" x-text="$store.currency.format(current.price + (current.price * current.rate / 100 * current.duration))"></p>
-                </div>
-                <div class="text-right text-slate-400 font-light leading-relaxed max-w-sm text-center sm:text-right">
-                    Includes your returned principal of <span class="text-white font-bold" x-text="$store.currency.format(current.price)"></span> and yield profit of <span class="text-emerald-400 font-bold" x-text="$store.currency.format(current.price * current.rate / 100 * current.duration)"></span>.
-                </div>
-            </div>
-        </div>
-
-        <!-- ─── SLIDE TO SIGN SMART CONTRACT ─── -->
-        <div class="glass-card rounded-3xl p-6 relative max-w-lg mx-auto">
-            <template x-if="isConfirming">
-                <div class="flex flex-col items-center justify-center py-6 space-y-3">
-                    <span class="w-8 h-8 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin"></span>
-                    <p class="text-xs font-mono text-[#FFD700] uppercase tracking-widest">Syncing smart lease nodes...</p>
-                </div>
-            </template>
-            
-            <template x-if="!isConfirming">
-                <div class="space-y-4">
-                    <p class="text-center text-[10px] font-mono uppercase tracking-widest text-slate-500">Slide to sign contract & pay lease</p>
+                <!-- Daily Earnings Schedule Table -->
+                <div class="glass-card rounded-2xl p-6 space-y-3">
+                    <h3 class="text-sm font-bold text-white font-tech uppercase">Daily Profit Schedule</h3>
                     
-                    <!-- Slider Container -->
-                    <div class="relative w-full h-16 bg-black/60 border border-white/10 rounded-2xl overflow-hidden flex items-center justify-center group">
-                        <!-- Sliding Handle Label -->
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none text-xs font-bold font-tech text-slate-400 group-hover:text-white transition duration-300">
-                            SIGN CONTRACT & INITIATE
-                        </div>
-                        
-                        <!-- Track Fill -->
-                        <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-purple-500/20 to-emerald-500/20" :style="'width: ' + sliderValue + '%'"></div>
-                        
-                        <!-- Range Input -->
-                        <input type="range" min="0" max="100" x-model="sliderValue" @input="handleSlider"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
-                        
-                        <!-- Sliding Indicator thumb (visible mock) -->
-                        <div class="absolute left-1 top-1 bottom-1 w-14 rounded-xl bg-[#FFD700] flex items-center justify-center transition-all duration-75 pointer-events-none shadow-[0_0_15px_rgba(255,215,0,0.3)] text-black font-extrabold text-sm"
-                            :style="'left: calc(' + sliderValue + '% * 0.82 + 4px)'">
-                            →
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse font-mono">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-white/10 pb-2 text-[10px]">
+                                    <th class="pb-2.5">Day</th>
+                                    <th class="pb-2.5 text-right">Daily Earnings</th>
+                                    <th class="pb-2.5 text-right">Total Profit</th>
+                                    <th class="pb-2.5 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 text-[11px]">
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-2.5 text-slate-300">Day 1</td>
+                                    <td class="py-2.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.daily)"></td>
+                                    <td class="py-2.5 text-right text-white" x-text="$store.currency.format(current.daily * 1)"></td>
+                                    <td class="py-2.5 text-right text-emerald-400">Paid to Wallet</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-2.5 text-slate-300">Day 5</td>
+                                    <td class="py-2.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.daily)"></td>
+                                    <td class="py-2.5 text-right text-white" x-text="$store.currency.format(current.daily * 5)"></td>
+                                    <td class="py-2.5 text-right text-emerald-400">Paid to Wallet</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-2.5 text-slate-300">Day 10</td>
+                                    <td class="py-2.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.daily)"></td>
+                                    <td class="py-2.5 text-right text-white" x-text="$store.currency.format(current.daily * 10)"></td>
+                                    <td class="py-2.5 text-right text-emerald-400">Paid to Wallet</td>
+                                </tr>
+                                <tr class="hover:bg-white/[0.02] bg-emerald-500/[0.04]">
+                                    <td class="py-2.5 text-[#FFD700] font-bold">End of <span x-text="current.duration"></span> Days</td>
+                                    <td class="py-2.5 text-right text-emerald-400 font-bold" x-text="$store.currency.format(current.daily)"></td>
+                                    <td class="py-2.5 text-right text-[#FFD700] font-bold" x-text="$store.currency.format(current.totalProfit)"></td>
+                                    <td class="py-2.5 text-right text-emerald-400 font-bold">Full Payout Ready</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </template>
+
+            </div>
+
+            <!-- ─── RIGHT: EASY PAYMENT BOX (5 Cols) ─── -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+                    
+                    <div class="border-b border-white/10 pb-3">
+                        <h2 class="text-lg font-bold text-white font-tech uppercase">Step 1: Choose How to Pay</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Select your preferred payment method below.</p>
+                    </div>
+
+                    <!-- Payment Selector -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" @click="paymentMethod = 'wallet'"
+                            class="p-3 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 cursor-pointer"
+                            :class="paymentMethod === 'wallet' ? 'border-[#FFD700] bg-[#FFD700]/10 text-white' : 'border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05]'">
+                            <span class="text-xs font-bold font-tech">Wallet</span>
+                            <span class="text-[9px] font-mono text-slate-400" x-text="$store.currency.format(balance)"></span>
+                        </button>
+
+                        <button type="button" @click="paymentMethod = 'mpesa'"
+                            class="p-3 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 cursor-pointer"
+                            :class="paymentMethod === 'mpesa' ? 'border-[#FFD700] bg-[#FFD700]/10 text-white' : 'border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05]'">
+                            <span class="text-xs font-bold font-tech">M-Pesa Prompt</span>
+                            <span class="text-[9px] font-mono text-emerald-400 font-bold">Auto PIN</span>
+                        </button>
+
+                        <button type="button" @click="paymentMethod = 'paybill'"
+                            class="p-3 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 cursor-pointer"
+                            :class="paymentMethod === 'paybill' ? 'border-[#FFD700] bg-[#FFD700]/10 text-white' : 'border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05]'">
+                            <span class="text-xs font-bold font-tech">Paybill</span>
+                            <span class="text-[9px] font-mono text-[#FFD700] font-bold">Paste SMS</span>
+                        </button>
+                    </div>
+
+                    <!-- M-Pesa STK Prompt Form -->
+                    <div x-show="paymentMethod === 'mpesa'" x-transition class="space-y-3 pt-2">
+                        <label class="block text-xs font-semibold text-slate-300">Enter your M-Pesa Phone Number:</label>
+                        <input type="tel" x-model="mpesaPhone" placeholder="e.g. 0712345678"
+                            class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                        <p class="text-xs text-slate-400 leading-relaxed font-light">
+                            When you slide below, you will get an M-Pesa popup on your phone asking for your PIN.
+                        </p>
+                    </div>
+
+                    <!-- M-Pesa Paybill Manual Form -->
+                    <div x-show="paymentMethod === 'paybill'" x-transition class="space-y-4 pt-2">
+                        
+                        <!-- Paybill Box with Copy Buttons -->
+                        <div class="bg-black/60 border border-[#FFD700]/30 rounded-xl p-4 space-y-3">
+                            <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                                <span class="text-xs font-bold text-[#FFD700] uppercase font-tech">M-Pesa Paybill Details</span>
+                                <template x-if="copiedNotice">
+                                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full" x-text="'Copied ' + copiedNotice + '!'"></span>
+                                </template>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2.5 text-xs font-mono">
+                                <div class="bg-white/[0.03] border border-white/10 rounded-lg p-2.5 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 uppercase block">Business No</span>
+                                        <span class="text-sm font-bold text-white" x-text="paybillNumber">522533</span>
+                                    </div>
+                                    <button type="button" @click="copyToClipboard(paybillNumber, 'Paybill')" class="px-2 py-1 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 text-[#FFD700] text-[10px] font-bold rounded uppercase cursor-pointer transition">
+                                        Copy
+                                    </button>
+                                </div>
+
+                                <div class="bg-white/[0.03] border border-white/10 rounded-lg p-2.5 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 uppercase block">Account No</span>
+                                        <span class="text-sm font-bold text-white" x-text="paybillAccount">8106675</span>
+                                    </div>
+                                    <button type="button" @click="copyToClipboard(paybillAccount, 'Account')" class="px-2 py-1 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 text-[#FFD700] text-[10px] font-bold rounded uppercase cursor-pointer transition">
+                                        Copy
+                                    </button>
+                                </div>
+
+                                <div class="bg-white/[0.03] border border-white/10 rounded-lg p-2.5 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 uppercase block">Account Name</span>
+                                        <span class="text-xs font-bold text-[#FFD700]" x-text="paybillAccName">JASPER MARKETS</span>
+                                    </div>
+                                    <button type="button" @click="copyToClipboard(paybillAccName, 'Account Name')" class="px-2 py-1 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 text-[#FFD700] text-[10px] font-bold rounded uppercase cursor-pointer transition">
+                                        Copy
+                                    </button>
+                                </div>
+
+                                <div class="bg-white/[0.03] border border-white/10 rounded-lg p-2.5 flex justify-between items-center">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 uppercase block">Exact Amount</span>
+                                        <span class="text-xs font-bold text-emerald-400" x-text="'KSh ' + current.price.toLocaleString()"></span>
+                                    </div>
+                                    <button type="button" @click="copyToClipboard(current.price.toString(), 'Amount')" class="px-2 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded uppercase cursor-pointer transition">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4 Simple Steps -->
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1 text-xs text-slate-300 font-light">
+                            <span class="text-[10px] font-mono text-slate-400 uppercase font-bold block">How to Pay on Your Phone:</span>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300">
+                                <li>Go to M-PESA &rarr; Lipa na M-PESA &rarr; Paybill <strong class="text-[#FFD700] font-mono">522533</strong>.</li>
+                                <li>Account Number: <strong class="text-[#FFD700] font-mono">8106675</strong>.</li>
+                                <li>Amount: <strong class="text-emerald-400 font-mono" x-text="'KSh ' + current.price.toLocaleString()"></strong>.</li>
+                                <li>Enter PIN and confirm name is <strong class="text-white">JASPER MARKETS</strong>.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Paste SMS Box -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs font-semibold text-slate-300">Paste M-Pesa Message Here:</label>
+                                <template x-if="extractedMpesaCode">
+                                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                                        ✓ Code: <span x-text="extractedMpesaCode"></span>
+                                    </span>
+                                </template>
+                            </div>
+                            <textarea x-model="mpesaMessage" @input="parsePastedMessage($event.target.value)" rows="3"
+                                placeholder="Paste the SMS you received from M-PESA here..."
+                                class="w-full glass-input rounded-xl p-3 text-xs font-mono text-white placeholder-slate-600 leading-relaxed"></textarea>
+                        </div>
+
+                        <!-- Instant WhatsApp Support CTA -->
+                        <div class="bg-purple-950/20 border border-purple-500/30 rounded-xl p-3 flex items-center justify-between gap-3">
+                            <span class="text-xs text-slate-300">Need instant activation?</span>
+                            <a :href="whatsappSupportUrl" target="_blank"
+                                class="px-3.5 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-lg transition uppercase flex items-center gap-1.5 shrink-0">
+                                <span>💬 WhatsApp Support</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ─── SLIDE TO RENT CONFIRMATION ─── -->
+                    <div class="pt-4 border-t border-white/10">
+                        <template x-if="isConfirming">
+                            <div class="flex flex-col items-center justify-center py-4 space-y-4 text-center">
+                                <span class="w-9 h-9 border-4 border-[#FFD700] border-t-transparent rounded-full animate-spin"></span>
+                                <div class="space-y-1">
+                                    <h4 class="text-sm font-bold text-white font-tech uppercase">Checking Payment...</h4>
+                                    <p class="text-xs text-slate-300 font-light" x-show="mpesaStatus === 'pending_manual'">Message received! Our team is verifying your payment.</p>
+                                    <p class="text-xs text-slate-300 font-light" x-show="mpesaStatus === 'pending'">Please enter your M-Pesa PIN on your phone.</p>
+                                    <p class="text-xs text-emerald-400 font-bold" x-show="mpesaStatus === 'success'">Payment confirmed! Starting your machine...</p>
+                                    <p class="text-xs text-red-500 font-bold" x-show="mpesaStatus === 'failed'" x-text="mpesaFailureReason"></p>
+                                </div>
+
+                                <template x-if="paymentMethod === 'paybill'">
+                                    <a :href="whatsappSupportUrl" target="_blank"
+                                        class="w-full py-2.5 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/30 text-xs font-bold transition rounded-xl flex items-center justify-center gap-2 cursor-pointer">
+                                        <span>💬 Click here for fast WhatsApp approval</span>
+                                    </a>
+                                </template>
+                            </div>
+                        </template>
+
+                        <template x-if="!isConfirming">
+                            <div class="space-y-3">
+                                <p class="text-center text-xs font-semibold text-slate-400">
+                                    <span x-show="paymentMethod === 'paybill'">Slide to Submit Payment for Approval</span>
+                                    <span x-show="paymentMethod !== 'paybill'">Slide to Confirm & Rent Machine</span>
+                                </p>
+                                
+                                <div class="relative w-full h-14 bg-black/60 border border-white/15 rounded-2xl overflow-hidden flex items-center justify-center group">
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none text-xs font-bold font-tech text-slate-300 group-hover:text-white transition"
+                                         x-text="paymentMethod === 'paybill' ? 'SLIDE TO SUBMIT PAYMENT' : 'SLIDE TO RENT MACHINE'">
+                                    </div>
+                                    
+                                    <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-purple-500/20 to-emerald-500/20" :style="'width: ' + sliderValue + '%'"></div>
+                                    
+                                    <input type="range" min="0" max="100" x-model="sliderValue" @input="handleSlider"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize">
+                                    
+                                    <div class="absolute left-1 top-1 bottom-1 w-12 rounded-xl bg-[#FFD700] flex items-center justify-center transition-all duration-75 pointer-events-none shadow-[0_0_15px_rgba(255,215,0,0.3)] text-black font-extrabold text-sm"
+                                        :style="'left: calc(' + sliderValue + '% * 0.85 + 4px)'">
+                                        →
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </main>
+
+    <!-- ─── FLOATING 24/7 WHATSAPP SUPPORT WIDGET (NO RAW NUMBER DISPLAYED) ─── -->
+    <aside aria-label="Official Customer Support" class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/447455909204?text=Hello%20XM%20Support,%20I%20need%20assistance%20with%20renting%20a%20mining%20machine."
+           target="_blank"
+           class="flex items-center space-x-2 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-tech text-xs font-black uppercase tracking-wider rounded-full shadow-[0_6px_25px_rgba(37,211,102,0.45)] transition-all transform hover:-translate-y-1 group">
+            <svg class="w-5 h-5 text-black shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span class="text-black font-tech">Live Support</span>
+        </a>
+    </aside>
 
 </body>
 

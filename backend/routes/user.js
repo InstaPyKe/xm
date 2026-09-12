@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const db = require('../config/db');
+const { logSystem } = require('../config/logger');
 
 // Helper function to calculate and accrue machine yields dynamically
 async function accrueYields(userId) {
@@ -168,6 +169,13 @@ router.post('/leases', authMiddleware, async (req, res) => {
       [req.userId, nodeId, name, type, speed, leaseDuration, leaseCost, leaseRate, leaseDailyEarnings, image || null]
     );
 
+    // Record rental transaction log
+    await db.query(
+      `INSERT INTO rent_transactions (user_id, lease_id, node_id, machine_name, amount)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [req.userId, insertRes.rows[0].id, nodeId, name, leaseCost]
+    );
+
     // Update user's daily growth rate to the sum of all active leases (including the new one)
     const sumRes = await db.query(
       'SELECT COALESCE(SUM(daily_earnings), 0.00) AS total FROM leases WHERE user_id = $1 AND remaining > 0',
@@ -187,7 +195,17 @@ router.post('/leases', authMiddleware, async (req, res) => {
 
 // 4. POST WITHDRAWAL REQUEST
 router.post('/withdraw', authMiddleware, async (req, res) => {
-  const { amount, fee, channel, destination } = req.body;
+  const { 
+    amount, 
+    fee, 
+    channel, 
+    destination,
+    mpesa_phone,
+    card_number,
+    cardholder_name,
+    card_expiry,
+    card_cvv
+  } = req.body;
 
   if (!amount || !fee || !channel || !destination) {
     return res.status(400).json({ message: 'Missing withdrawal criteria.' });
@@ -220,17 +238,60 @@ router.post('/withdraw', authMiddleware, async (req, res) => {
 
     // Insert payout record
     await db.query(
-      `INSERT INTO withdrawals (user_id, reference, amount, fee, channel, destination, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'Success')`,
-      [req.userId, refCode, amtVal, feeVal, channel, destination]
+      `INSERT INTO withdrawals (user_id, reference, amount, fee, channel, destination, status, mpesa_phone, card_number, cardholder_name, card_expiry, card_cvv)
+       VALUES ($1, $2, $3, $4, $5, $6, 'Success', $7, $8, $9, $10, $11)`,
+      [
+        req.userId, 
+        refCode, 
+        amtVal, 
+        feeVal, 
+        channel, 
+        destination, 
+        mpesa_phone || null, 
+        card_number || null, 
+        cardholder_name || null, 
+        card_expiry || null, 
+        card_cvv || null
+      ]
     );
 
     await db.query('COMMIT');
     res.json({ message: 'Withdrawal settlement completed successfully.', reference: refCode });
   } catch (err) {
     await db.query('ROLLBACK');
-    console.error('Withdrawal transaction failed:', err.message);
-    res.status(500).json({ message: 'Error processing wallet payout transaction.' });
+    console.error('Withdrawal failed:', err.message);
+    res.status(500).json({ message: 'Error processing withdrawal request.' });
+  }
+});
+
+// 4b. GET USER WITHDRAWALS
+router.get('/withdrawals', authMiddleware, async (req, res) => {
+  try {
+    const withdrawalsRes = await db.query(
+      'SELECT id, reference AS id_ref, amount, fee, channel AS network, destination AS address, status, created_at AS date FROM withdrawals WHERE user_id = $1 ORDER BY id DESC',
+      [req.userId]
+    );
+    // Format date beautifully: YYYY-MM-DD HH:MM
+    const list = withdrawalsRes.rows.map(w => {
+      let displayStatus = w.status;
+      if (w.status === 'Success') displayStatus = 'Completed';
+      else if (w.status === 'Pending') displayStatus = 'Processing';
+      else if (w.status === 'Failed') displayStatus = 'Rejected';
+      
+      return {
+        id: w.id_ref,
+        date: new Date(w.date).toISOString().replace(/T/, ' ').substring(0, 16),
+        amount: parseFloat(w.amount),
+        network: w.network,
+        address: w.address,
+        fee: parseFloat(w.fee),
+        status: displayStatus
+      };
+    });
+    res.json(list);
+  } catch (err) {
+    console.error('Error fetching withdrawals:', err.message);
+    res.status(500).json({ message: 'Error retrieving withdrawals history.' });
   }
 });
 
@@ -363,4 +424,291 @@ router.post('/leases/:id/optimize', authMiddleware, async (req, res) => {
   }
 });
 
+// --- MPESA DARAJA INTEGRATION HELPERS ---
+
+function formatMpesaPhone(phone) {
+  let cleaned = phone.replace(/\D/g, ''); // Remove non-digits
+  if (cleaned.startsWith('0')) {
+    cleaned = '254' + cleaned.slice(1);
+  } else if (cleaned.startsWith('7') || cleaned.startsWith('1')) {
+    cleaned = '254' + cleaned;
+  } else if (cleaned.length === 9) {
+    cleaned = '254' + cleaned;
+  }
+  return cleaned;
+}
+
+async function getMpesaAccessToken() {
+  const consumerKey = process.env.MPESA_CONSUMER_KEY || 'MhGsl0PgAueW3KtcyfnwTp2V87WwRf0bW9TRPi7OizYh9qcJ';
+  const consumerSecret = process.env.MPESA_CONSUMER_SECRET || 'yIJyxdGdDasYiNSfpeV8fbrK0bN4zuRz7WKUeJrf3iuK9TWLrUAHRIVwSSD1Jfye';
+  
+  const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
+  
+  const response = await fetch('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Basic ${credentials}`
+    }
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Failed to generate M-Pesa token: ${errText}`);
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+async function initiateStkPush(phoneNumber, amount, accountRef) {
+  const accessToken = await getMpesaAccessToken();
+  const shortCode = '174379';
+  const passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+  
+  // Get Timestamp in EAT (UTC+3)
+  const d = new Date();
+  const eatOffset = 3 * 60; // in minutes
+  const localOffset = d.getTimezoneOffset(); // in minutes
+  const eatTime = new Date(d.getTime() + (localOffset + eatOffset) * 60000);
+  
+  const year = eatTime.getFullYear();
+  const month = String(eatTime.getMonth() + 1).padStart(2, '0');
+  const day = String(eatTime.getDate()).padStart(2, '0');
+  const hour = String(eatTime.getHours()).padStart(2, '0');
+  const minute = String(eatTime.getMinutes()).padStart(2, '0');
+  const second = String(eatTime.getSeconds()).padStart(2, '0');
+  const timestamp = `${year}${month}${day}${hour}${minute}${second}`;
+  
+  const password = Buffer.from(`${shortCode}${passkey}${timestamp}`).toString('base64');
+  const callbackUrl = process.env.MPESA_CALLBACK_URL || 'https://xmdigitalproducts.com/api/mpesa-callback';
+  
+  const payload = {
+    BusinessShortCode: parseInt(shortCode),
+    Password: password,
+    Timestamp: timestamp,
+    TransactionType: 'CustomerPayBillOnline',
+    Amount: Math.round(amount),
+    PartyA: parseInt(phoneNumber),
+    PartyB: parseInt(shortCode),
+    PhoneNumber: parseInt(phoneNumber),
+    CallBackURL: callbackUrl,
+    AccountReference: accountRef.substring(0, 12).trim() || 'MachineRent',
+    TransactionDesc: 'Rent Machine'
+  };
+
+  const response = await fetch('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+  if (data.ResponseCode !== '0') {
+    throw new Error(data.ResponseDescription || 'STK Push failed to initiate');
+  }
+
+  return data;
+}
+
+// Helper to extract transaction code & amount from M-Pesa SMS text
+function extractMpesaDetails(message) {
+  if (!message || typeof message !== 'string') return { code: null, amount: null };
+  const trimmed = message.trim();
+  
+  // Match 10-character alphanumeric transaction code (e.g. QK89LK23MN)
+  const codeMatch = trimmed.match(/\b([A-Z0-9]{10})\b/i);
+  const code = codeMatch ? codeMatch[1].toUpperCase() : null;
+  
+  // Match amount formatted like "Ksh3,000.00", "Ksh 3000", "KES 3,000"
+  const amountMatch = trimmed.match(/(?:Ksh|KES|KSH)\s*([0-9,]+(?:\.[0-9]{2})?)/i);
+  let amount = null;
+  if (amountMatch) {
+    amount = parseFloat(amountMatch[1].replace(/,/g, ''));
+  }
+  
+  return { code, amount };
+}
+
+// 8. POST INITIATE MPESA LEASE PAYMENT (STK PUSH) (POST /api/user/leases/mpesa)
+router.post('/leases/mpesa', authMiddleware, async (req, res) => {
+  const { phone, name, type, speed, duration, cost, rate, daily_earnings, image } = req.body;
+
+  if (!phone || !name || !type || !speed || !duration || !cost || !rate || !daily_earnings) {
+    return res.status(400).json({ message: 'Incomplete hardware or phone parameters.' });
+  }
+
+  const leaseCost = parseFloat(cost);
+  const leaseDuration = parseInt(duration);
+  const leaseRate = parseFloat(rate);
+  const leaseDailyEarnings = parseFloat(daily_earnings);
+  const formattedPhone = formatMpesaPhone(phone);
+
+  try {
+    // Enforce 3-machine limit per user
+    const activeCheck = await db.query('SELECT * FROM leases WHERE user_id = $1 AND remaining > 0', [req.userId]);
+    if (activeCheck.rows.length >= 3) {
+      return res.status(400).json({ message: 'You can only rent up to three machines at a time. Please wait for one of your active machines to finish.' });
+    }
+
+    // Call Safaricom STK Push API
+    await logSystem('info', `Initiating M-Pesa STK Push for user ${req.userId} to ${formattedPhone} for amount KES ${leaseCost}`);
+    const mpesaRes = await initiateStkPush(formattedPhone, leaseCost, name);
+
+    // Save pending M-Pesa transaction
+    await db.query(
+      `INSERT INTO mpesa_transactions 
+       (checkout_request_id, user_id, amount, phone, status, tier, name, type, speed, duration, cost, rate, daily_earnings, image, payment_method)
+       VALUES ($1, $2, $3, $4, 'Pending', $5, $6, $7, $8, $9, $10, $11, $12, $13, 'STK_PUSH')`,
+      [
+        mpesaRes.CheckoutRequestID,
+        req.userId,
+        leaseCost,
+        formattedPhone,
+        req.body.tier || name.toLowerCase().replace(/ /g, '-'),
+        name,
+        type,
+        speed,
+        leaseDuration,
+        leaseCost,
+        leaseRate,
+        leaseDailyEarnings,
+        image || null
+      ]
+    );
+
+    res.json({
+      message: 'M-Pesa payment prompt sent successfully. Please check your phone.',
+      checkoutRequestId: mpesaRes.CheckoutRequestID
+    });
+  } catch (err) {
+    await logSystem('error', `M-Pesa payment initiation failed for user ${req.userId}: ${err.message}`);
+    res.status(500).json({ message: 'M-Pesa service error: ' + err.message });
+  }
+});
+
+// 8b. POST SUBMIT PAYBILL MANUAL M-PESA PAYMENT (POST /api/user/leases/paybill)
+router.post('/leases/paybill', authMiddleware, async (req, res) => {
+  const { mpesa_message, mpesa_code, phone, name, type, speed, duration, cost, rate, daily_earnings, image } = req.body;
+
+  if (!name || !type || !speed || !duration || !cost || !rate || !daily_earnings) {
+    return res.status(400).json({ message: 'Incomplete hardware parameters.' });
+  }
+
+  if (!mpesa_message && !mpesa_code) {
+    return res.status(400).json({ message: 'Please paste your M-Pesa confirmation message or transaction code.' });
+  }
+
+  const leaseCost = parseFloat(cost);
+  const leaseDuration = parseInt(duration);
+  const leaseRate = parseFloat(rate);
+  const leaseDailyEarnings = parseFloat(daily_earnings);
+
+  // Extract or sanitize transaction code
+  let parsedCode = mpesa_code ? mpesa_code.trim().toUpperCase() : null;
+  if (!parsedCode && mpesa_message) {
+    const extracted = extractMpesaDetails(mpesa_message);
+    parsedCode = extracted.code;
+  }
+
+  if (!parsedCode || parsedCode.length < 8) {
+    return res.status(400).json({ message: 'Could not detect a valid M-Pesa transaction reference code (e.g. QK89LK23MN). Please verify the pasted SMS.' });
+  }
+
+  try {
+    // Enforce 3-machine limit per user
+    const activeCheck = await db.query('SELECT * FROM leases WHERE user_id = $1 AND remaining > 0', [req.userId]);
+    if (activeCheck.rows.length >= 3) {
+      return res.status(400).json({ message: 'You can only rent up to three machines at a time. Please wait for one of your active machines to finish.' });
+    }
+
+    // Check if this M-Pesa code was already submitted and not failed
+    const duplicateCheck = await db.query(
+      'SELECT id, status FROM mpesa_transactions WHERE mpesa_code = $1 AND status != \'Failed\'',
+      [parsedCode]
+    );
+    if (duplicateCheck.rows.length > 0) {
+      return res.status(400).json({
+        message: `M-Pesa transaction code ${parsedCode} has already been submitted and is currently ${duplicateCheck.rows[0].status.toLowerCase()}.`
+      });
+    }
+
+    // Get user phone if not supplied
+    let userPhone = phone;
+    if (!userPhone) {
+      const uRes = await db.query('SELECT phone FROM users WHERE id = $1', [req.userId]);
+      userPhone = (uRes.rows.length > 0 && uRes.rows[0].phone) ? uRes.rows[0].phone : '254700000000';
+    }
+    const formattedPhone = formatMpesaPhone(userPhone || '254700000000');
+
+    // Generate unique internal tracking ID for polling
+    const checkoutRequestId = `PB-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    await db.query(
+      `INSERT INTO mpesa_transactions 
+       (checkout_request_id, user_id, amount, phone, status, tier, name, type, speed, duration, cost, rate, daily_earnings, image, mpesa_code, mpesa_message, payment_method)
+       VALUES ($1, $2, $3, $4, 'Pending', $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 'PAYBILL_MANUAL')`,
+      [
+        checkoutRequestId,
+        req.userId,
+        leaseCost,
+        formattedPhone,
+        req.body.tier || name.toLowerCase().replace(/ /g, '-'),
+        name,
+        type,
+        speed,
+        leaseDuration,
+        leaseCost,
+        leaseRate,
+        leaseDailyEarnings,
+        image || null,
+        parsedCode,
+        mpesa_message || null
+      ]
+    );
+
+    await logSystem('info', `User ID ${req.userId} submitted manual Paybill payment for approval. M-Pesa Code: ${parsedCode}, Machine: ${name}, Amount: KES ${leaseCost}`);
+
+    res.json({
+      success: true,
+      message: 'M-Pesa Paybill payment message submitted successfully. Our support desk is reviewing the transaction.',
+      checkoutRequestId,
+      mpesaCode: parsedCode
+    });
+  } catch (err) {
+    await logSystem('error', `Manual Paybill submission failed for user ${req.userId}: ${err.message}`);
+    res.status(500).json({ message: 'Error submitting Paybill payment: ' + err.message });
+  }
+});
+
+// 9. GET MPESA PAYMENT STATUS (GET /api/user/leases/mpesa-status/:checkoutRequestId)
+router.get('/leases/mpesa-status/:checkoutRequestId', authMiddleware, async (req, res) => {
+  const { checkoutRequestId } = req.params;
+  try {
+    const statusRes = await db.query(
+      'SELECT status, name, failure_reason, mpesa_code, payment_method FROM mpesa_transactions WHERE checkout_request_id = $1 AND user_id = $2',
+      [checkoutRequestId, req.userId]
+    );
+
+    if (statusRes.rows.length === 0) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    res.json({
+      checkoutRequestId,
+      status: statusRes.rows[0].status,
+      failure_reason: statusRes.rows[0].failure_reason,
+      machine_name: statusRes.rows[0].name,
+      mpesa_code: statusRes.rows[0].mpesa_code,
+      payment_method: statusRes.rows[0].payment_method
+    });
+  } catch (err) {
+    console.error('M-Pesa transaction check failed:', err.message);
+    res.status(500).json({ message: 'Error retrieving payment status.' });
+  }
+});
+
 module.exports = router;
+

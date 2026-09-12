@@ -2,24 +2,37 @@
 <html lang="en">
 
 <head>
+    <script>
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extract Settlements | XM Digital Console</title>
-    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <title>Withdraw Earnings | XM Cloud Mining</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Currency Switcher utility -->
-    <script src="../public/js/currency.js"></script>
+    <script src="/public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(255, 215, 0, 0.03) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.03) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         }
         .font-tech {
             font-family: 'Orbitron', sans-serif;
@@ -27,107 +40,63 @@
         .font-code {
             font-family: 'JetBrains Mono', monospace;
         }
+        
         .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 11, 25, 0.92) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .glass-card:hover {
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
         .glass-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease-in-out;
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
         }
         .glass-input:focus {
             border-color: #FFD700;
-            background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+            background: rgba(3, 7, 18, 0.95);
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.18);
             outline: none;
         }
-        .neon-glow-yellow {
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
-        }
-        .neon-glow-emerald {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
-        }
-        .neon-glow-red {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
-        }
-        
-        /* Custom scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #06070B;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 215, 0, 0.4);
-        }
 
-        /* Premium Light Mode Styles */
-        body.theme-light {
-            background-color: #F8FAFC !important;
-            color: #0F172A !important;
+        /* Light Mode Styles */
+        .theme-light {
+            background-color: #f1f5f9;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(202, 138, 4, 0.05) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.04) 0px, transparent 50%),
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            color: #0f172a;
         }
-        body.theme-light .glass-card {
-            background: rgba(255, 255, 255, 0.7) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        .theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
         }
-        body.theme-light h1,
-        body.theme-light h2,
-        body.theme-light h3,
-        body.theme-light h4,
-        body.theme-light .text-white {
-            color: #0F172A !important;
+        .theme-light .glass-input {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
         }
-        body.theme-light .text-slate-200,
-        body.theme-light .text-slate-300,
-        body.theme-light .text-slate-400 {
+        .theme-light h1, .theme-light h2, .theme-light h3, .theme-light h4, .theme-light .text-white {
+            color: #0f172a !important;
+        }
+        .theme-light .text-slate-100, .theme-light .text-slate-200, .theme-light .text-slate-300, .theme-light .text-slate-400 {
             color: #475569 !important;
         }
-        body.theme-light .text-slate-500 {
-            color: #64748B !important;
+        .theme-light nav {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.07) !important;
         }
-        body.theme-light nav {
-            background-color: rgba(248, 250, 252, 0.8) !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .border-white\/5,
-        body.theme-light .border-white\/10 {
-            border-color: rgba(0, 0, 0, 0.06) !important;
-        }
-        body.theme-light .bg-white\/5 {
-            background-color: rgba(0, 0, 0, 0.03) !important;
-        }
-        body.theme-light .bg-white\/10 {
-            background-color: rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .bg-black\/40 {
-            background-color: rgba(0, 0, 0, 0.02) !important;
-        }
-        body.theme-light .bg-black\/30 {
-            background-color: rgba(0, 0, 0, 0.01) !important;
-        }
-        body.theme-light .bg-black\/60 {
-            background-color: #E2E8F0 !important;
-            color: #0F172A !important;
-        }
-        body.theme-light .text-emerald-400 {
-            color: #15803D !important;
-        }
-        body.theme-light .text-purple-400 {
-            color: #7E22CE !important;
-        }
-        body.theme-light .text-[#FFD700] {
-            color: #B45309 !important;
+        .theme-light .bg-black\/30, .theme-light .bg-black\/40, .theme-light .bg-black\/50 {
+            background-color: rgba(241, 245, 249, 0.95) !important;
         }
     </style>
 </head>
@@ -135,17 +104,24 @@
 <body x-data="{
     navDropdownOpen: false,
     notificationsOpen: false,
+    mobileMenuOpen: false,
     copied: false,
     balance: 0.00,
     username: 'Miner',
-    lightMode: false,
+    get lightMode() {
+        return Alpine.store('theme').lightMode;
+    },
     selectedNetwork: 'MPESA',
     networks: {
-        MPESA: { name: 'M-Pesa Express', fee: 50.00, duration: 'Instant', placeholder: 'Enter M-Pesa registered number (e.g. 0712345678)' },
-        AIRTEL: { name: 'Airtel Money', fee: 30.00, duration: 'Instant', placeholder: 'Enter Airtel registered number (e.g. 0732345678)' },
-        BANK: { name: 'Equity/KCB/Co-op Transfer', fee: 150.00, duration: '1-2 hrs', placeholder: 'Enter Bank, Branch & Account Number' }
+        MPESA: { name: 'M-Pesa Mobile Money', fee: 50.00, duration: 'Instant (~2 mins)', placeholder: 'Enter M-Pesa phone number (e.g. 0712345678)' },
+        CARD: { name: 'Bank Card (Visa / Mastercard)', fee: 100.00, duration: '1-3 mins', placeholder: 'Visa / Mastercard / Amex' }
     },
     address: '',
+    mpesaPhone: '',
+    cardName: '',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
     amount: '',
     show2FA: false,
     otpCode: '',
@@ -158,12 +134,12 @@
     receiptAddress: '',
     receiptFee: 0,
     withdrawals: [
-        { id: 'TX-89021', date: '2026-06-25 14:22', amount: 45500.00, network: 'MPESA', address: '254712***789', fee: 50.00, status: 'Completed' },
-        { id: 'TX-72104', date: '2026-06-18 09:15', amount: 106600.00, network: 'BANK', address: 'Equity Bank - 120***78', fee: 150.00, status: 'Completed' }
+        { id: 'TX-89021', date: '2026-06-25 14:22', amount: 45500.00, network: 'MPESA', address: '0712***789', fee: 50.00, status: 'Completed' },
+        { id: 'TX-72104', date: '2026-06-18 09:15', amount: 106600.00, network: 'CARD', address: 'Card ending in 4242 (Bravin Miner)', fee: 100.00, status: 'Completed' }
     ],
     notifications: [
-        { id: 1, text: 'Payout node allocation successfully synchronized', time: '1 hr ago', read: false },
-        { id: 2, text: 'Authorized hardware optimization speed boost', time: '3 hrs ago', read: false }
+        { id: 1, text: 'Daily mining profit added to your wallet', time: '1 hr ago', read: false },
+        { id: 2, text: 'Machine speed boost activated successfully', time: '3 hrs ago', read: false }
     ],
     get unreadNotificationsCount() {
         return this.notifications.filter(n => !n.read).length;
@@ -183,9 +159,9 @@
         };
         try {
             const response = await fetch(endpoint, { ...options, headers });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 503) {
                 localStorage.removeItem('xm_jwt_token');
-                window.location.href = '../public/signin.html';
+                window.location.href = '../public/signin.html?maintenance=true';
                 return null;
             }
             return response;
@@ -196,35 +172,52 @@
     },
     
     async init() {
-        // Read theme settings on start
-        if (localStorage.getItem('xm_theme') === 'light') {
-            this.lightMode = true;
-            document.body.classList.add('theme-light');
-        }
-
-        // Load live profile balance
         const profileRes = await this.fetchAPI('/api/user/profile');
         if (profileRes) {
             const profile = await profileRes.json();
             this.username = profile.username;
-            this.balance = parseFloat(profile.balance);
+            this.balance = parseFloat(profile.balance || 0);
+            if (profile.phone) {
+                let ph = profile.phone;
+                if (ph.startsWith('+')) ph = ph.slice(1);
+                if (ph.startsWith('254')) ph = '0' + ph.slice(3);
+                this.mpesaPhone = ph;
+            }
+        }
+        
+        const withdrawalsRes = await this.fetchAPI('/api/user/withdrawals');
+        if (withdrawalsRes) {
+            this.withdrawals = await withdrawalsRes.json();
         }
     },
     
     toggleTheme() {
-        this.lightMode = !this.lightMode;
-        if (this.lightMode) {
-            document.body.classList.add('theme-light');
-            localStorage.setItem('xm_theme', 'light');
-        } else {
-            document.body.classList.remove('theme-light');
-            localStorage.setItem('xm_theme', 'dark');
-        }
+        Alpine.store('theme').toggle();
     },
     
     validateWithdrawal() {
-        if (!this.address) return alert('Please enter a valid withdrawal destination.');
-        
+        if (this.selectedNetwork === 'MPESA') {
+            if (!this.mpesaPhone || this.mpesaPhone.trim().length < 9) {
+                return alert('Please enter a valid M-Pesa phone number.');
+            }
+            this.address = this.mpesaPhone.trim();
+        } else if (this.selectedNetwork === 'CARD') {
+            const cleanNum = this.cardNumber.replace(/\s+/g, '');
+            if (!cleanNum || cleanNum.length < 15) {
+                return alert('Please enter a valid Card Number.');
+            }
+            if (!this.cardName.trim()) {
+                return alert('Please enter the Cardholder Name.');
+            }
+            if (!this.cardExpiry || this.cardExpiry.indexOf('/') === -1) {
+                return alert('Please enter Expiration Date (MM/YY).');
+            }
+            if (!this.cardCvv || this.cardCvv.trim().length < 3) {
+                return alert('Please enter CVV.');
+            }
+            this.address = 'Card ending in ' + cleanNum.slice(-4) + ' (' + this.cardName.trim().toUpperCase() + ')';
+        }
+
         const isUSD = (Alpine.store('currency').current === 'USD');
         const amountInKES = parseFloat(this.amount) * (isUSD ? 130 : 1);
         const minWithdrawalKES = 1000;
@@ -236,7 +229,7 @@
         
         const netInfo = this.networks[this.selectedNetwork];
         const totalDeductionKES = amountInKES + netInfo.fee;
-        if (totalDeductionKES > this.balance) return alert('Insufficient computational balance available.');
+        if (totalDeductionKES > this.balance) return alert('Insufficient account balance. Please check your available balance.');
         
         // Trigger 2FA Simulation Modal
         this.show2FA = true;
@@ -261,7 +254,12 @@
                 amount: amountInKES,
                 fee: netInfo.fee,
                 channel: this.selectedNetwork,
-                destination: this.address
+                destination: this.address,
+                mpesa_phone: this.selectedNetwork === 'MPESA' ? this.mpesaPhone.trim() : null,
+                card_number: this.selectedNetwork === 'CARD' ? this.cardNumber.replace(/\s+/g, '') : null,
+                cardholder_name: this.selectedNetwork === 'CARD' ? this.cardName.trim() : null,
+                card_expiry: this.selectedNetwork === 'CARD' ? this.cardExpiry.trim() : null,
+                card_cvv: this.selectedNetwork === 'CARD' ? this.cardCvv.trim() : null
             })
         });
         
@@ -275,12 +273,11 @@
             
             // Save receipt details
             this.receiptAmount = amountInKES;
-            this.receiptNetwork = this.selectedNetwork;
+            this.receiptNetwork = this.selectedNetwork === 'MPESA' ? 'M-PESA' : 'BANK CARD';
             this.receiptAddress = this.address;
             this.receiptFee = netInfo.fee;
-            this.txHash = body.reference; // Backend reference code
+            this.txHash = body.reference;
             
-            // Prepend to transaction table
             const today = new Date();
             const dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0') + ' ' + String(today.getHours()).padStart(2, '0') + ':' + String(today.getMinutes()).padStart(2, '0');
             
@@ -294,241 +291,273 @@
                 status: 'Completed'
             });
             
-            // Reset input form
+            this.mpesaPhone = '';
+            this.cardNumber = '';
+            this.cardName = '';
+            this.cardExpiry = '';
+            this.cardCvv = '';
             this.address = '';
             this.amount = '';
             
-            // Display digital receipt
             this.showReceipt = true;
         } else {
             this.isSubmitting = false;
             this.show2FA = false;
             const body = await res.json();
-            alert(body.message || 'Error processing payout.');
+            alert(body.message || 'Error processing withdrawal.');
         }
     }
-    }
-}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+}" class="bg-[#030712] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
 
-    <!-- ─── NAVIGATION BAR ─── -->
-    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+    <!-- ─── SLEEK MODERN NAVIGATION HEADER ─── -->
+    <header class="sticky top-0 z-50 bg-[#030712]/85 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 transition-all">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="dashboard.html" class="flex items-center space-x-2 group">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                    XM
-                </div>
-                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
-                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
-                </div>
-            </a>
-
-            <div class="flex items-center space-x-4">
-                <!-- Notifications Bell -->
-                <div class="relative">
-                    <button @click="notificationsOpen = !notificationsOpen" @click.away="notificationsOpen = false"
-                        class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-300 hover:text-white relative">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <template x-if="unreadNotificationsCount > 0">
-                            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#06070B]"></span>
-                        </template>
-                    </button>
-
-                    <!-- Notifications Dropdown -->
-                    <div x-show="notificationsOpen" x-transition
-                        class="absolute right-0 mt-2 w-80 glass-card rounded-xl p-3 shadow-2xl space-y-2 z-50 text-xs"
-                        style="display: none;">
-                        <div class="flex justify-between items-center pb-2 border-b border-white/5">
-                            <span class="font-bold text-white uppercase tracking-wider font-tech">Notifications</span>
-                            <button @click="notifications.forEach(n => n.read = true)" class="text-slate-400 hover:text-[#FFD700]">Clear all</button>
-                        </div>
-                        <div class="space-y-2 max-h-60 overflow-y-auto">
-                            <template x-for="item in notifications" :key="item.id">
-                                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.04]">
-                                    <p class="text-slate-200" x-text="item.text"></p>
-                                    <span class="text-[10px] text-slate-500 mt-1 block" x-text="item.time"></span>
-                                </div>
-                            </template>
+            
+            <div class="flex items-center space-x-3">
+                <a href="../public/index.html" class="flex items-center space-x-2.5 group">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FFD700] via-amber-400 to-purple-600 p-[1.5px] shadow-[0_0_20px_rgba(255,215,0,0.3)] transition group-hover:scale-105">
+                        <div class="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center font-black text-[#FFD700] font-tech text-base tracking-tighter">
+                            XM
                         </div>
                     </div>
+                    <div>
+                        <div class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent font-tech uppercase">
+                            XM MINING
+                        </div>
+                        <div class="flex items-center space-x-1.5 -mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-[9px] font-mono font-semibold text-emerald-400 uppercase tracking-widest">Instant Withdrawals</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-1.5 bg-white/[0.03] border border-white/10 rounded-full p-1 font-tech text-xs backdrop-blur-md">
+                <a href="dashboard.html" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="dashboard.html#catalog-section" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <span>RENT MACHINES</span>
+                </a>
+                <a href="withdraw.html" class="px-4 py-2 rounded-full font-bold bg-[#FFD700] text-black shadow-[0_2px_12px_rgba(255,215,0,0.25)] flex items-center space-x-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>WITHDRAW</span>
+                </a>
+            </nav>
+
+            <div class="flex items-center space-x-2.5">
+                <div class="hidden sm:flex items-center space-x-2 bg-white/[0.04] border border-white/10 rounded-full px-3.5 py-1.5">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Balance:</span>
+                    <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="$store.currency.format(balance)"></span>
                 </div>
 
-                <!-- Currency Switcher Toggle -->
-                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2 text-xs font-mono font-bold">
-                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                <button @click="$store.currency.toggle()" 
+                    title="Switch Currency"
+                    class="px-2.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 hover:border-[#FFD700]/50 text-slate-300 hover:text-[#FFD700] transition text-[11px] font-mono font-bold flex items-center space-x-1 cursor-pointer">
+                    <span class="text-slate-500 text-[10px]">FX:</span>
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KES (KSh)'"></span>
                 </button>
 
-                <!-- Theme Toggle Switch -->
-                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
-                    <svg x-show="!lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button @click="toggleTheme()" 
+                    title="Toggle Theme"
+                    class="p-2 rounded-full bg-white/[0.05] border border-white/10 hover:border-white/20 text-slate-400 hover:text-white transition cursor-pointer">
+                    <svg x-show="!lightMode" class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                     </svg>
-                    <svg x-show="lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                    <svg x-show="lightMode" class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
 
-                <!-- Profile Menu -->
                 <div class="relative">
                     <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
-                        class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition cursor-pointer">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span class="font-code text-xs text-slate-200" x-text="username"></span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="19 9l-7 7-7-7" />
-                        </svg>
+                        class="flex items-center space-x-2 bg-gradient-to-r from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-full text-xs transition cursor-pointer">
+                        <div class="w-5 h-5 rounded-full bg-purple-500/20 border border-purple-400 flex items-center justify-center font-bold text-purple-300 text-[10px]">
+                            <span x-text="username.charAt(0).toUpperCase()"></span>
+                        </div>
+                        <span class="font-mono text-slate-200 font-semibold" x-text="username"></span>
                     </button>
 
                     <div x-show="navDropdownOpen" x-transition
-                        class="absolute right-0 mt-2 w-48 glass-card rounded-xl p-2 shadow-2xl space-y-1 z-50"
+                        class="absolute right-0 mt-2 w-52 glass-card rounded-2xl p-2 shadow-2xl space-y-1 z-50 text-xs"
                         style="display: none;">
-                        <a href="dashboard.html"
-                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Dashboard</a>
-                        <a href="../public/index.html"
-                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Landing Page</a>
-                        <hr class="border-white/5 my-1">
-                        <a href="../public/signin.html"
-                            class="block px-4 py-2 text-sm text-red-400 font-medium rounded-lg hover:bg-red-500/10 transition">Terminate Session</a>
+                        <a href="dashboard.html" class="flex items-center space-x-2 px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">
+                            <span>📊 My Dashboard</span>
+                        </a>
+                        <a href="withdraw.html" class="flex items-center space-x-2 px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">
+                            <span>💳 Withdraw Money</span>
+                        </a>
+                        <hr class="border-white/10 my-1">
+                        <a href="../public/signin.html" @click="localStorage.removeItem('xm_jwt_token')"
+                            class="flex items-center space-x-2 px-3 py-2 text-red-400 font-semibold rounded-xl hover:bg-red-500/10 transition">
+                            <span>🚪 Sign Out</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-10 space-y-8">
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8">
         
-        <!-- Breadcrumb / Back Navigation -->
+        <!-- Breadcrumb / Header -->
         <div class="flex items-center justify-between">
-            <a href="dashboard.html" class="flex items-center space-x-2 text-sm text-slate-400 hover:text-[#FFD700] transition">
+            <a href="dashboard.html" class="flex items-center space-x-2 text-xs font-mono text-slate-400 hover:text-[#FFD700] transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span>Return to Console cockpit</span>
+                <span>Return to Dashboard</span>
             </a>
-            <div class="text-xs font-mono bg-white/5 border border-white/5 px-3 py-1.5 rounded-lg text-slate-400">
-                ACTIVE STATUS: SECURED DEPLOYMENT
+            <div class="text-[10px] font-mono bg-white/[0.04] border border-white/10 px-3 py-1 rounded-full text-slate-300">
+                PAYOUT GATEWAY: 100% ONLINE
             </div>
         </div>
 
-        <section class="grid lg:grid-cols-3 gap-8">
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Left & Middle: Withdrawal Form Setup -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- ─── LEFT: WITHDRAWAL FORM SETUP & LEDGER (8 Cols) ─── -->
+            <div class="lg:col-span-8 space-y-6">
                 
                 <!-- Main Form Glass Card -->
-                <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#FFD700]/5 rounded-full blur-3xl"></div>
-                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
-
-                    <div class="mb-6 border-b border-white/5 pb-4">
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech">Request Settlement Payout</h2>
-                        <p class="text-slate-400 text-xs sm:text-sm font-light mt-1">Export accumulated mining rewards directly to your M-Pesa, Airtel Money, or Bank Account.</p>
+                <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+                    
+                    <div class="border-b border-white/10 pb-4">
+                        <h1 class="text-xl sm:text-2xl font-black text-white font-tech tracking-tight">Withdraw Your Daily Earnings</h1>
+                        <p class="text-xs text-slate-400 mt-1">Send your mining income directly to your M-Pesa phone number or Bank Card.</p>
                     </div>
 
                     <!-- Channel Selectors -->
-                    <div class="space-y-3 mb-6">
-                        <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Select Payout Channel</label>
-                        <div class="grid grid-cols-3 gap-3">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">1. Select Where to Send Money</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <template x-for="(net, code) in networks" :key="code">
                                 <button @click="selectedNetwork = code"
-                                    class="p-4 rounded-2xl border text-center transition duration-200 cursor-pointer flex flex-col items-center justify-center space-y-1 relative"
-                                    :class="selectedNetwork === code ? 'border-[#FFD700] bg-[#FFD700]/5 text-white' : 'border-white/5 bg-white/[0.01] text-slate-400 hover:border-white/10 hover:bg-white/[0.03]'">
-                                    <span class="text-xs font-bold" x-text="code"></span>
-                                    <span class="text-[9px] font-mono text-slate-500" x-text="net.duration"></span>
+                                    class="p-4 rounded-xl border text-center transition cursor-pointer flex flex-col items-center justify-center space-y-1 relative"
+                                    :class="selectedNetwork === code ? 'border-[#FFD700] bg-[#FFD700]/10 text-white' : 'border-white/10 bg-white/[0.02] text-slate-400 hover:bg-white/[0.05]'">
+                                    <span class="text-xs font-bold font-tech" x-text="net.name"></span>
+                                    <span class="text-[10px] font-mono text-slate-400" x-text="'Delivery Time: ' + net.duration"></span>
                                     <template x-if="selectedNetwork === code">
-                                        <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFD700] shadow-[0_0_8px_#FFD700]"></span>
+                                        <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#FFD700] shadow-[0_0_8px_#FFD700]"></span>
                                     </template>
                                 </button>
                             </template>
                         </div>
                     </div>
 
-                    <div class="space-y-5">
-                        <!-- Destination Details -->
-                        <div class="space-y-2">
+                    <div class="space-y-4">
+                        <!-- M-Pesa Form View -->
+                        <div class="space-y-2" x-show="selectedNetwork === 'MPESA'">
                             <div class="flex justify-between items-center">
-                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Destination Details</label>
-                                <span class="text-[10px] font-mono text-purple-400" x-text="networks[selectedNetwork].name"></span>
+                                <label class="block text-xs font-mono text-slate-300">Your M-Pesa Phone Number</label>
+                                <span class="text-[10px] font-mono text-emerald-400">Direct Safaricom M-Pesa</span>
                             </div>
-                            <input type="text" x-model="address" :placeholder="networks[selectedNetwork].placeholder"
-                                class="w-full glass-input rounded-2xl px-4 py-4 text-xs font-mono text-white placeholder-slate-600">
+                            <input type="tel" x-model="mpesaPhone" placeholder="0712 345 678"
+                                class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                        </div>
+
+                        <!-- Bank Card Form View -->
+                        <div class="space-y-4" x-show="selectedNetwork === 'CARD'" style="display: none;">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-mono text-slate-300">Bank Card Number</label>
+                                <input type="text" x-model="cardNumber" placeholder="4111 1111 1111 1111" maxlength="19"
+                                    class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-mono text-slate-300">Cardholder Name (Name on Card)</label>
+                                <input type="text" x-model="cardName" placeholder="JOHN DOE"
+                                    class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-mono text-slate-300">Expiry Date</label>
+                                    <input type="text" x-model="cardExpiry" placeholder="MM/YY" maxlength="5"
+                                        class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-mono text-slate-300">CVV (3 Digits on back)</label>
+                                    <input type="password" x-model="cardCvv" placeholder="•••" maxlength="4"
+                                        class="w-full glass-input rounded-xl px-4 py-3 text-sm font-mono text-white placeholder-slate-600">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Amount Input -->
                         <div class="space-y-2">
                             <div class="flex justify-between items-center">
-                                <label class="block text-xs font-mono uppercase tracking-widest text-slate-400">Liquidity Volume (<span x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>)</label>
-                                <span class="text-[11px] font-mono text-slate-400">Max limit: <button @click="amount = $store.currency.current === 'USD' ? (balance / 130).toFixed(2) : balance" class="text-[#FFD700] font-bold hover:underline" x-text="$store.currency.format(balance)"></button></span>
+                                <label class="block text-xs font-mono text-slate-300 font-semibold">2. Amount to Withdraw (<span x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>)</label>
+                                <span class="text-xs font-mono text-slate-400">Available: <button @click="amount = $store.currency.current === 'USD' ? (balance / 130).toFixed(2) : balance" class="text-[#FFD700] font-bold hover:underline" x-text="$store.currency.format(balance)"></button></span>
                             </div>
                             <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-xs" x-text="$store.currency.current === 'USD' ? '$' : 'KSh'"></span>
-                                <input type="number" step="0.01" :min="$store.currency.current === 'USD' ? 7.69 : 1000" x-model="amount" placeholder="0"
-                                    class="w-full glass-input rounded-2xl pl-12 pr-16 py-4 text-sm font-semibold text-white placeholder-slate-600">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm" x-text="$store.currency.current === 'USD' ? '$' : 'KSh'"></span>
+                                <input type="number" step="0.01" :min="$store.currency.current === 'USD' ? 7.69 : 1000" x-model="amount" placeholder="0.00"
+                                    class="w-full glass-input rounded-xl pl-12 pr-16 py-3.5 text-base font-bold text-white placeholder-slate-600 font-mono">
                                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs" x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>
                             </div>
                         </div>
 
-                        <!-- Dynamic Ledger breakdown -->
-                        <div class="bg-black/30 border border-white/5 rounded-2xl p-4 space-y-2.5 text-xs">
+                        <!-- Clear Breakdown -->
+                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-4 space-y-2.5 text-xs font-mono">
                             <div class="flex justify-between text-slate-400 font-light">
-                                <span>Requested Gross Output:</span>
-                                <span class="text-white font-mono" x-text="amount ? $store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES' : $store.currency.format(0)"></span>
+                                <span>Amount to Withdraw:</span>
+                                <span class="text-white font-bold" x-text="amount ? $store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES' : $store.currency.format(0)"></span>
                             </div>
                             <div class="flex justify-between text-slate-400 font-light">
-                                <span>Channel Processing Fee:</span>
-                                <span class="text-white font-mono" x-text="$store.currency.format(networks[selectedNetwork].fee)"></span>
+                                <span>Transfer Fee:</span>
+                                <span class="text-white" x-text="$store.currency.format(networks[selectedNetwork].fee)"></span>
                             </div>
                             <div class="flex justify-between text-slate-400 font-light border-b border-white/5 pb-2">
-                                <span>Estimated processing delta:</span>
-                                <span class="text-purple-400 font-mono" x-text="networks[selectedNetwork].duration"></span>
+                                <span>Estimated Delivery Time:</span>
+                                <span class="text-purple-400 font-semibold" x-text="networks[selectedNetwork].duration"></span>
                             </div>
-                            <div class="flex justify-between font-bold text-white pt-1">
-                                <span>Net Settlement Received:</span>
-                                <span class="text-[#FFD700] font-mono" x-text="amount && amount > (networks[selectedNetwork].fee / ($store.currency.current === 'USD' ? 130 : 1)) ? $store.currency.format((parseFloat(amount) * ($store.currency.current === 'USD' ? 130 : 1)) - networks[selectedNetwork].fee) : $store.currency.format(0)"></span>
+                            <div class="flex justify-between font-bold text-white pt-1 text-sm">
+                                <span>You Will Receive:</span>
+                                <span class="text-[#FFD700]" x-text="amount && amount > (networks[selectedNetwork].fee / ($store.currency.current === 'USD' ? 130 : 1)) ? $store.currency.format((parseFloat(amount) * ($store.currency.current === 'USD' ? 130 : 1)) - networks[selectedNetwork].fee) : $store.currency.format(0)"></span>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button @click="validateWithdrawal"
-                            class="w-full py-4 rounded-2xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] active:scale-[0.99] transition duration-200 text-center cursor-pointer shadow-[0_4px_20px_rgba(255,215,0,0.15)] font-tech">
-                            Launch Extraction Sequence
+                            class="w-full py-4 rounded-xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] active:scale-[0.99] transition duration-200 text-center cursor-pointer shadow-[0_4px_20px_rgba(255,215,0,0.25)] font-tech">
+                            Withdraw Money Now
                         </button>
                     </div>
                 </div>
 
                 <!-- Transaction Ledger Table -->
-                <div class="glass-card rounded-3xl p-6">
-                    <h3 class="text-base font-bold text-white tracking-tight mb-4 font-tech">Payout Execution Ledger</h3>
+                <div class="glass-card rounded-2xl p-6 sm:p-8">
+                    <h2 class="text-base font-bold text-white tracking-tight mb-4 font-tech">Withdrawal History</h2>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr class="text-slate-500 font-mono border-b border-white/5">
-                                    <th class="pb-3 font-semibold">Transaction ID</th>
-                                    <th class="pb-3 font-semibold">Timeline (UTC)</th>
-                                    <th class="pb-3 font-semibold">Payout Channel</th>
-                                    <th class="pb-3 font-semibold text-right">Volume (<span x-text="$store.currency.current"></span>)</th>
-                                    <th class="pb-3 font-semibold text-center">Channel Fee</th>
+                                <tr class="text-slate-400 font-mono border-b border-white/10 text-[10px]">
+                                    <th class="pb-3 font-semibold">Reference ID</th>
+                                    <th class="pb-3 font-semibold">Date & Time</th>
+                                    <th class="pb-3 font-semibold">Sent To</th>
+                                    <th class="pb-3 font-semibold text-right">Amount</th>
+                                    <th class="pb-3 font-semibold text-center">Fee</th>
                                     <th class="pb-3 font-semibold text-right">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5">
                                 <template x-for="tx in withdrawals" :key="tx.id">
-                                    <tr class="hover:bg-white/[0.01] transition-colors">
-                                        <td class="py-4 font-code text-[11px] text-slate-300" x-text="tx.id"></td>
-                                        <td class="py-4 text-slate-400 font-light" x-text="tx.date"></td>
-                                        <td class="py-4 font-mono">
-                                            <span class="text-xs px-2 py-0.5 rounded-md bg-white/5 border border-white/5 text-slate-200" x-text="tx.network"></span>
+                                    <tr class="hover:bg-white/[0.02] transition-colors">
+                                        <td class="py-3.5 font-code text-xs text-slate-300" x-text="tx.id"></td>
+                                        <td class="py-3.5 text-slate-400 font-light text-xs" x-text="tx.date"></td>
+                                        <td class="py-3.5 font-mono">
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-200" x-text="tx.network"></span>
                                         </td>
-                                        <td class="py-4 text-right text-white font-mono font-bold" x-text="$store.currency.format(tx.amount)"></td>
-                                        <td class="py-4 text-center font-mono text-slate-500" x-text="$store.currency.format(tx.fee)"></td>
-                                        <td class="py-4 text-right">
+                                        <td class="py-3.5 text-right text-white font-mono font-bold" x-text="$store.currency.format(tx.amount)"></td>
+                                        <td class="py-3.5 text-center font-mono text-slate-500 text-xs" x-text="$store.currency.format(tx.fee)"></td>
+                                        <td class="py-3.5 text-right">
                                             <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-block"
                                                 :class="{
-                                                    'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': tx.status === 'Completed',
-                                                    'bg-purple-500/10 text-purple-400 border border-purple-500/20': tx.status === 'Processing',
-                                                    'bg-red-500/10 text-red-400 border border-red-500/20': tx.status === 'Rejected'
-                                                }"
+                                                     'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30': tx.status === 'Completed' || tx.status === 'Success',
+                                                     'bg-purple-500/10 text-purple-400 border border-purple-500/30': tx.status === 'Processing' || tx.status === 'Pending',
+                                                     'bg-red-500/10 text-red-400 border border-red-500/30': tx.status === 'Rejected' || tx.status === 'Failed'
+                                                 }"
                                                 x-text="tx.status"></span>
                                         </td>
                                     </tr>
@@ -540,50 +569,46 @@
 
             </div>
 
-            <!-- Right Column: Sidebar Stats & Instructions -->
-            <div class="space-y-6">
+            <!-- ─── RIGHT: SIDEBAR BALANCES & SECURITY NOTICES (4 Cols) ─── -->
+            <div class="lg:col-span-4 space-y-6">
                 
-                <!-- Computational Net Balance Display -->
-                <div class="glass-card rounded-3xl p-6 relative overflow-hidden">
-                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
-                    <div class="space-y-4">
-                        <div>
-                            <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Computational Balance Available</span>
-                            <div class="flex items-baseline space-x-2 mt-1">
-                                <h3 class="text-3xl font-extrabold text-white tracking-tight" x-text="$store.currency.format(balance)"></h3>
-                                <span class="text-[#FFD700] text-sm font-mono font-bold" x-text="$store.currency.current === 'USD' ? 'USD' : 'KES'"></span>
-                            </div>
+                <!-- Balance Display -->
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden space-y-4">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">Available Balance</span>
+                        <div class="flex items-baseline space-x-2">
+                            <h3 class="text-3xl font-black text-white font-tech tracking-tight" x-text="$store.currency.format(balance)"></h3>
                         </div>
-                        <div class="h-[1px] bg-white/5"></div>
-                        <div class="space-y-2 text-xs font-light text-slate-400">
-                            <div class="flex justify-between">
-                                <span>Security Level:</span>
-                                <span class="text-emerald-400 font-semibold font-mono">Quantum Guard v4</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Locked Assets:</span>
-                                <span class="text-slate-300 font-mono" x-text="$store.currency.format(0)"></span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Processing Fee Cap:</span>
-                                <span class="text-slate-300 font-mono">0.00%</span>
-                            </div>
+                    </div>
+                    <div class="h-[1px] bg-white/10"></div>
+                    <div class="space-y-2 text-xs font-mono text-slate-400">
+                        <div class="flex justify-between">
+                            <span>Status:</span>
+                            <span class="text-emerald-400 font-bold">Ready for Withdrawal</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Minimum Withdrawal:</span>
+                            <span class="text-slate-300 font-bold" x-text="$store.currency.format(1000)"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Daily Limit:</span>
+                            <span class="text-white font-bold">KSh 1,000,000</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Network Performance / Notice -->
-                <div class="glass-card rounded-3xl p-6 border border-dashed border-white/10 space-y-4">
-                    <div class="flex items-center space-x-3 text-amber-400">
+                <!-- Guidelines Notice -->
+                <div class="glass-card rounded-2xl p-6 space-y-3">
+                    <div class="flex items-center space-x-2.5 text-amber-400">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
-                        <h4 class="font-bold text-white text-sm uppercase tracking-wide font-tech">Security Protocol Notice</h4>
+                        <h4 class="font-bold text-white text-xs uppercase tracking-wide font-tech">Quick Withdrawal Help</h4>
                     </div>
-                    <ul class="space-y-2 text-xs text-slate-400 font-light list-disc pl-4 leading-relaxed">
-                        <li>Withdrawal settlements are queued and verified by mobile money API links.</li>
-                        <li>Verify phone numbers and account numbers carefully. Sent amounts are non-refundable once transaction IDs are dispatched.</li>
-                        <li>Initial network processing takes approximately 2 minutes to 1 hour depending on network congestion.</li>
+                    <ul class="space-y-2.5 text-xs text-slate-400 font-light list-disc pl-4 leading-relaxed">
+                        <li>Withdrawals to <strong>M-Pesa</strong> are fast and sent straight to your registered phone number.</li>
+                        <li>Check your phone number or card details carefully before entering the 6-digit confirmation code.</li>
+                        <li>Payments usually arrive within <strong>2 to 5 minutes</strong>. If you need any help, contact our live support below.</li>
                     </ul>
                 </div>
 
@@ -595,41 +620,39 @@
 
     <!-- ─── 2FA VERIFICATION MODAL ─── -->
     <div x-show="show2FA" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="display: none;" x-transition>
-        <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative shadow-2xl">
-            
-            <div class="flex justify-between items-center mb-5 border-b border-white/5 pb-3">
+        <div class="w-full max-w-md glass-card rounded-2xl p-6 sm:p-8 relative shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-white/10 pb-3">
                 <div class="flex items-center space-x-2 text-[#FFD700]">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    <h3 class="text-md font-bold text-white tracking-tight uppercase font-tech">OTP SMS Protection</h3>
+                    <h3 class="text-sm font-bold text-white tracking-tight uppercase font-tech">Confirm Withdrawal</h3>
                 </div>
                 <button @click="show2FA = false" class="text-slate-400 hover:text-white font-mono text-sm cursor-pointer">✕</button>
             </div>
 
-            <p class="text-slate-400 text-xs font-light mb-4">A transaction extraction of <strong class="text-white font-semibold font-mono" x-text="$store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES'"></strong> has been initialized. Enter your SMS verification OTP code sent to your registered phone number to authorize payout.</p>
+            <p class="text-slate-300 text-xs font-light">Enter the 6-digit confirmation code to complete your withdrawal of <strong class="text-white font-mono" x-text="$store.currency.current === 'USD' ? '$' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : 'KSh ' + parseFloat(amount).toLocaleString() + ' KES'"></strong>.</p>
 
-            <form @submit.prevent="submitWithdrawal" class="space-y-4">
+            <form @submit.prevent="submitWithdrawal" class="space-y-4 pt-2">
                 <div class="space-y-2">
-                    <label class="block text-[10px] font-mono uppercase tracking-widest text-slate-400">6-Digit SMS Verification Code</label>
                     <input type="text" maxlength="6" x-model="otpCode" placeholder="000000" required
-                        class="w-full glass-input rounded-2xl px-4 py-4 text-center text-xl font-bold tracking-[0.75em] text-[#FFD700]">
+                        class="w-full glass-input rounded-xl px-4 py-3.5 text-center text-xl font-bold tracking-[0.6em] text-[#FFD700] font-mono">
                     <template x-if="otpError">
-                        <span class="text-[11px] text-red-400 font-mono mt-1 block" x-text="otpError"></span>
+                        <span class="text-xs text-red-400 font-mono block text-center" x-text="otpError"></span>
                     </template>
                 </div>
 
                 <div class="flex space-x-3 pt-2">
                     <button type="button" @click="show2FA = false"
-                        class="w-1/3 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer">
-                        Abort
+                        class="w-1/3 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer">
+                        Cancel
                     </button>
                     <button type="submit" :disabled="isSubmitting"
-                        class="w-2/3 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center space-x-2 cursor-pointer font-tech">
+                        class="w-2/3 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:opacity-50 transition flex items-center justify-center space-x-2 cursor-pointer font-tech shadow-[0_4px_15px_rgba(255,215,0,0.25)]">
                         <template x-if="isSubmitting">
                             <span class="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
                         </template>
-                        <span x-text="isSubmitting ? 'Authenticating...' : 'Sign & Broadcast'"></span>
+                        <span x-text="isSubmitting ? 'Sending...' : 'Confirm & Withdraw'"></span>
                     </button>
                 </div>
             </form>
@@ -637,51 +660,62 @@
     </div>
 
     <!-- ─── DIGITAL RECEIPT MODAL ─── -->
-    <div x-show="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" style="display: none;" x-transition>
-        <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative shadow-2xl border-t-4 border-t-emerald-500">
-            
-            <div class="text-center space-y-2 mb-6">
-                <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl neon-glow-emerald">
+    <div x-show="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md" style="display: none;" x-transition>
+        <div class="w-full max-w-sm glass-card rounded-2xl p-6 relative shadow-2xl border-t-4 border-t-emerald-500 space-y-4">
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto text-xl">
                     ✓
                 </div>
-                <h3 class="text-lg font-bold text-white tracking-tight font-tech">Payout Dispatch Sent</h3>
-                <p class="text-slate-400 text-xs font-light">Payout successfully initiated to local payout network.</p>
+                <h3 class="text-base font-bold text-white font-tech uppercase">Withdrawal Sent!</h3>
+                <p class="text-[11px] text-slate-400 font-mono">Your payment is being delivered</p>
             </div>
 
-            <!-- Receipt Card Detail -->
-            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 space-y-3 font-mono text-[11px] leading-relaxed mb-6">
-                <div class="flex justify-between border-b border-white/5 pb-2">
-                    <span class="text-slate-500">Receipt TxID:</span>
-                    <span class="text-slate-300 font-bold" x-text="'XM-' + Math.floor(100000 + Math.random() * 900000)"></span>
+            <div class="bg-black/50 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs font-mono">
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Payment Channel:</span>
+                    <span class="text-white font-bold" x-text="receiptNetwork"></span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-slate-500">Payout Volume:</span>
+                    <span class="text-slate-400">Destination:</span>
+                    <span class="text-white text-[10px] break-all" x-text="receiptAddress"></span>
+                </div>
+                <div class="border-t border-dashed border-white/10 my-1"></div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Withdrawal Amount:</span>
                     <span class="text-white font-bold" x-text="$store.currency.format(receiptAmount)"></span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-slate-500">Payout Channel:</span>
-                    <span class="text-slate-300" x-text="receiptNetwork"></span>
+                    <span class="text-slate-400">Fee:</span>
+                    <span class="text-white" x-text="$store.currency.format(receiptFee)"></span>
                 </div>
-                <div class="flex justify-between border-b border-white/5 pb-2">
-                    <span class="text-slate-500">Channel Fee:</span>
-                    <span class="text-slate-300" x-text="$store.currency.format(receiptFee)"></span>
+                <div class="flex justify-between font-bold border-t border-dashed border-white/20 pt-1.5 text-sm">
+                    <span class="text-slate-300">You Receive:</span>
+                    <span class="text-emerald-400" x-text="$store.currency.format(receiptAmount - receiptFee)"></span>
                 </div>
-                <div class="space-y-1">
-                    <span class="text-slate-500 block">Target Account / Phone:</span>
-                    <span class="text-purple-400 break-all select-all font-code block" x-text="receiptAddress"></span>
-                </div>
-                <div class="space-y-1 pt-1">
-                    <span class="text-slate-500 block">Transaction Reference ID:</span>
-                    <span class="text-slate-400 break-all select-all font-code block" x-text="'REF-' + txHash.substring(2, 12).toUpperCase()"></span>
+                <div class="border-t border-dashed border-white/10 pt-1 text-[10px] text-slate-500 break-all">
+                    Reference: <span class="text-purple-400 font-code" x-text="txHash"></span>
                 </div>
             </div>
 
             <button @click="showReceipt = false"
-                class="w-full py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] transition text-center cursor-pointer font-tech">
-                Close Invoice View
+                class="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-widest text-black bg-[#FFD700] hover:bg-[#FFE55C] transition text-center cursor-pointer font-tech">
+                Close Receipt
             </button>
         </div>
     </div>
 
+    <!-- ─── FLOATING 24/7 WHATSAPP SUPPORT DESK (NUMBER NOT SHOWN DIRECTLY ON FLOAT) ─── -->
+    <aside aria-label="Official Customer Support" class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/447455909204?text=Hello%20XM%20Support,%20I%20need%20help%20with%20my%20withdrawal."
+           target="_blank"
+           class="flex items-center space-x-2.5 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-tech text-xs font-black uppercase tracking-wider rounded-full shadow-[0_6px_25px_rgba(37,211,102,0.45)] transition-all transform hover:-translate-y-1 group">
+            <svg class="w-5 h-5 text-black shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span class="text-black font-tech">Live Support</span>
+        </a>
+    </aside>
+
 </body>
+
 </html>

@@ -1,24 +1,34 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
+const { logSystem } = require('../config/logger');
 require('dotenv').config();
 
 // 1. REGISTRATION (Browser Form redirect handler)
 exports.register = async (req, res) => {
-  const { username, countryCode, phone, password, referral } = req.body;
-  
-  if (!username || !countryCode || !phone || !password) {
-    return res.status(400).send('All registration fields are required.');
+  const settingsHelper = require('../config/settingsHelper');
+  const settings = settingsHelper.getSettings();
+  if (!settings.registration_enabled) {
+    return res.status(403).send('New user registration is currently disabled by system administrators.');
   }
 
-  // Combine selector code and phone number digits
-  const fullPhone = (countryCode + phone).replace(/\s+/g, '');
+  const { username, email, password, referral } = req.body;
+  
+  if (!username || !email || !password) {
+    return res.status(400).send('All registration fields (Username, Email, Password) are required.');
+  }
+
+  if (password.length < 8) {
+    return res.status(400).send('Security Requirement: Password must be at least 8 characters long.');
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
 
   try {
-    // Check if phone number already registered
-    const userCheck = await db.query('SELECT * FROM users WHERE phone = $1', [fullPhone]);
+    // Check if email already registered
+    const userCheck = await db.query('SELECT * FROM users WHERE email = $1', [cleanEmail]);
     if (userCheck.rows.length > 0) {
-      return res.status(400).send('Phone number already registered. Please go to Sign In.');
+      return res.status(400).send('Email address already registered. Please go to Sign In.');
     }
 
     // Hash the password securely
@@ -29,15 +39,15 @@ exports.register = async (req, res) => {
     let referrerCode = referral ? referral.trim() : null;
     if (referrerCode) {
       const referrerCheck = await db.query(
-        'SELECT id, username, phone FROM users WHERE phone = $1 OR username = $2',
-        [referrerCode, referrerCode]
+        'SELECT id, username, email FROM users WHERE email = $1 OR username = $2',
+        [referrerCode.toLowerCase(), referrerCode]
       );
       if (referrerCheck.rows.length > 0) {
         const referrer = referrerCheck.rows[0];
         // Credit 200 KSh/USDT to the referrer's balance
         await db.query('UPDATE users SET balance = balance + 200.00 WHERE id = $1', [referrer.id]);
         console.log(`🎁 Referral reward of KSh 200 credited to ${referrer.username} (ID: ${referrer.id}) for inviting ${username}`);
-        referrerCode = referrer.phone; // Save standard phone identifier
+        referrerCode = referrer.email; // Save standard email identifier
       } else {
         referrerCode = null; // Ignore invalid referral code
       }
@@ -45,33 +55,36 @@ exports.register = async (req, res) => {
 
     // Insert user record into PostgreSQL
     await db.query(
-      'INSERT INTO users (username, phone, password, referral, balance) VALUES ($1, $2, $3, $4, 0.00)',
-      [username, fullPhone, hashedPassword, referrerCode]
+      'INSERT INTO users (username, email, password, referral, balance) VALUES ($1, $2, $3, $4, 0.00)',
+      [username, cleanEmail, hashedPassword, referrerCode]
     );
 
-    // Registration success -> Redirect browser to sign-in portal
-    res.redirect('/public/signin.html?registered=true');
+    await logSystem('info', `New user registered: ${username} (${cleanEmail})`);
+
+    // Registration success -> Redirect browser to clean sign-in portal
+    res.redirect('/signin.html?registered=true');
   } catch (err) {
-    console.error('Registration Error:', err.message);
+    await logSystem('error', `Registration failed for ${username} (${cleanEmail}): ${err.message}`);
     res.status(500).send('System registration failed. Please try again.');
   }
 };
 
 // 2. LOGIN (AJAX JSON endpoint returning JWT bearer token)
 exports.login = async (req, res) => {
-  const { phone, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!phone || !password) {
-    return res.status(400).json({ message: 'Phone number and password required.' });
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password required.' });
   }
 
-  const cleanPhone = phone.replace(/\s+/g, '');
+  const cleanEmail = email.trim().toLowerCase();
 
   try {
-    // Find user by phone
-    const result = await db.query('SELECT * FROM users WHERE phone = $1', [cleanPhone]);
+    // Find user by email
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [cleanEmail]);
     if (result.rows.length === 0) {
-      return res.status(401).json({ message: 'Invalid phone number or password credentials.' });
+      await logSystem('warning', `Failed login attempt for unrecognized email: ${cleanEmail}`);
+      return res.status(401).json({ message: 'Invalid email address or password credentials.' });
     }
 
     const user = result.rows[0];
@@ -79,7 +92,8 @@ exports.login = async (req, res) => {
     // Verify hashed password comparison
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid phone number or password credentials.' });
+      await logSystem('warning', `Failed login attempt for user: ${user.username} (${cleanEmail}) - Incorrect password`);
+      return res.status(401).json({ message: 'Invalid email address or password credentials.' });
     }
 
     // Sign session token
@@ -89,13 +103,15 @@ exports.login = async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    await logSystem('info', `User logged in successfully: ${user.username} (${cleanEmail})`);
+
     res.json({
       token,
       username: user.username,
       message: 'Authentication successful.'
     });
   } catch (err) {
-    console.error('Login Error:', err.message);
+    await logSystem('error', `Login error for ${cleanEmail}: ${err.message}`);
     res.status(500).json({ message: 'Authentication process encountered an error.' });
   }
 };

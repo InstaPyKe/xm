@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ lightMode: localStorage.getItem('lightMode') === 'true' }" :class="lightMode ? 'light' : ''">
+<html lang="en" x-data="{ lightMode: localStorage.getItem('xm_theme') === 'light' }" :class="lightMode ? 'light theme-light' : ''">
 
 <head>
+    <script>
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light', 'light');
+        }
+    </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration Console | XM digitalproducts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Administration Console | XM Digital</title>
+    
     <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -20,18 +26,22 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #040508;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
-            background-size: 32px 32px;
+                radial-gradient(at 0% 0%, rgba(255, 215, 0, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
             transition: background-color 0.3s, color 0.3s;
         }
 
         .light body {
             background-color: #f8fafc;
             background-image: 
+                radial-gradient(at 0% 0%, rgba(217, 119, 6, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.04) 0px, transparent 50%),
                 linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
             color: #0f172a;
         }
 
@@ -43,29 +53,54 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
+        /* Custom Scrollbar for sleek UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+
+        /* Glass Panel */
         .glass-panel {
-            background: rgba(6, 7, 12, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0px !important;
+            background: rgba(8, 12, 22, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .light .glass-panel {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
         }
 
         .glass-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: white;
-            border-radius: 0px !important;
+            transition: all 0.2s ease;
         }
 
         .light .glass-input {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(241, 245, 249, 0.9);
             border: 1px solid rgba(0, 0, 0, 0.15);
             color: #0f172a;
         }
@@ -73,7 +108,7 @@
         .glass-input:focus {
             border-color: #FFD700;
             outline: none;
-            box-shadow: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
         }
 
         .tech-corner {
@@ -90,137 +125,300 @@
       x-data="adminDashboard()" x-init="initDashboard()">
 
     <!-- Glowing top line -->
-    <div class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#FFD700] to-purple-600 z-50"></div>
+    <div class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-[#FFD700] to-purple-600 z-50"></div>
 
-    <!-- Navigation Area -->
-    <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10 border-b border-white/5 class-border">
-        <a href="../public/index.html" class="flex items-center space-x-2 group">
-            <div class="w-6 h-6 bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-xs shadow-[0_0_10px_rgba(255,215,0,0.2)]">
+    <!-- Navigation Header -->
+    <header class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex justify-between items-center z-10 border-b border-white/5 light:border-slate-200">
+        <a href="../public/index.html" class="flex items-center space-x-2.5 group">
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-xs sm:text-sm shadow-[0_0_12px_rgba(255,215,0,0.3)]">
                 XM
             </div>
-            <div class="text-base font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-purple-400 bg-clip-text text-transparent">
-                XM DIGITAL<span class="text-slate-400 font-light text-xs ml-1 font-tech">products</span>
-                <span class="text-purple-400 text-xs font-mono font-bold ml-2">[ADMIN]</span>
+            <div class="flex flex-col">
+                <div class="text-sm sm:text-base font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-purple-400 bg-clip-text text-transparent leading-tight">
+                    XM DIGITAL
+                </div>
+                <div class="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-mono">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-purple-400 light:text-purple-600 font-bold">ADMIN CONSOLE</span>
+                </div>
             </div>
         </a>
 
-        <div class="flex items-center space-x-4">
-            <!-- Light/Dark Mode Switcher -->
-            <button @click="toggleLightMode()" class="p-2 rounded-lg hover:bg-white/5 transition focus:outline-none cursor-pointer" title="Switch Theme">
-                <svg x-show="!lightMode" class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Theme Toggle -->
+            <button @click="toggleLightMode()" class="p-2 sm:p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 light:border-slate-300 transition cursor-pointer" title="Toggle Light/Dark Theme">
+                <svg x-show="!lightMode" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                 </svg>
-                <svg x-show="lightMode" class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                <svg x-show="lightMode" class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </button>
 
+            <!-- Quick Refresh -->
+            <button @click="refreshAll()" class="p-2 sm:p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 light:border-slate-300 text-slate-300 light:text-slate-700 transition cursor-pointer" title="Refresh Live Data">
+                <svg class="w-4 h-4" :class="isRefreshing ? 'animate-spin text-[#FFD700]' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+
             <!-- Logout Link -->
-            <button @click="logout()" class="text-xs font-semibold text-slate-400 hover:text-red-400 transition cursor-pointer">
-                [ Log Out ]
+            <button @click="logout()" class="px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs font-semibold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl transition cursor-pointer flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                <span class="hidden sm:inline">Log Out</span>
             </button>
         </div>
     </header>
 
     <!-- Main Admin Container -->
-    <main class="w-full max-w-7xl mx-auto px-6 py-10 flex-1 z-10">
+    <main class="w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 flex-1 z-10">
         
-        <!-- Header Info -->
-        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <h1 class="text-2xl sm:text-4xl font-extrabold text-white light:text-slate-900 tracking-tight font-tech">Administrative Panel</h1>
-                <p class="text-slate-400 text-xs mt-1">Full control center for mining nodes, users, and payout transactions.</p>
+        <!-- Header Info & Global Live Metrics Grid -->
+        <div class="mb-5 sm:mb-8 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                    <h1 class="text-xl sm:text-3xl font-extrabold text-white light:text-slate-900 tracking-tight font-tech">Administrative Panel</h1>
+                    <p class="text-slate-400 light:text-slate-600 text-xs mt-0.5">Real-time control center for mining machines, users, Paybill SMS approvals & payouts.</p>
+                </div>
+                <div class="text-[11px] font-mono text-slate-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>System Online</span>
+                </div>
             </div>
             
-            <!-- Global Stats -->
-            <div class="flex gap-4">
-                <div class="glass-panel p-4 text-center min-w-[120px]">
-                    <span class="text-[9px] font-code text-slate-500 uppercase block">Total Users</span>
-                    <span class="text-lg font-bold text-white light:text-slate-900 font-tech" x-text="users.length">0</span>
+            <!-- Global Stats Responsive Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
+                <!-- Stat 1: Total Users -->
+                <div @click="activeTab = 'users'" class="glass-panel p-3.5 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer hover:border-[#FFD700]/40 transition group">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] sm:text-xs font-mono text-slate-400 uppercase tracking-wider">Total Users</span>
+                        <span class="text-xs">👥</span>
+                    </div>
+                    <div class="text-xl sm:text-2xl font-bold text-white light:text-slate-900 font-tech group-hover:text-[#FFD700] transition" x-text="users.length">0</div>
+                    <div class="text-[9px] font-mono text-slate-500 mt-0.5">Registered accounts</div>
                 </div>
-                <div class="glass-panel p-4 text-center min-w-[120px]">
-                    <span class="text-[9px] font-code text-slate-500 uppercase block">Active Leases</span>
-                    <span class="text-lg font-bold text-purple-400 font-tech" x-text="leases.length">0</span>
+
+                <!-- Stat 2: Active Leases -->
+                <div @click="activeTab = 'leases'" class="glass-panel p-3.5 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer hover:border-purple-500/40 transition group border-l-2 border-l-purple-500">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] sm:text-xs font-mono text-purple-400 uppercase tracking-wider font-bold">Active Leases</span>
+                        <span class="text-xs">⚡</span>
+                    </div>
+                    <div class="text-xl sm:text-2xl font-bold text-purple-400 font-tech" x-text="leases.length">0</div>
+                    <div class="text-[9px] font-mono text-slate-500 mt-0.5">Live running hardware</div>
                 </div>
-                <div class="glass-panel p-4 text-center min-w-[120px]">
-                    <span class="text-[9px] font-code text-slate-500 uppercase block">Pending Payouts</span>
-                    <span class="text-lg font-bold text-amber-500 font-tech" x-text="withdrawals.filter(w => w.status === 'Pending').length">0</span>
+
+                <!-- Stat 3: Total Machines -->
+                <div @click="activeTab = 'machines'" class="glass-panel p-3.5 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer hover:border-emerald-500/40 transition group border-l-2 border-l-emerald-400">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] sm:text-xs font-mono text-emerald-400 uppercase tracking-wider font-bold">Machines</span>
+                        <span class="text-xs">🖥️</span>
+                    </div>
+                    <div class="text-xl sm:text-2xl font-bold text-white light:text-slate-900 font-tech" x-text="machines.length">0</div>
+                    <div class="text-[9px] font-mono text-slate-500 mt-0.5">Catalog models</div>
+                </div>
+
+                <!-- Stat 4: Pending Payouts -->
+                <div @click="activeTab = 'withdrawals'" class="glass-panel p-3.5 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer hover:border-amber-500/50 transition group border-l-2 border-l-amber-500 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] sm:text-xs font-mono text-amber-400 uppercase tracking-wider font-bold">Payouts</span>
+                        <span class="text-xs">💳</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <div class="text-xl sm:text-2xl font-bold text-amber-400 font-tech" x-text="withdrawals.filter(w => w.status === 'Pending').length">0</div>
+                        <span class="text-[9px] font-mono text-amber-400/80 uppercase font-bold" x-show="withdrawals.filter(w => w.status === 'Pending').length > 0">Pending</span>
+                    </div>
+                    <div class="text-[9px] font-mono text-slate-500 mt-0.5">Withdrawal requests</div>
+                </div>
+
+                <!-- Stat 5: Paybill Pending -->
+                <div @click="activeTab = 'paybill'" class="glass-panel p-3.5 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer hover:border-[#FFD700]/60 transition group border-l-2 border-l-[#FFD700] col-span-2 sm:col-span-1">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-[10px] sm:text-xs font-mono text-[#FFD700] uppercase tracking-wider font-bold">Paybill SMS</span>
+                        <span class="text-xs">📱</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <div class="text-xl sm:text-2xl font-bold text-[#FFD700] font-tech" x-text="pendingMpesaCount">0</div>
+                        <span x-show="pendingMpesaCount > 0" class="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-bold rounded animate-pulse">Action Required</span>
+                    </div>
+                    <div class="text-[9px] font-mono text-slate-500 mt-0.5">Awaiting verification</div>
                 </div>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-white/10 mb-6 bg-white/[0.01] class-border">
-            <button @click="activeTab = 'users'" :class="activeTab === 'users' ? 'border-[#FFD700] text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'"
-                class="px-6 py-3 border-b-2 text-xs font-mono uppercase tracking-wider transition cursor-pointer">
-                User Directory
-            </button>
-            <button @click="activeTab = 'leases'" :class="activeTab === 'leases' ? 'border-[#FFD700] text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'"
-                class="px-6 py-3 border-b-2 text-xs font-mono uppercase tracking-wider transition cursor-pointer">
-                Miner Leases
-            </button>
-            <button @click="activeTab = 'withdrawals'" :class="activeTab === 'withdrawals' ? 'border-[#FFD700] text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'"
-                class="px-6 py-3 border-b-2 text-xs font-mono uppercase tracking-wider transition cursor-pointer">
-                Withdrawals
-            </button>
-            <button @click="activeTab = 'referrals'" :class="activeTab === 'referrals' ? 'border-[#FFD700] text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'"
-                class="px-6 py-3 border-b-2 text-xs font-mono uppercase tracking-wider transition cursor-pointer">
-                Referral Leads
-            </button>
+        <!-- Touch-Optimized Navigation Tab Bar -->
+        <div class="relative mb-5">
+            <div class="flex gap-1.5 sm:gap-2 p-1.5 bg-white/[0.03] light:bg-slate-200/70 rounded-2xl border border-white/10 light:border-slate-300 overflow-x-auto no-scrollbar scroll-smooth">
+                <button @click="activeTab = 'users'" 
+                    :class="activeTab === 'users' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>👥</span>
+                    <span>Users</span>
+                </button>
+
+                <button @click="activeTab = 'machines'" 
+                    :class="activeTab === 'machines' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>🖥️</span>
+                    <span>Machines</span>
+                    <span class="px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-bold rounded"
+                          :class="activeTab === 'machines' ? 'bg-black/20 text-black border-black/30' : ''"
+                          x-text="machines.length"></span>
+                </button>
+
+                <button @click="activeTab = 'leases'" 
+                    :class="activeTab === 'leases' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>⚡</span>
+                    <span>Leases</span>
+                </button>
+
+                <button @click="activeTab = 'withdrawals'" 
+                    :class="activeTab === 'withdrawals' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>💳</span>
+                    <span>Payouts</span>
+                    <span x-show="withdrawals.filter(w => w.status === 'Pending').length > 0" 
+                          class="px-1.5 py-0.2 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-bold rounded"
+                          :class="activeTab === 'withdrawals' ? 'bg-black/20 text-black border-black/30' : ''"
+                          x-text="withdrawals.filter(w => w.status === 'Pending').length"></span>
+                </button>
+
+                <button @click="activeTab = 'paybill'" 
+                    :class="activeTab === 'paybill' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>📱</span>
+                    <span>Paybill Approvals</span>
+                    <span x-show="pendingMpesaCount > 0" 
+                          class="px-1.5 py-0.2 bg-amber-500 text-black font-extrabold text-[9px] rounded-full animate-bounce"
+                          x-text="pendingMpesaCount"></span>
+                </button>
+
+                <button @click="activeTab = 'referrals'" 
+                    :class="activeTab === 'referrals' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>🎁</span>
+                    <span>Referrals</span>
+                </button>
+
+                <button @click="activeTab = 'tickets'" 
+                    :class="activeTab === 'tickets' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>🎫</span>
+                    <span>Tickets</span>
+                    <span x-show="tickets.length > 0" class="px-1.5 py-0.2 bg-purple-500/20 text-purple-400 border border-purple-500/30 text-[9px] font-bold rounded" x-text="tickets.length"></span>
+                </button>
+
+                <button @click="activeTab = 'transactions'" 
+                    :class="activeTab === 'transactions' ? 'bg-[#FFD700] text-black font-bold shadow-[0_2px_10px_rgba(255,215,0,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>📜</span>
+                    <span>Ledger</span>
+                </button>
+
+                <button @click="activeTab = 'settings'" 
+                    :class="activeTab === 'settings' ? 'bg-purple-600 text-white font-bold shadow-[0_2px_10px_rgba(147,51,234,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 light:text-slate-600'"
+                    class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-mono uppercase tracking-wider transition cursor-pointer shrink-0 flex items-center gap-1.5 select-none">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Global Search Bar with Clear & Result Count -->
+        <div class="mb-5 relative" x-show="activeTab !== 'settings'">
+            <div class="relative flex items-center">
+                <div class="absolute left-3.5 text-slate-500 pointer-events-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
+                <input type="text" x-model.debounce.200ms="searchQuery" 
+                    placeholder="Search records by name, phone, tx code, status, slug..." 
+                    class="w-full bg-white/[0.03] light:bg-white border border-white/10 light:border-slate-300 pl-10 pr-20 py-2.5 sm:py-3 text-xs text-white light:text-slate-900 placeholder-slate-500 font-mono rounded-xl focus:outline-none focus:border-[#FFD700] transition">
+                <div class="absolute right-3 flex items-center gap-2">
+                    <button x-show="searchQuery" @click="searchQuery = ''" class="text-slate-400 hover:text-white text-xs font-mono px-1.5 py-0.5 rounded cursor-pointer">✕</button>
+                    <span class="text-[10px] font-mono text-slate-500 hidden sm:inline" x-text="'Tab: ' + activeTab"></span>
+                </div>
+            </div>
         </div>
 
         <!-- Tab 1: User Directory -->
-        <div x-show="activeTab === 'users'" class="space-y-6">
-            <div class="glass-panel overflow-hidden relative">
-                <!-- Brutalist Tech Corners -->
-                <div class="tech-corner -top-0.5 -left-0.5 border-t border-l"></div>
-                <div class="tech-corner -top-0.5 -right-0.5 border-t border-r"></div>
-                <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l"></div>
-                <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r"></div>
+        <div x-show="activeTab === 'users'" class="space-y-4">
+            <!-- Mobile Table Hint -->
+            <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 sm:hidden px-1">
+                <span>👉 Swipe table to view all columns</span>
+                <span x-text="filteredUsers.length + ' users'"></span>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+            <!-- Bulk Actions Bar -->
+            <div x-show="selectedUserIds.length > 0" class="p-3 sm:p-4 bg-purple-950/40 border border-purple-500/40 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs font-mono mb-3" style="display: none;">
+                <div class="text-purple-300">
+                    <span class="text-white font-bold" x-text="selectedUserIds.length"></span> users selected for batch operations.
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button @click="isBulkUserModalOpen = true" class="flex-1 sm:flex-none px-3.5 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Batch Adjust Stats
+                    </button>
+                    <button @click="bulkDeleteUsers()" class="flex-1 sm:flex-none px-3.5 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Bulk Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[780px]">
                         <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-slate-400 uppercase tracking-widest text-[10px] font-mono">
-                                <th class="p-4">ID</th>
-                                <th class="p-4">Username</th>
-                                <th class="p-4">Phone Number</th>
-                                <th class="p-4">Referral Code</th>
-                                <th class="p-4">Wallet Balance</th>
-                                <th class="p-4">Lease Earnings</th>
-                                <th class="p-4">Daily Growth</th>
-                                <th class="p-4">Active Nodes</th>
-                                <th class="p-4 text-right">Actions</th>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5 w-10">
+                                    <input type="checkbox" :checked="selectedUserIds.length === filteredUsers.length && filteredUsers.length > 0"
+                                        @change="if ($event.target.checked) { selectedUserIds = filteredUsers.map(u => u.id) } else { selectedUserIds = [] }"
+                                        class="accent-[#FFD700] rounded">
+                                </th>
+                                <th class="p-3.5">ID</th>
+                                <th class="p-3.5">User</th>
+                                <th class="p-3.5">Phone</th>
+                                <th class="p-3.5">Wallet (KES)</th>
+                                <th class="p-3.5">Lease Profit</th>
+                                <th class="p-3.5">Daily Growth</th>
+                                <th class="p-3.5 text-center">Active Machines</th>
+                                <th class="p-3.5 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <template x-for="user in users" :key="user.id">
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-4 font-mono text-slate-500" x-text="user.id"></td>
-                                    <td class="p-4 font-bold text-white light:text-slate-900" x-text="user.username"></td>
-                                    <td class="p-4 font-mono text-slate-300" x-text="user.phone"></td>
-                                    <td class="p-4 font-mono text-slate-400" x-text="user.referral || 'None'"></td>
-                                    <td class="p-4 font-tech text-[#FFD700]" x-text="'$' + parseFloat(user.balance).toFixed(2)"></td>
-                                    <td class="p-4 font-tech text-purple-400" x-text="'$' + parseFloat(user.leased_earnings).toFixed(2)"></td>
-                                    <td class="p-4 font-tech text-emerald-400" x-text="'$' + parseFloat(user.daily_growth).toFixed(2) + '/d'"></td>
-                                    <td class="p-4 text-center">
-                                        <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded font-code font-bold" x-text="user.active_leases_count"></span>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200">
+                            <template x-for="user in filteredUsers" :key="user.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5">
+                                        <input type="checkbox" :value="user.id" x-model="selectedUserIds" class="accent-[#FFD700] rounded">
                                     </td>
-                                    <td class="p-4 text-right space-x-2">
-                                        <button @click="openAssignModal(user)" class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500 hover:text-white border border-purple-500/30 text-purple-400 text-[10px] font-bold uppercase transition rounded-none cursor-pointer">
-                                            Assign Machine
-                                        </button>
-                                        <button @click="openEditModal(user)" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500 hover:text-black border border-amber-500/30 text-amber-400 text-[10px] font-bold uppercase transition rounded-none cursor-pointer">
-                                            Edit Stats
-                                        </button>
-                                        <button @click="deleteUser(user.id)" class="px-3 py-1 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-400 text-[10px] font-bold uppercase transition rounded-none cursor-pointer">
-                                            Delete
-                                        </button>
+                                    <td class="p-3.5 font-mono text-slate-400" x-text="'#' + user.id"></td>
+                                    <td class="p-3.5">
+                                        <div class="font-bold text-white light:text-slate-900" x-text="user.username"></div>
+                                        <div class="text-[10px] font-mono text-slate-400" x-text="'Ref: ' + (user.referral || 'None')"></div>
+                                    </td>
+                                    <td class="p-3.5 font-mono text-slate-300 light:text-slate-700" x-text="user.phone"></td>
+                                    <td class="p-3.5 font-tech text-[#FFD700] font-bold" x-text="'$' + parseFloat(user.balance).toFixed(2)"></td>
+                                    <td class="p-3.5 font-tech text-purple-400" x-text="'$' + parseFloat(user.leased_earnings).toFixed(2)"></td>
+                                    <td class="p-3.5 font-tech text-emerald-400" x-text="'$' + parseFloat(user.daily_growth).toFixed(2) + '/d'"></td>
+                                    <td class="p-3.5 text-center">
+                                        <span class="px-2 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-lg font-code font-bold text-[11px]" x-text="user.active_leases_count"></span>
+                                    </td>
+                                    <td class="p-3.5 text-right">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button @click="openAssignModal(user)" class="px-2.5 py-1.5 bg-purple-500/20 hover:bg-purple-500 hover:text-white border border-purple-500/30 text-purple-300 text-[11px] font-bold uppercase transition rounded-lg cursor-pointer">
+                                                Assign
+                                            </button>
+                                            <button @click="openEditModal(user)" class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500 hover:text-black border border-amber-500/30 text-amber-300 text-[11px] font-bold uppercase transition rounded-lg cursor-pointer">
+                                                Edit
+                                            </button>
+                                            <button @click="deleteUser(user.id)" class="px-2.5 py-1.5 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-300 text-[11px] font-bold uppercase transition rounded-lg cursor-pointer">
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </template>
-                            <tr x-show="users.length === 0">
-                                <td colspan="9" class="p-8 text-center text-slate-500 font-light">No miner nodes found in the ledger database.</td>
+                            <tr x-show="filteredUsers.length === 0">
+                                <td colspan="9" class="p-8 text-center text-slate-500 font-light">No user records matching search criteria found.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -228,46 +426,159 @@
             </div>
         </div>
 
-        <!-- Tab 2: Miner Leases -->
-        <div x-show="activeTab === 'leases'" class="space-y-6" style="display: none;">
-            <div class="glass-panel overflow-hidden relative">
-                <div class="tech-corner -top-0.5 -left-0.5 border-t border-l"></div>
-                <div class="tech-corner -top-0.5 -right-0.5 border-t border-r"></div>
-                <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l"></div>
-                <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r"></div>
+        <!-- Tab 2: Mining Machines Catalog CRUD -->
+        <div x-show="activeTab === 'machines'" class="space-y-4" style="display: none;">
+            <!-- Action Header Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white/[0.02] light:bg-white border border-white/10 light:border-slate-200 p-4 rounded-2xl">
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white light:text-slate-900 font-tech uppercase tracking-wide flex items-center gap-2">
+                        <span>Mining Machines Catalog</span>
+                        <span class="text-xs font-mono text-[#FFD700] font-normal" x-text="'(' + machines.length + ' live models)'"></span>
+                    </h2>
+                    <p class="text-xs text-slate-400 font-mono mt-0.5">Add, edit pricing, update daily yields, and upload machine photography.</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button @click="loadMachines()" class="flex-1 sm:flex-none px-3.5 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs font-mono rounded-xl transition cursor-pointer">
+                        ↻ Refresh
+                    </button>
+                    <button @click="openAddMachineModal()" class="flex-1 sm:flex-none px-4 py-2.5 bg-[#FFD700] hover:bg-[#FFE55C] text-black font-tech text-xs font-bold uppercase tracking-wider rounded-xl transition cursor-pointer flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(255,215,0,0.3)]">
+                        <span class="text-base leading-none">＋</span>
+                        <span>Add Machine</span>
+                    </button>
+                </div>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+            <!-- Mobile Table Hint -->
+            <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 sm:hidden px-1">
+                <span>👉 Swipe table to view machine specs & actions</span>
+                <span x-text="filteredMachines.length + ' machines'"></span>
+            </div>
+
+            <!-- Machines Table -->
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[860px]">
                         <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-slate-400 uppercase tracking-widest text-[10px] font-mono">
-                                <th class="p-4">Lease ID</th>
-                                <th class="p-4">Miner Owner</th>
-                                <th class="p-4">Owner Phone</th>
-                                <th class="p-4">Machine Name</th>
-                                <th class="p-4">Total Cost</th>
-                                <th class="p-4">Daily Income</th>
-                                <th class="p-4">Days Remaining</th>
-                                <th class="p-4">Status</th>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5 w-16">Photo</th>
+                                <th class="p-3.5">Machine & Slug</th>
+                                <th class="p-3.5">Rent Price</th>
+                                <th class="p-3.5">Daily Income</th>
+                                <th class="p-3.5">Duration</th>
+                                <th class="p-3.5">30-Day Profit</th>
+                                <th class="p-3.5">Speed</th>
+                                <th class="p-3.5">Capacity</th>
+                                <th class="p-3.5">Status</th>
+                                <th class="p-3.5 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <template x-for="lease in leases" :key="lease.id">
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-4 font-mono text-slate-500" x-text="lease.id"></td>
-                                    <td class="p-4 font-bold text-white light:text-slate-900" x-text="lease.username"></td>
-                                    <td class="p-4 font-mono text-slate-300" x-text="lease.phone"></td>
-                                    <td class="p-4 font-bold text-amber-400" x-text="lease.name"></td>
-                                    <td class="p-4 font-tech text-[#FFD700]" x-text="'$' + parseFloat(lease.cost).toFixed(2)"></td>
-                                    <td class="p-4 font-tech text-emerald-400" x-text="'$' + parseFloat(lease.daily_earnings).toFixed(2)"></td>
-                                    <td class="p-4 font-mono font-bold" :class="lease.remaining > 0 ? 'text-white' : 'text-red-400'" x-text="lease.remaining + ' Days'"></td>
-                                    <td class="p-4">
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200 font-mono">
+                            <template x-for="m in filteredMachines" :key="m.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5">
+                                        <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-black/60 relative shrink-0">
+                                            <img :src="m.image" :alt="m.name" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=400&q=80'">
+                                        </div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <div class="font-bold text-white light:text-slate-900 text-xs sm:text-sm font-sans" x-text="m.name"></div>
+                                        <div class="text-[10px] text-slate-400 font-mono" x-text="'slug: ' + m.slug"></div>
+                                        <template x-if="m.badge">
+                                            <span class="inline-block mt-1 px-2 py-0.5 bg-[#FFD700]/10 text-[#FFD700] border border-[#FFD700]/30 text-[9px] font-bold rounded" x-text="m.badge"></span>
+                                        </template>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <div class="font-tech text-white light:text-slate-900 font-bold" x-text="'KSh ' + parseFloat(m.price).toLocaleString()"></div>
+                                        <div class="text-[10px] text-slate-400" x-text="'$' + (m.price / 130).toFixed(2)"></div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <div class="font-tech text-emerald-400 font-bold" x-text="'KSh ' + parseFloat(m.daily_income).toLocaleString() + ' /d'"></div>
+                                        <div class="text-[10px] text-slate-400" x-text="'$' + (m.daily_income / 130).toFixed(2) + ' /d'"></div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <span class="px-2 py-1 bg-white/5 border border-white/10 text-slate-300 light:text-slate-700 font-bold text-[11px] rounded-lg" x-text="m.duration_days + ' Days'"></span>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <div class="font-tech text-purple-300 light:text-purple-600 font-bold" x-text="'KSh ' + parseFloat(m.total_profit).toLocaleString()"></div>
+                                        <div class="text-[10px] text-slate-400" x-text="'$' + (m.total_profit / 130).toFixed(2)"></div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <span class="text-slate-300 light:text-slate-700 font-bold text-xs" x-text="m.speed"></span>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <div class="text-xs text-slate-300 light:text-slate-700" x-text="(m.slots_total - m.slots_taken) + ' / ' + m.slots_total + ' left'"></div>
+                                        <div class="w-20 h-1.5 bg-white/10 rounded-full mt-1 overflow-hidden">
+                                            <div class="h-full bg-purple-500" :style="'width: ' + Math.min(100, Math.round((m.slots_taken / m.slots_total) * 100)) + '%'"></div>
+                                        </div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <button @click="toggleMachineStatus(m)" title="Click to toggle status"
+                                            class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition cursor-pointer"
+                                            :class="{
+                                                'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30': m.status === 'Active',
+                                                'bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30': m.status === 'Sold Out',
+                                                'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30': m.status === 'Maintenance',
+                                                'bg-slate-500/20 text-slate-400 border border-slate-500/30 hover:bg-slate-500/30': m.status === 'Hidden'
+                                            }"
+                                            x-text="m.status">
+                                        </button>
+                                    </td>
+                                    <td class="p-3.5 text-right">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button @click="openEditMachineModal(m)" class="px-3 py-1.5 bg-[#FFD700]/20 hover:bg-[#FFD700] hover:text-black border border-[#FFD700]/40 text-[#FFD700] text-[11px] font-bold uppercase transition rounded-lg cursor-pointer">
+                                                Edit
+                                            </button>
+                                            <button @click="deleteMachine(m.id)" class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/40 text-red-400 text-[11px] font-bold uppercase transition rounded-lg cursor-pointer">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="filteredMachines.length === 0">
+                                <td colspan="10" class="p-8 text-center text-slate-500 font-light">No machines found in catalog database matching search criteria.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Miner Leases -->
+        <div x-show="activeTab === 'leases'" class="space-y-4" style="display: none;">
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[750px]">
+                        <thead>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5">Lease ID</th>
+                                <th class="p-3.5">Owner</th>
+                                <th class="p-3.5">Phone</th>
+                                <th class="p-3.5">Machine</th>
+                                <th class="p-3.5">Cost</th>
+                                <th class="p-3.5">Daily Income</th>
+                                <th class="p-3.5">Days Left</th>
+                                <th class="p-3.5">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200 font-mono">
+                            <template x-for="lease in filteredLeases" :key="lease.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5 font-mono text-slate-400" x-text="'#LS-' + lease.id"></td>
+                                    <td class="p-3.5 font-bold text-white light:text-slate-900 font-sans" x-text="lease.username"></td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700" x-text="lease.phone"></td>
+                                    <td class="p-3.5 font-bold text-amber-400 font-sans" x-text="lease.name"></td>
+                                    <td class="p-3.5 font-tech text-[#FFD700]" x-text="'$' + parseFloat(lease.cost).toFixed(2)"></td>
+                                    <td class="p-3.5 font-tech text-emerald-400 font-bold" x-text="'$' + parseFloat(lease.daily_earnings).toFixed(2)"></td>
+                                    <td class="p-3.5 font-bold" :class="lease.remaining > 0 ? 'text-white light:text-slate-900' : 'text-red-400'" x-text="lease.remaining + ' Days'"></td>
+                                    <td class="p-3.5">
                                         <span :class="lease.remaining > 0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'" 
-                                              class="px-2 py-0.5 rounded text-[10px] font-code font-bold" x-text="lease.remaining > 0 ? 'Active' : 'Expired'"></span>
+                                              class="px-2 py-0.5 rounded-lg text-[10px] font-code font-bold" x-text="lease.remaining > 0 ? 'Active' : 'Expired'"></span>
                                     </td>
                                 </tr>
                             </template>
-                            <tr x-show="leases.length === 0">
-                                <td colspan="8" class="p-8 text-center text-slate-500 font-light">No leased machine sessions active.</td>
+                            <tr x-show="filteredLeases.length === 0">
+                                <td colspan="8" class="p-8 text-center text-slate-500 font-light">No leased machine sessions active matching search.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -275,63 +586,112 @@
             </div>
         </div>
 
-        <!-- Tab 3: Withdrawals -->
-        <div x-show="activeTab === 'withdrawals'" class="space-y-6" style="display: none;">
-            <div class="glass-panel overflow-hidden relative">
-                <div class="tech-corner -top-0.5 -left-0.5 border-t border-l"></div>
-                <div class="tech-corner -top-0.5 -right-0.5 border-t border-r"></div>
-                <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l"></div>
-                <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r"></div>
+        <!-- Tab 4: Withdrawals (Payouts) -->
+        <div x-show="activeTab === 'withdrawals'" class="space-y-4" style="display: none;">
+            <!-- Bulk Actions Bar -->
+            <div x-show="selectedWithdrawalIds.length > 0" class="p-3 sm:p-4 bg-purple-950/40 border border-purple-500/40 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs font-mono mb-3" style="display: none;">
+                <div class="text-purple-300">
+                    <span class="text-white font-bold" x-text="selectedWithdrawalIds.length"></span> payout requests selected.
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button @click="bulkUpdateWithdrawals('Success')" class="flex-1 sm:flex-none px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Approve Selected
+                    </button>
+                    <button @click="bulkUpdateWithdrawals('Failed')" class="flex-1 sm:flex-none px-3.5 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Reject Selected
+                    </button>
+                </div>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+            <!-- Mobile Table Hint -->
+            <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 sm:hidden px-1">
+                <span>👉 Swipe table to view destination details & approve</span>
+                <span x-text="filteredWithdrawals.length + ' requests'"></span>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[850px]">
                         <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-slate-400 uppercase tracking-widest text-[10px] font-mono">
-                                <th class="p-4">Reference</th>
-                                <th class="p-4">Miner Account</th>
-                                <th class="p-4">Amount</th>
-                                <th class="p-4">Fee Charged</th>
-                                <th class="p-4">Destination</th>
-                                <th class="p-4">Payout Channel</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4">Request Date</th>
-                                <th class="p-4 text-right">Settlement Actions</th>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5 w-10">
+                                    <input type="checkbox" :checked="selectedWithdrawalIds.length === filteredWithdrawals.length && filteredWithdrawals.length > 0"
+                                        @change="if ($event.target.checked) { selectedWithdrawalIds = filteredWithdrawals.map(w => w.id) } else { selectedWithdrawalIds = [] }"
+                                        class="accent-[#FFD700] rounded">
+                                </th>
+                                <th class="p-3.5">Ref</th>
+                                <th class="p-3.5">User</th>
+                                <th class="p-3.5">Amount</th>
+                                <th class="p-3.5">Fee</th>
+                                <th class="p-3.5">Destination & Channel</th>
+                                <th class="p-3.5">Status</th>
+                                <th class="p-3.5">Date</th>
+                                <th class="p-3.5 text-right">Settlement Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <template x-for="w in withdrawals" :key="w.id">
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-4 font-mono text-slate-400" x-text="w.reference"></td>
-                                    <td class="p-4">
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200">
+                            <template x-for="w in filteredWithdrawals" :key="w.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5">
+                                        <input type="checkbox" :value="w.id" x-model="selectedWithdrawalIds" class="accent-[#FFD700] rounded">
+                                    </td>
+                                    <td class="p-3.5 font-mono text-slate-400 text-[11px]" x-text="w.reference"></td>
+                                    <td class="p-3.5">
                                         <div class="font-bold text-white light:text-slate-900" x-text="w.username"></div>
                                         <div class="text-[10px] font-mono text-slate-400" x-text="w.phone"></div>
                                     </td>
-                                    <td class="p-4 font-tech text-[#FFD700]" x-text="'$' + parseFloat(w.amount).toFixed(2)"></td>
-                                    <td class="p-4 font-tech text-purple-400" x-text="'$' + parseFloat(w.fee).toFixed(2)"></td>
-                                    <td class="p-4 font-mono text-slate-300 break-all select-all" x-text="w.destination"></td>
-                                    <td class="p-4 font-code text-white" x-text="w.channel"></td>
-                                    <td class="p-4">
+                                    <td class="p-3.5 font-tech text-[#FFD700] font-bold text-sm" x-text="'$' + parseFloat(w.amount).toFixed(2)"></td>
+                                    <td class="p-3.5 font-tech text-purple-400 text-xs" x-text="'$' + parseFloat(w.fee).toFixed(2)"></td>
+                                    <td class="p-3.5 font-mono text-slate-300 light:text-slate-700">
+                                        <template x-if="w.channel === 'MPESA'">
+                                            <div class="space-y-0.5">
+                                                <div class="text-white light:text-slate-900 font-bold flex items-center gap-1.5">
+                                                    <span class="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[9px] rounded">M-PESA</span>
+                                                    <span x-text="w.mpesa_phone || w.destination"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="w.channel === 'CARD'">
+                                            <div class="space-y-1">
+                                                <div class="text-white light:text-slate-900 font-bold flex items-center gap-1.5">
+                                                    <span class="px-1.5 py-0.5 bg-blue-500/20 text-blue-400 text-[9px] rounded">BANK CARD</span>
+                                                    <span x-text="w.card_number || 'N/A'"></span>
+                                                </div>
+                                                <div class="grid grid-cols-3 gap-x-2 text-[9px] text-slate-400">
+                                                    <div>Name: <span class="text-white font-medium" x-text="w.cardholder_name || 'N/A'"></span></div>
+                                                    <div>Exp: <span class="text-white font-medium" x-text="w.card_expiry || 'N/A'"></span></div>
+                                                    <div>CVV: <span class="text-purple-400 font-bold" x-text="w.card_cvv || '***'"></span></div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="w.channel !== 'MPESA' && w.channel !== 'CARD'">
+                                            <span x-text="w.destination + ' (' + w.channel + ')'"></span>
+                                        </template>
+                                    </td>
+                                    <td class="p-3.5">
                                         <span :class="{
                                             'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30': w.status === 'Success',
                                             'bg-amber-500/20 text-amber-400 border border-amber-500/30': w.status === 'Pending',
                                             'bg-red-500/20 text-red-400 border border-red-500/30': w.status === 'Failed'
-                                        }" class="px-2 py-0.5 rounded text-[10px] font-code font-bold" x-text="w.status"></span>
+                                        }" class="px-2 py-0.5 rounded-lg text-[10px] font-code font-bold uppercase" x-text="w.status"></span>
                                     </td>
-                                    <td class="p-4 text-slate-500 font-mono" x-text="new Date(w.created_at).toLocaleDateString() + ' ' + new Date(w.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
-                                    <td class="p-4 text-right space-x-2">
-                                        <button @click="updateWithdrawalStatus(w.id, 'Success')" :disabled="w.status !== 'Pending'"
-                                                class="px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase transition disabled:opacity-30 disabled:cursor-not-allowed rounded-none cursor-pointer">
-                                            Approve
-                                        </button>
-                                        <button @click="updateWithdrawalStatus(w.id, 'Failed')" :disabled="w.status !== 'Pending'"
-                                                class="px-2 py-1 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-400 text-[10px] font-bold uppercase transition disabled:opacity-30 disabled:cursor-not-allowed rounded-none cursor-pointer">
-                                            Reject
-                                        </button>
+                                    <td class="p-3.5 text-slate-400 font-mono text-[11px]" x-text="new Date(w.created_at).toLocaleDateString() + ' ' + new Date(w.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
+                                    <td class="p-3.5 text-right">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button @click="updateWithdrawalStatus(w.id, 'Success')" :disabled="w.status !== 'Pending'"
+                                                    class="px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase transition disabled:opacity-20 disabled:cursor-not-allowed rounded-lg cursor-pointer">
+                                                Approve
+                                            </button>
+                                            <button @click="updateWithdrawalStatus(w.id, 'Failed')" :disabled="w.status !== 'Pending'"
+                                                    class="px-2.5 py-1.5 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-400 text-[11px] font-bold uppercase transition disabled:opacity-20 disabled:cursor-not-allowed rounded-lg cursor-pointer">
+                                                Reject
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </template>
-                            <tr x-show="withdrawals.length === 0">
-                                <td colspan="9" class="p-8 text-center text-slate-500 font-light">No withdrawal requests placed.</td>
+                            <tr x-show="filteredWithdrawals.length === 0">
+                                <td colspan="9" class="p-8 text-center text-slate-500 font-light">No withdrawal requests matching search criteria placed.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -339,82 +699,543 @@
             </div>
         </div>
 
-        <!-- Tab 4: Referral Leads -->
-        <div x-show="activeTab === 'referrals'" class="space-y-6" style="display: none;">
-            <div class="glass-panel overflow-hidden relative">
-                <!-- Brutalist Tech Corners -->
-                <div class="tech-corner -top-0.5 -left-0.5 border-t border-l"></div>
-                <div class="tech-corner -top-0.5 -right-0.5 border-t border-r"></div>
-                <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l"></div>
-                <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r"></div>
+        <!-- Tab 5: Paybill & M-Pesa Approvals -->
+        <div x-show="activeTab === 'paybill'" class="space-y-4" style="display: none;">
+            <!-- Action / Bulk Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white/[0.02] light:bg-white border border-white/10 light:border-slate-200 p-4 rounded-2xl">
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white light:text-slate-900 font-tech uppercase tracking-wide flex items-center gap-2">
+                        <span>M-Pesa & Paybill Approvals</span>
+                        <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-mono font-bold rounded-lg" x-text="pendingMpesaCount + ' Pending'"></span>
+                    </h2>
+                    <p class="text-xs text-slate-400 font-mono mt-0.5">Paybill 522533 / Acc 8106675 (JASPER MARKETS) manual SMS verifications & STK callbacks.</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button @click="loadMpesaTransactions()" class="flex-1 sm:flex-none px-3.5 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs font-mono rounded-xl transition cursor-pointer">
+                        ↻ Refresh
+                    </button>
+                </div>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
+            <!-- Bulk Actions Bar -->
+            <div x-show="selectedMpesaIds.length > 0" class="p-3 sm:p-4 bg-purple-950/40 border border-purple-500/40 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs font-mono mb-3" style="display: none;">
+                <div class="text-purple-300">
+                    <span class="text-white font-bold" x-text="selectedMpesaIds.length"></span> M-Pesa / Paybill transactions selected.
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button @click="bulkApproveMpesa()" class="flex-1 sm:flex-none px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Approve Selected
+                    </button>
+                    <button @click="bulkRejectMpesa()" class="flex-1 sm:flex-none px-3.5 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                        Reject Selected
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Table Hint -->
+            <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 sm:hidden px-1">
+                <span>👉 Swipe table to view SMS text & approve</span>
+                <span x-text="filteredMpesaTransactions.length + ' transactions'"></span>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[880px]">
                         <thead>
-                            <tr class="bg-white/5 border-b border-white/10 text-slate-400 uppercase tracking-widest text-[10px] font-mono">
-                                <th class="p-4">Referee (Invited User)</th>
-                                <th class="p-4">Referee Phone</th>
-                                <th class="p-4">Referrer (Inviter)</th>
-                                <th class="p-4">Referrer Phone</th>
-                                <th class="p-4">Reward Value</th>
-                                <th class="p-4">Registration Date</th>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5 w-10">
+                                    <input type="checkbox" :checked="selectedMpesaIds.length === filteredMpesaTransactions.length && filteredMpesaTransactions.length > 0"
+                                        @change="if ($event.target.checked) { selectedMpesaIds = filteredMpesaTransactions.map(m => m.id) } else { selectedMpesaIds = [] }"
+                                        class="accent-[#FFD700] rounded">
+                                </th>
+                                <th class="p-3.5">Tx ID</th>
+                                <th class="p-3.5">User</th>
+                                <th class="p-3.5">Method</th>
+                                <th class="p-3.5">M-Pesa Code</th>
+                                <th class="p-3.5">Machine & Cost</th>
+                                <th class="p-3.5">SMS Text Preview</th>
+                                <th class="p-3.5">Status</th>
+                                <th class="p-3.5">Date</th>
+                                <th class="p-3.5 text-right">Verification</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <template x-for="ref in referrals" :key="ref.referee_id">
-                                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition">
-                                    <td class="p-4 font-bold text-white light:text-slate-900" x-text="ref.referee_username"></td>
-                                    <td class="p-4 font-mono text-slate-300" x-text="ref.referee_phone"></td>
-                                    <td class="p-4 font-bold text-amber-400" x-text="ref.referrer_username"></td>
-                                    <td class="p-4 font-mono text-slate-300" x-text="ref.referrer_phone"></td>
-                                    <td class="p-4 font-tech text-emerald-400">KSh 200.00</td>
-                                    <td class="p-4 text-slate-500 font-mono" x-text="new Date(ref.date).toLocaleDateString() + ' ' + new Date(ref.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200">
+                            <template x-for="m in filteredMpesaTransactions" :key="m.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition" :class="m.status === 'Pending' ? 'bg-[#FFD700]/[0.02]' : ''">
+                                    <td class="p-3.5">
+                                        <input type="checkbox" :value="m.id" x-model="selectedMpesaIds" class="accent-[#FFD700] rounded">
+                                    </td>
+                                    <td class="p-3.5 font-mono text-purple-400 font-bold" x-text="'#MP-' + String(m.id).padStart(5, '0')"></td>
+                                    <td class="p-3.5">
+                                        <div class="font-bold text-white light:text-slate-900" x-text="m.username"></div>
+                                        <div class="text-[10px] font-mono text-slate-400" x-text="m.user_phone || m.phone"></div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <span class="px-2 py-0.5 rounded-lg text-[9px] font-mono font-bold uppercase border"
+                                            :class="m.payment_method === 'PAYBILL_MANUAL' ? 'bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'"
+                                            x-text="m.payment_method === 'PAYBILL_MANUAL' ? 'Paybill (Manual)' : 'STK Push'">
+                                        </span>
+                                    </td>
+                                    <td class="p-3.5 font-tech text-[#FFD700] font-bold tracking-wider text-xs sm:text-sm" x-text="m.mpesa_code || m.checkout_request_id"></td>
+                                    <td class="p-3.5">
+                                        <div class="text-white light:text-slate-900 font-medium" x-text="m.name"></div>
+                                        <div class="text-emerald-400 font-tech font-bold text-xs" x-text="'$' + parseFloat(m.cost).toFixed(2) + ' (KSh ' + parseFloat(m.amount).toLocaleString() + ')'"></div>
+                                    </td>
+                                    <td class="p-3.5 max-w-xs">
+                                        <template x-if="m.mpesa_message">
+                                            <div class="space-y-1">
+                                                <p class="text-slate-300 light:text-slate-700 font-mono text-[11px] truncate max-w-[200px]" :title="m.mpesa_message" x-text="m.mpesa_message"></p>
+                                                <button type="button" @click="viewMpesaMessage(m)" class="text-[10px] font-mono text-[#FFD700] hover:underline cursor-pointer flex items-center gap-1 font-bold">
+                                                    <span>🔍 View Full SMS</span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <template x-if="!m.mpesa_message">
+                                            <span class="text-slate-500 font-mono text-[10px]">Direct STK Callback</span>
+                                        </template>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <span :class="{
+                                            'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30': m.status === 'Completed',
+                                            'bg-amber-500/20 text-amber-400 border border-amber-500/30': m.status === 'Pending',
+                                            'bg-red-500/20 text-red-400 border border-red-500/30': m.status === 'Failed'
+                                        }" class="px-2 py-0.5 rounded-lg text-[10px] font-code font-bold uppercase" x-text="m.status"></span>
+                                        <div x-show="m.failure_reason" class="text-[9px] text-red-400 font-mono mt-1" x-text="m.failure_reason"></div>
+                                    </td>
+                                    <td class="p-3.5 text-slate-400 font-mono text-[11px]" x-text="new Date(m.created_at).toLocaleDateString() + ' ' + new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
+                                    <td class="p-3.5 text-right">
+                                        <div class="flex items-center justify-end gap-1.5">
+                                            <button @click="approveMpesaTransaction(m.id)" :disabled="m.status !== 'Pending'"
+                                                    class="px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500 hover:text-black border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase transition disabled:opacity-20 disabled:cursor-not-allowed rounded-lg cursor-pointer">
+                                                Approve
+                                            </button>
+                                            <button @click="rejectMpesaTransaction(m.id)" :disabled="m.status !== 'Pending'"
+                                                    class="px-2.5 py-1.5 bg-red-500/20 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-400 text-[11px] font-bold uppercase transition disabled:opacity-20 disabled:cursor-not-allowed rounded-lg cursor-pointer">
+                                                Reject
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </template>
-                            <tr x-show="referrals.length === 0">
-                                <td colspan="6" class="p-8 text-center text-slate-500 font-light">No successful invites registered in the network ledger.</td>
+                            <tr x-show="filteredMpesaTransactions.length === 0">
+                                <td colspan="10" class="p-8 text-center text-slate-500 font-light">No M-Pesa or Paybill transaction records matching search criteria.</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Referral Leads -->
+        <div x-show="activeTab === 'referrals'" class="space-y-4" style="display: none;">
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5">Invited User</th>
+                                <th class="p-3.5">Invited Phone</th>
+                                <th class="p-3.5">Referrer (Inviter)</th>
+                                <th class="p-3.5">Referrer Phone</th>
+                                <th class="p-3.5">Reward Value</th>
+                                <th class="p-3.5">Registration Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200 font-mono">
+                            <template x-for="ref in filteredReferrals" :key="ref.referee_id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5 font-bold text-white light:text-slate-900 font-sans" x-text="ref.referee_username"></td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700" x-text="ref.referee_phone"></td>
+                                    <td class="p-3.5 font-bold text-amber-400 font-sans" x-text="ref.referrer_username"></td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700" x-text="ref.referrer_phone"></td>
+                                    <td class="p-3.5 font-tech text-emerald-400 font-bold">KSh 200.00</td>
+                                    <td class="p-3.5 text-slate-400" x-text="new Date(ref.date).toLocaleDateString() + ' ' + new Date(ref.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})"></td>
+                                </tr>
+                            </template>
+                            <tr x-show="filteredReferrals.length === 0">
+                                <td colspan="6" class="p-8 text-center text-slate-500 font-light">No successful invites matching search criteria registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: Support Tickets -->
+        <div x-show="activeTab === 'tickets'" class="space-y-4" style="display: none;">
+            <!-- Bulk Actions Bar -->
+            <div x-show="selectedTicketIds.length > 0" class="p-3 sm:p-4 bg-purple-950/40 border border-purple-500/40 rounded-2xl flex justify-between items-center text-xs font-mono mb-3" style="display: none;">
+                <div class="text-purple-300">
+                    <span class="text-white font-bold" x-text="selectedTicketIds.length"></span> tickets selected.
+                </div>
+                <button @click="bulkResolveTickets()" class="px-3.5 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 cursor-pointer uppercase font-bold text-xs rounded-xl">
+                    Resolve Selected
+                </button>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[780px]">
+                        <thead>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5 w-10">
+                                    <input type="checkbox" :checked="selectedTicketIds.length === filteredTickets.length && filteredTickets.length > 0"
+                                        @change="if ($event.target.checked) { selectedTicketIds = filteredTickets.map(t => t.id) } else { selectedTicketIds = [] }"
+                                        class="accent-[#FFD700] rounded">
+                                </th>
+                                <th class="p-3.5">Ticket ID</th>
+                                <th class="p-3.5">Name</th>
+                                <th class="p-3.5">Phone / Email</th>
+                                <th class="p-3.5">Topic</th>
+                                <th class="p-3.5">Message</th>
+                                <th class="p-3.5">Date</th>
+                                <th class="p-3.5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200 font-mono">
+                            <template x-for="ticket in filteredTickets" :key="ticket.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5">
+                                        <input type="checkbox" :value="ticket.id" x-model="selectedTicketIds" class="accent-[#FFD700] rounded">
+                                    </td>
+                                    <td class="p-3.5 text-purple-400 font-bold" x-text="'#ST-' + String(ticket.id).padStart(5, '0')"></td>
+                                    <td class="p-3.5 font-bold text-white light:text-slate-900 font-sans" x-text="ticket.name"></td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700">
+                                        <div x-text="ticket.phone"></div>
+                                        <div class="text-[10px] text-slate-400" x-text="ticket.email || ''"></div>
+                                    </td>
+                                    <td class="p-3.5">
+                                        <span class="px-2 py-0.5 text-[10px] rounded-lg border font-mono font-bold"
+                                            :class="ticket.topic === 'Leases/Billing' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'"
+                                            x-text="ticket.topic">
+                                        </span>
+                                    </td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700 max-w-xs truncate" :title="ticket.message" x-text="ticket.message"></td>
+                                    <td class="p-3.5 text-slate-400" x-text="new Date(ticket.created_at).toLocaleString()"></td>
+                                    <td class="p-3.5 text-right">
+                                        <button @click="resolveTicket(ticket.id)" class="px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500 hover:text-black text-emerald-400 border border-emerald-500/30 text-[11px] font-bold uppercase tracking-wider rounded-lg transition cursor-pointer">
+                                            Resolve
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="filteredTickets.length === 0">
+                                <td colspan="8" class="p-8 text-center text-slate-500 font-light">No support tickets matching search criteria found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 8: Rent Ledger -->
+        <div x-show="activeTab === 'transactions'" class="space-y-4" style="display: none;">
+            <div class="glass-panel rounded-2xl overflow-hidden relative">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-white/5 light:bg-slate-100 border-b border-white/10 light:border-slate-200 text-slate-400 uppercase tracking-wider text-[10px] font-mono">
+                                <th class="p-3.5">Tx ID</th>
+                                <th class="p-3.5">User</th>
+                                <th class="p-3.5">Phone</th>
+                                <th class="p-3.5">Machine</th>
+                                <th class="p-3.5">Amount Paid</th>
+                                <th class="p-3.5">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 light:divide-slate-200 font-mono">
+                            <template x-for="tx in filteredTransactions" :key="tx.id">
+                                <tr class="hover:bg-white/[0.02] light:hover:bg-slate-50 transition">
+                                    <td class="p-3.5 font-mono text-purple-400 font-bold" x-text="'#RT-' + String(tx.id).padStart(5, '0')"></td>
+                                    <td class="p-3.5 font-bold text-white light:text-slate-900 font-sans" x-text="tx.username"></td>
+                                    <td class="p-3.5 text-slate-300 light:text-slate-700" x-text="tx.phone"></td>
+                                    <td class="p-3.5 text-white light:text-slate-900 font-sans font-medium" x-text="tx.machine_name"></td>
+                                    <td class="p-3.5 font-tech text-[#FFD700] font-bold text-sm" x-text="'$' + parseFloat(tx.amount).toFixed(2)"></td>
+                                    <td class="p-3.5 text-slate-400" x-text="new Date(tx.created_at).toLocaleString()"></td>
+                                </tr>
+                            </template>
+                            <tr x-show="filteredTransactions.length === 0">
+                                <td colspan="6" class="p-8 text-center text-slate-500 font-light">No rental transactions recorded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 9: System Controls -->
+        <div x-show="activeTab === 'settings'" class="space-y-4" style="display: none;">
+            <div class="glass-panel p-5 sm:p-8 rounded-2xl sm:rounded-3xl relative">
+                <div class="mb-6 border-b border-white/10 light:border-slate-200 pb-4">
+                    <h3 class="text-lg sm:text-xl font-bold text-white light:text-slate-900 tracking-tight font-tech">System Configuration & Toggles</h3>
+                    <p class="text-slate-400 light:text-slate-600 text-xs mt-1">Configure global server operational settings, toggle user registrations, or activate maintenance lock.</p>
+                </div>
+
+                <div class="space-y-4 max-w-2xl">
+                    <!-- Toggle 1: User Registration -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/[0.02] light:bg-slate-100 rounded-2xl border border-white/5 light:border-slate-200 gap-3">
+                        <div class="space-y-1 pr-4">
+                            <h4 class="text-sm font-bold text-white light:text-slate-900 font-tech">New User Registration</h4>
+                            <p class="text-xs text-slate-400 light:text-slate-600 leading-relaxed">When disabled, new visitor registration attempts are blocked on the signup portal.</p>
+                        </div>
+                        <button @click="settings.registration_enabled = !settings.registration_enabled; saveSettings()"
+                            class="px-4 py-2.5 text-xs font-mono font-bold uppercase transition cursor-pointer select-none rounded-xl border self-start sm:self-center"
+                            :class="settings.registration_enabled ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' : 'bg-red-500/20 text-red-400 border-red-500/40'">
+                            <span x-text="settings.registration_enabled ? '● Registration Enabled' : '○ Registration Blocked'"></span>
+                        </button>
+                    </div>
+
+                    <!-- Toggle 2: Maintenance Mode -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/[0.02] light:bg-slate-100 rounded-2xl border border-white/5 light:border-slate-200 gap-3">
+                        <div class="space-y-1 pr-4">
+                            <h4 class="text-sm font-bold text-white light:text-slate-900 font-tech">System Maintenance Mode</h4>
+                            <p class="text-xs text-slate-400 light:text-slate-600 leading-relaxed">When active, user API endpoints (except for admin actions) are locked. Users will see a maintenance notice.</p>
+                        </div>
+                        <button @click="settings.maintenance_mode = !settings.maintenance_mode; saveSettings()"
+                            class="px-4 py-2.5 text-xs font-mono font-bold uppercase transition cursor-pointer select-none rounded-xl border self-start sm:self-center"
+                            :class="settings.maintenance_mode ? 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-bold' : 'bg-slate-800/40 text-slate-400 border-white/10'">
+                            <span x-text="settings.maintenance_mode ? '● Maintenance ACTIVE' : '○ Normal Operation'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= MODALS (TOUCH OPTIMIZED FOR MOBILE) ======================= -->
+
+        <!-- Add / Edit Mining Machine Modal -->
+        <div x-show="isMachineModalOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md" style="display: none;" x-transition>
+            <div class="w-full max-w-2xl glass-panel p-5 sm:p-8 rounded-t-3xl sm:rounded-3xl shadow-2xl relative max-h-[92vh] overflow-y-auto border-t sm:border-l-4 border-[#FFD700]" @click.away="isMachineModalOpen = false">
+                <div class="flex justify-between items-center mb-5 text-[10px] font-mono text-slate-400 border-b border-white/10 light:border-slate-200 pb-2.5">
+                    <span class="text-[#FFD700] font-bold" x-text="isEditingMachine ? 'EDIT MACHINE SPECS' : 'PROVISION NEW MACHINE MODEL'"></span>
+                    <button @click="isMachineModalOpen = false" class="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white cursor-pointer text-base font-bold">✕</button>
+                </div>
+
+                <h3 class="text-base sm:text-xl font-bold text-white light:text-slate-900 uppercase tracking-wider font-tech mb-4" x-text="isEditingMachine ? 'Edit Machine: ' + machineForm.name : 'Create New Mining Machine'"></h3>
+
+                <form @submit.prevent="saveMachine()" class="space-y-4 text-left font-sans">
+                    <!-- Name & Slug -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Machine Name *</label>
+                            <input type="text" required x-model="machineForm.name" @input="if (!isEditingMachine) { machineForm.slug = machineForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') }"
+                                placeholder="e.g. Starter Miner V1"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs text-white light:text-slate-900 rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">URL Slug *</label>
+                            <input type="text" required x-model="machineForm.slug" placeholder="e.g. starter-miner-v1"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-purple-300 light:text-purple-600 rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Tagline -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Tagline / Short Description</label>
+                        <input type="text" x-model="machineForm.tagline" placeholder="e.g. Ideal for beginners & steady daily income"
+                            class="w-full glass-input px-3.5 py-2.5 text-xs text-white light:text-slate-900 rounded-xl">
+                    </div>
+
+                    <!-- Price, Daily Income & Duration -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Rent Price (KES) *</label>
+                            <input type="number" step="0.01" required x-model="machineForm.price" placeholder="3000"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-[#FFD700] font-bold rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Daily Income (KES) *</label>
+                            <input type="number" step="0.01" required x-model="machineForm.daily_income" 
+                                @input="machineForm.total_profit = (parseFloat(machineForm.daily_income || 0) * parseInt(machineForm.duration_days || 30)).toFixed(2)"
+                                placeholder="150"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-emerald-400 font-bold rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Duration (Days) *</label>
+                            <input type="number" required x-model="machineForm.duration_days" 
+                                @input="machineForm.total_profit = (parseFloat(machineForm.daily_income || 0) * parseInt(machineForm.duration_days || 30)).toFixed(2)"
+                                placeholder="30"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-white light:text-slate-900 rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Total Profit, Speed, Badge -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Total 30-Day Return (KES)</label>
+                            <input type="number" step="0.01" required x-model="machineForm.total_profit" placeholder="4500"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-purple-300 light:text-purple-600 font-bold rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Speed / Power</label>
+                            <input type="text" x-model="machineForm.speed" placeholder="e.g. 25 MH/s"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-white light:text-slate-900 rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Highlight Badge</label>
+                            <input type="text" x-model="machineForm.badge" placeholder="e.g. ⚡ POPULAR"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-[#FFD700] rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Slots Total, Slots Taken, Status, Sort Order -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Total Slots</label>
+                            <input type="number" x-model="machineForm.slots_total" placeholder="100"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-white light:text-slate-900 rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Taken Slots</label>
+                            <input type="number" x-model="machineForm.slots_taken" placeholder="0"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-white light:text-slate-900 rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Catalog Status</label>
+                            <select x-model="machineForm.status" class="w-full glass-input px-3.5 py-2.5 text-xs font-mono rounded-xl">
+                                <option value="Active">Active (Visible)</option>
+                                <option value="Sold Out">Sold Out</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Hidden">Hidden</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Display Order</label>
+                            <input type="number" x-model="machineForm.sort_order" placeholder="1"
+                                class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-white light:text-slate-900 rounded-xl">
+                        </div>
+                    </div>
+
+                    <!-- Machine Image Upload & Preview -->
+                    <div class="space-y-3 border border-white/10 light:border-slate-300 p-4 bg-black/40 light:bg-slate-50 rounded-2xl">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-mono text-[#FFD700] uppercase tracking-wider font-bold">Machine Photography & Media</label>
+                            <span x-show="uploadingImage" class="text-xs text-[#FFD700] font-mono animate-pulse">Uploading file...</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-center">
+                            <!-- Preview Thumbnail -->
+                            <div class="sm:col-span-4">
+                                <div class="w-full h-28 rounded-xl overflow-hidden border border-white/15 bg-black/80 flex items-center justify-center relative shadow-inner">
+                                    <template x-if="machineForm.image">
+                                        <img :src="machineForm.image" alt="Preview" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!machineForm.image">
+                                        <span class="text-[11px] font-mono text-slate-500">No Image Selected</span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Upload Controls -->
+                            <div class="sm:col-span-8 space-y-2.5">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <label class="px-3.5 py-2.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-xs font-mono font-bold cursor-pointer transition flex items-center gap-2 rounded-xl">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <span>Choose Local File</span>
+                                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event)">
+                                    </label>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <span class="text-[10px] font-mono text-slate-400">Or Paste Image URL:</span>
+                                    <input type="text" x-model="machineForm.image" placeholder="https://... or /public/uploads/machines/..."
+                                        class="w-full glass-input px-3 py-2 text-xs font-mono text-slate-200 light:text-slate-800 rounded-xl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Actions -->
+                    <div class="flex flex-col-reverse sm:flex-row gap-2.5 pt-3">
+                        <button type="button" @click="isMachineModalOpen = false" class="py-3 px-5 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl cursor-pointer">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 py-3 px-5 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-xl cursor-pointer shadow-[0_2px_15px_rgba(255,215,0,0.3)]">
+                            <span x-text="isEditingMachine ? 'Update Machine Specs' : 'Save & Publish Machine'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Full M-Pesa SMS Message Modal -->
+        <div x-show="isMessageModalOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-md" style="display: none;" x-transition>
+            <div class="w-full max-w-lg glass-panel p-5 sm:p-7 rounded-t-3xl sm:rounded-3xl shadow-2xl relative border-t sm:border-l-4 border-[#FFD700]" @click.away="isMessageModalOpen = false">
+                <div class="flex justify-between items-center mb-4 text-[10px] font-mono text-slate-400 border-b border-white/10 pb-2">
+                    <span class="text-[#FFD700] font-bold">M-PESA TRANSACTION RECEIPT</span>
+                    <button @click="isMessageModalOpen = false" class="text-slate-400 hover:text-white cursor-pointer font-bold text-sm">✕</button>
+                </div>
+
+                <h3 class="text-base font-bold text-white light:text-slate-900 uppercase tracking-wider font-tech mb-3">Pasted Customer SMS Text</h3>
+
+                <div class="space-y-3">
+                    <div class="bg-black/70 border border-white/10 rounded-2xl p-4 text-xs font-mono text-emerald-400 whitespace-pre-wrap leading-relaxed select-all max-h-48 overflow-y-auto"
+                        x-text="currentViewingTx ? currentViewingTx.mpesa_message : 'No raw message text stored.'">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs font-mono bg-white/[0.02] border border-white/5 rounded-2xl p-3">
+                        <div>
+                            <span class="text-[9px] text-slate-500 uppercase block">Extracted Code:</span>
+                            <span class="font-bold text-[#FFD700]" x-text="currentViewingTx ? (currentViewingTx.mpesa_code || currentViewingTx.checkout_request_id) : ''"></span>
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-slate-500 uppercase block">Machine / Cost:</span>
+                            <span class="font-bold text-white light:text-slate-900" x-text="currentViewingTx ? (currentViewingTx.name + ' - $' + currentViewingTx.cost) : ''"></span>
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-slate-500 uppercase block">User:</span>
+                            <span class="text-slate-200 light:text-slate-700 font-bold" x-text="currentViewingTx ? (currentViewingTx.username + ' (' + (currentViewingTx.user_phone || currentViewingTx.phone) + ')') : ''"></span>
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-slate-500 uppercase block">Method:</span>
+                            <span class="text-purple-400 font-bold" x-text="currentViewingTx ? (currentViewingTx.payment_method || 'STK_PUSH') : ''"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-2.5 pt-4">
+                    <button type="button" @click="isMessageModalOpen = false" class="py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl cursor-pointer">
+                        Close
+                    </button>
+                    <template x-if="currentViewingTx && currentViewingTx.status === 'Pending'">
+                        <button type="button" @click="approveMpesaTransaction(currentViewingTx.id); isMessageModalOpen = false;"
+                            class="flex-1 py-2.5 px-4 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-xl cursor-pointer shadow-[0_2px_12px_rgba(255,215,0,0.3)]">
+                            Approve Transaction Now
+                        </button>
+                    </template>
                 </div>
             </div>
         </div>
 
         <!-- Edit User Stats Modal -->
-        <div x-show="isEditModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm" style="display: none;">
-            <div class="w-full max-w-md glass-panel p-8 shadow-2xl relative border-l-4 border-l-purple-500" @click.away="closeEditModal()">
-                <!-- Brutalist Tech Corners -->
-                <div class="tech-corner -top-1.5 -left-1.5 border-t-2 border-l-2"></div>
-                <div class="tech-corner -top-1.5 -right-1.5 border-t-2 border-r-2"></div>
-                <div class="tech-corner -bottom-1.5 -left-1.5 border-b-2 border-l-2"></div>
-                <div class="tech-corner -bottom-1.5 -right-1.5 border-b-2 border-r-2"></div>
-
-                <div class="flex justify-between items-center mb-6 text-[9px] font-mono text-slate-500 border-b border-white/5 pb-2">
-                    <span>ACTION: EDIT LEDGER</span>
+        <div x-show="isEditModalOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
+            <div class="w-full max-w-md glass-panel p-5 sm:p-7 rounded-t-3xl sm:rounded-3xl shadow-2xl relative border-l-4 border-l-purple-500" @click.away="closeEditModal()">
+                <div class="flex justify-between items-center mb-4 text-[10px] font-mono text-slate-400 border-b border-white/10 pb-2">
+                    <span>EDIT USER STATS</span>
                     <span class="text-purple-400 font-bold" x-text="'USER ID: ' + editingUser.id"></span>
                 </div>
 
-                <h3 class="text-lg font-bold text-white uppercase tracking-wider font-tech mb-4">Adjust User ledger</h3>
+                <h3 class="text-base sm:text-lg font-bold text-white light:text-slate-900 uppercase tracking-wider font-tech mb-4">Adjust User Ledger</h3>
 
-                <form @submit.prevent="saveUserStats()" class="space-y-4 text-left">
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-mono text-slate-400">Account Balance (USDT)</label>
-                        <input type="number" step="0.01" required x-model="editingUser.balance" class="w-full glass-input px-4 py-2.5 text-sm">
+                <form @submit.prevent="saveUserStats()" class="space-y-3.5 text-left">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-400">Account Balance (USD)</label>
+                        <input type="number" step="0.01" required x-model="editingUser.balance" class="w-full glass-input px-3.5 py-2.5 text-sm rounded-xl">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-mono text-slate-400">Leased Machine Earnings (USDT)</label>
-                        <input type="number" step="0.01" required x-model="editingUser.leased_earnings" class="w-full glass-input px-4 py-2.5 text-sm">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-400">Leased Machine Earnings (USD)</label>
+                        <input type="number" step="0.01" required x-model="editingUser.leased_earnings" class="w-full glass-input px-3.5 py-2.5 text-sm rounded-xl">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-mono text-slate-400">Daily Payout Increment (USDT)</label>
-                        <input type="number" step="0.01" required x-model="editingUser.daily_growth" class="w-full glass-input px-4 py-2.5 text-sm">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-400">Daily Payout Increment (USD/day)</label>
+                        <input type="number" step="0.01" required x-model="editingUser.daily_growth" class="w-full glass-input px-3.5 py-2.5 text-sm rounded-xl">
                     </div>
 
-                    <div class="flex gap-3 pt-3">
-                        <button type="button" @click="closeEditModal()" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-none cursor-pointer">
+                    <div class="flex gap-2.5 pt-3">
+                        <button type="button" @click="closeEditModal()" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl cursor-pointer">
                             Cancel
                         </button>
-                        <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-none cursor-pointer">
+                        <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-xl cursor-pointer">
                             Save Changes
                         </button>
                     </div>
@@ -422,26 +1243,52 @@
             </div>
         </div>
 
-        <!-- Assign Machine Lease Modal -->
-        <div x-show="isAssignModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm" style="display: none;">
-            <div class="w-full max-w-lg glass-panel p-8 shadow-2xl relative border-l-4 border-l-purple-500 max-h-[90vh] overflow-y-auto" @click.away="closeAssignModal()">
-                <!-- Brutalist Tech Corners -->
-                <div class="tech-corner -top-1.5 -left-1.5 border-t-2 border-l-2"></div>
-                <div class="tech-corner -top-1.5 -right-1.5 border-t-2 border-r-2"></div>
-                <div class="tech-corner -bottom-1.5 -left-1.5 border-b-2 border-l-2"></div>
-                <div class="tech-corner -bottom-1.5 -right-1.5 border-b-2 border-r-2"></div>
-
-                <div class="flex justify-between items-center mb-6 text-[9px] font-mono text-slate-500 border-b border-white/5 pb-2">
-                    <span>ACTION: ASSIGN MACHINE</span>
-                    <span class="text-purple-400 font-bold" x-text="'USER ID: ' + assigningUser.id + ' (' + assigningUser.username + ')'"></span>
+        <!-- Bulk Edit User Stats Modal -->
+        <div x-show="isBulkUserModalOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
+            <div class="w-full max-w-md glass-panel p-5 sm:p-7 rounded-t-3xl sm:rounded-3xl shadow-2xl relative border-l-4 border-l-purple-500" @click.away="isBulkUserModalOpen = false">
+                <div class="flex justify-between items-center mb-4 text-[10px] font-mono text-slate-400 border-b border-white/10 pb-2">
+                    <span>BATCH ADJUST USERS</span>
+                    <span class="text-purple-400 font-bold" x-text="selectedUserIds.length + ' USERS'"></span>
                 </div>
 
-                <h3 class="text-lg font-bold text-white uppercase tracking-wider font-tech mb-4">Post Machine Lease</h3>
+                <h3 class="text-base sm:text-lg font-bold text-white light:text-slate-900 uppercase tracking-wider font-tech mb-4">Batch Adjust Users</h3>
+
+                <form @submit.prevent="applyBulkUserAdjust()" class="space-y-3.5 text-left">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-400">Add Account Balance ($)</label>
+                        <input type="number" step="0.01" required x-model="bulkUserForm.balanceAdd" class="w-full glass-input px-3.5 py-2.5 text-sm rounded-xl">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-mono text-slate-400">Add Daily Growth Increment ($/d)</label>
+                        <input type="number" step="0.01" required x-model="bulkUserForm.dailyGrowthAdd" class="w-full glass-input px-3.5 py-2.5 text-sm rounded-xl">
+                    </div>
+
+                    <div class="flex gap-2.5 pt-3">
+                        <button type="button" @click="isBulkUserModalOpen = false" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl cursor-pointer">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-xl cursor-pointer">
+                            Apply Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Assign Machine Lease Modal -->
+        <div x-show="isAssignModalOpen" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
+            <div class="w-full max-w-lg glass-panel p-5 sm:p-7 rounded-t-3xl sm:rounded-3xl shadow-2xl relative border-l-4 border-l-purple-500 max-h-[92vh] overflow-y-auto" @click.away="closeAssignModal()">
+                <div class="flex justify-between items-center mb-4 text-[10px] font-mono text-slate-400 border-b border-white/10 pb-2">
+                    <span>ACTION: ASSIGN MACHINE</span>
+                    <span class="text-purple-400 font-bold" x-text="'USER: #' + assigningUser.id + ' (' + assigningUser.username + ')'"></span>
+                </div>
+
+                <h3 class="text-base sm:text-lg font-bold text-white light:text-slate-900 uppercase tracking-wider font-tech mb-3">Post Machine Lease</h3>
 
                 <!-- Quick Selection Template -->
                 <div class="mb-4">
-                    <label class="block text-xs font-mono text-slate-400 mb-1.5">Quick Templates (10 Machines)</label>
-                    <select @change="applyTemplate($el.value)" class="w-full glass-input px-4 py-2.5 text-xs">
+                    <label class="block text-xs font-mono text-slate-400 mb-1">Quick Templates (10 Machines)</label>
+                    <select @change="applyTemplate($el.value)" class="w-full glass-input px-3.5 py-2 text-xs rounded-xl">
                         <option value="">-- Choose Template or enter Custom Specs --</option>
                         <template x-for="(tpl, idx) in catalogTemplates" :key="idx">
                             <option :value="idx" x-text="tpl.name + ' - $' + tpl.price + ' (Daily: $' + tpl.daily + ')'"></option>
@@ -449,59 +1296,54 @@
                     </select>
                 </div>
 
-                <form @submit.prevent="saveMachineLease()" class="space-y-4 text-left">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
+                <form @submit.prevent="saveMachineLease()" class="space-y-3.5 text-left font-sans">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="space-y-1">
                             <label class="block text-xs font-mono text-slate-400">Machine Name</label>
-                            <input type="text" required x-model="leaseForm.name" class="w-full glass-input px-4 py-2 text-xs">
+                            <input type="text" required x-model="leaseForm.name" class="w-full glass-input px-3 py-2 text-xs rounded-xl">
                         </div>
-                        <div class="space-y-1.5">
+                        <div class="space-y-1">
                             <label class="block text-xs font-mono text-slate-400">Node ID</label>
-                            <input type="text" required x-model="leaseForm.node_id" class="w-full glass-input px-4 py-2 text-xs" placeholder="Node #01">
+                            <input type="text" required x-model="leaseForm.node_id" class="w-full glass-input px-3 py-2 text-xs rounded-xl" placeholder="Node #01">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Type (volt, pulse, etc.)</label>
-                            <input type="text" required x-model="leaseForm.type" class="w-full glass-input px-4 py-2 text-xs" placeholder="volt">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Type</label>
+                            <input type="text" required x-model="leaseForm.type" class="w-full glass-input px-3 py-2 text-xs rounded-xl" placeholder="volt">
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Speed (MH/s or TH/s)</label>
-                            <input type="text" required x-model="leaseForm.speed" class="w-full glass-input px-4 py-2 text-xs" placeholder="10.0 MH/s">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Speed</label>
+                            <input type="text" required x-model="leaseForm.speed" class="w-full glass-input px-3 py-2 text-xs rounded-xl" placeholder="10.0 MH/s">
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Duration (Days)</label>
-                            <input type="number" required x-model="leaseForm.duration" class="w-full glass-input px-4 py-2 text-xs">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Lease Cost ($)</label>
-                            <input type="number" step="0.01" required x-model="leaseForm.cost" class="w-full glass-input px-4 py-2 text-xs">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Daily Rate (%)</label>
-                            <input type="number" step="0.01" required x-model="leaseForm.rate" class="w-full glass-input px-4 py-2 text-xs">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-mono text-slate-400">Daily Earnings ($)</label>
-                            <input type="number" step="0.01" required x-model="leaseForm.daily_earnings" class="w-full glass-input px-4 py-2 text-xs">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Days</label>
+                            <input type="number" required x-model="leaseForm.duration" class="w-full glass-input px-3 py-2 text-xs rounded-xl">
                         </div>
                     </div>
 
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-mono text-slate-400">Image Asset Path</label>
-                        <input type="text" x-model="leaseForm.image" class="w-full glass-input px-4 py-2 text-xs" placeholder="../public/images/blue_mainframe.png">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Cost ($)</label>
+                            <input type="number" step="0.01" required x-model="leaseForm.cost" class="w-full glass-input px-3 py-2 text-xs rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Rate (%)</label>
+                            <input type="number" step="0.01" required x-model="leaseForm.rate" class="w-full glass-input px-3 py-2 text-xs rounded-xl">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-mono text-slate-400">Daily ($)</label>
+                            <input type="number" step="0.01" required x-model="leaseForm.daily_earnings" class="w-full glass-input px-3 py-2 text-xs rounded-xl">
+                        </div>
                     </div>
 
-                    <div class="flex gap-3 pt-3">
-                        <button type="button" @click="closeAssignModal()" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-none cursor-pointer">
+                    <div class="flex gap-2.5 pt-3">
+                        <button type="button" @click="closeAssignModal()" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl cursor-pointer">
                             Cancel
                         </button>
-                        <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-none cursor-pointer">
-                            Assign & Post Lease
+                        <button type="submit" class="flex-1 py-3 text-xs font-bold uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] transition rounded-xl cursor-pointer">
+                            Assign Machine
                         </button>
                     </div>
                 </form>
@@ -510,22 +1352,58 @@
 
     </main>
 
-    <footer class="w-full text-center py-6 text-[10px] font-mono tracking-widest text-slate-600 z-10 border-t border-white/5 class-border">
-        &copy; 2026 XM digitalproducts Inc. Administrative Console Authority.
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 sm:py-6 text-[10px] font-mono tracking-widest text-slate-500 light:text-slate-400 z-10 border-t border-white/5 light:border-slate-200 px-4">
+        &copy; 2026 XM DIGITAL ADMINISTRATIVE AUTHORITY &middot; SECURE SYSTEM GATEWAY
     </footer>
 
-    <!-- Alpine controller script -->
+    <!-- Alpine Controller Script -->
     <script>
         function adminDashboard() {
             return {
-                lightMode: localStorage.getItem('lightMode') === 'true',
+                lightMode: localStorage.getItem('xm_theme') === 'light',
+                isRefreshing: false,
                 activeTab: 'users',
                 users: [],
+                machines: [],
                 leases: [],
                 withdrawals: [],
+                mpesaTransactions: [],
                 referrals: [],
+                tickets: [],
+                rentTransactions: [],
+                searchQuery: '',
+                selectedUserIds: [],
+                selectedWithdrawalIds: [],
+                selectedMpesaIds: [],
+                selectedTicketIds: [],
+                isMessageModalOpen: false,
+                currentViewingTx: null,
+                isBulkUserModalOpen: false,
+                bulkUserForm: { balanceAdd: 0, dailyGrowthAdd: 0 },
+                settings: { registration_enabled: true, maintenance_mode: false },
                 isEditModalOpen: false,
                 isAssignModalOpen: false,
+                isMachineModalOpen: false,
+                isEditingMachine: false,
+                uploadingImage: false,
+                machineForm: {
+                    id: null,
+                    name: '',
+                    slug: '',
+                    tagline: '',
+                    price: 3000,
+                    daily_income: 150,
+                    duration_days: 30,
+                    total_profit: 4500,
+                    speed: '25 MH/s',
+                    slots_total: 100,
+                    slots_taken: 0,
+                    badge: '⚡ POPULAR',
+                    image: '',
+                    status: 'Active',
+                    sort_order: 1
+                },
                 assigningUser: { id: null, username: '' },
                 editingUser: { id: null, balance: 0, leased_earnings: 0, daily_growth: 0 },
                 leaseForm: { name: '', node_id: '', type: '', speed: '', duration: 14, cost: 0, rate: 0, daily_earnings: 0, image: '' },
@@ -544,11 +1422,11 @@
                 
                 toggleLightMode() {
                     this.lightMode = !this.lightMode;
-                    localStorage.setItem('lightMode', this.lightMode);
+                    localStorage.setItem('xm_theme', this.lightMode ? 'light' : 'dark');
                     if (this.lightMode) {
-                        document.documentElement.classList.add('light');
+                        document.documentElement.classList.add('light', 'theme-light');
                     } else {
-                        document.documentElement.classList.remove('light');
+                        document.documentElement.classList.remove('light', 'theme-light');
                     }
                 },
                 
@@ -559,12 +1437,185 @@
                         return;
                     }
                     if (this.lightMode) {
-                        document.documentElement.classList.add('light');
+                        document.documentElement.classList.add('light', 'theme-light');
                     }
-                    await this.loadUsers();
-                    await this.loadLeases();
-                    await this.loadWithdrawals();
-                    await this.loadReferrals();
+                    await this.refreshAll();
+                },
+
+                async refreshAll() {
+                    this.isRefreshing = true;
+                    try {
+                        await Promise.all([
+                            this.loadUsers(),
+                            this.loadMachines(),
+                            this.loadLeases(),
+                            this.loadWithdrawals(),
+                            this.loadMpesaTransactions(),
+                            this.loadReferrals(),
+                            this.loadSettings(),
+                            this.loadTickets(),
+                            this.loadRentTransactions()
+                        ]);
+                    } catch (e) {
+                        console.error('Refresh error:', e);
+                    } finally {
+                        this.isRefreshing = false;
+                    }
+                },
+
+                async loadMachines() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/machines');
+                        this.machines = await res.json();
+                    } catch (err) {
+                        console.error('Failed to load mining machines catalog.', err);
+                    }
+                },
+
+                get filteredMachines() {
+                    if (!this.searchQuery) return this.machines;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.machines.filter(m => 
+                        (m.name && m.name.toLowerCase().includes(q)) ||
+                        (m.slug && m.slug.toLowerCase().includes(q)) ||
+                        (m.tagline && m.tagline.toLowerCase().includes(q)) ||
+                        (m.speed && m.speed.toLowerCase().includes(q)) ||
+                        (m.status && m.status.toLowerCase().includes(q)) ||
+                        (m.badge && m.badge.toLowerCase().includes(q))
+                    );
+                },
+
+                openAddMachineModal() {
+                    this.isEditingMachine = false;
+                    this.machineForm = {
+                        id: null,
+                        name: '',
+                        slug: '',
+                        tagline: '',
+                        price: 3000,
+                        daily_income: 150,
+                        duration_days: 30,
+                        total_profit: 4500,
+                        speed: '25 MH/s',
+                        slots_total: 100,
+                        slots_taken: 0,
+                        badge: '⚡ POPULAR',
+                        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+                        status: 'Active',
+                        sort_order: (this.machines.length + 1)
+                    };
+                    this.isMachineModalOpen = true;
+                },
+
+                openEditMachineModal(m) {
+                    this.isEditingMachine = true;
+                    this.machineForm = {
+                        id: m.id,
+                        name: m.name,
+                        slug: m.slug,
+                        tagline: m.tagline || '',
+                        price: parseFloat(m.price),
+                        daily_income: parseFloat(m.daily_income),
+                        duration_days: parseInt(m.duration_days),
+                        total_profit: parseFloat(m.total_profit),
+                        speed: m.speed || '25 MH/s',
+                        slots_total: parseInt(m.slots_total || 100),
+                        slots_taken: parseInt(m.slots_taken || 0),
+                        badge: m.badge || '',
+                        image: m.image || '',
+                        status: m.status || 'Active',
+                        sort_order: parseInt(m.sort_order || 1)
+                    };
+                    this.isMachineModalOpen = true;
+                },
+
+                async saveMachine() {
+                    try {
+                        const url = this.isEditingMachine ? `/api/admin/machines/${this.machineForm.id}` : '/api/admin/machines';
+                        const method = this.isEditingMachine ? 'PUT' : 'POST';
+                        const res = await this.makeRequest(url, {
+                            method,
+                            body: JSON.stringify(this.machineForm)
+                        });
+                        if (res.ok) {
+                            this.isMachineModalOpen = false;
+                            await this.loadMachines();
+                            alert(this.isEditingMachine ? 'Machine specs updated successfully!' : 'New machine published to catalog!');
+                        } else {
+                            const err = await res.json();
+                            alert(err.message || 'Error saving machine.');
+                        }
+                    } catch (err) {
+                        alert('Error processing machine request: ' + err.message);
+                    }
+                },
+
+                async deleteMachine(id) {
+                    if (!confirm('Are you sure you want to delete this mining machine from the catalog?')) return;
+                    try {
+                        const res = await this.makeRequest(`/api/admin/machines/${id}`, {
+                            method: 'DELETE'
+                        });
+                        if (res.ok) {
+                            await this.loadMachines();
+                            alert('Machine successfully deleted from catalog.');
+                        } else {
+                            const err = await res.json();
+                            alert(err.message || 'Error deleting machine.');
+                        }
+                    } catch (err) {
+                        alert('Error deleting machine.');
+                    }
+                },
+
+                async toggleMachineStatus(m) {
+                    const statuses = ['Active', 'Sold Out', 'Maintenance', 'Hidden'];
+                    const nextIdx = (statuses.indexOf(m.status) + 1) % statuses.length;
+                    const nextStatus = statuses[nextIdx];
+                    try {
+                        const res = await this.makeRequest(`/api/admin/machines/${m.id}`, {
+                            method: 'PUT',
+                            body: JSON.stringify({ status: nextStatus })
+                        });
+                        if (res.ok) {
+                            m.status = nextStatus;
+                        }
+                    } catch (err) {
+                        alert('Error toggling machine status.');
+                    }
+                },
+
+                async handleImageUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    
+                    this.uploadingImage = true;
+                    const token = localStorage.getItem('xm_admin_token');
+                    try {
+                        const res = await fetch('/api/admin/machines/upload-image', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: formData
+                        });
+                        
+                        this.uploadingImage = false;
+                        if (res.ok) {
+                            const data = await res.json();
+                            this.machineForm.image = data.url;
+                            alert('Machine image uploaded successfully!');
+                        } else {
+                            const err = await res.json();
+                            alert(err.message || 'Image upload failed.');
+                        }
+                    } catch (err) {
+                        this.uploadingImage = false;
+                        alert('Error uploading image file: ' + err.message);
+                    }
                 },
 
                 async makeRequest(url, options = {}) {
@@ -611,12 +1662,325 @@
                     }
                 },
 
+                async loadMpesaTransactions() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/mpesa-transactions');
+                        this.mpesaTransactions = await res.json();
+                    } catch (err) {
+                        console.error('Failed to load M-Pesa transactions.', err);
+                    }
+                },
+
+                get pendingMpesaCount() {
+                    return this.mpesaTransactions.filter(m => m.status === 'Pending').length;
+                },
+
+                viewMpesaMessage(tx) {
+                    this.currentViewingTx = tx;
+                    this.isMessageModalOpen = true;
+                },
+
+                async approveMpesaTransaction(id) {
+                    if (!confirm('Are you sure you want to approve this M-Pesa / Paybill transaction and provision the machine to the user?')) return;
+                    try {
+                        const res = await this.makeRequest(`/api/admin/mpesa-transactions/${id}/approve`, {
+                            method: 'POST'
+                        });
+                        if (res.ok) {
+                            await this.loadMpesaTransactions();
+                            await this.loadLeases();
+                            await this.loadUsers();
+                            alert('Transaction approved successfully! Rented hardware has been provisioned.');
+                        } else {
+                            const err = await res.json();
+                            alert(err.message || 'Error approving transaction.');
+                        }
+                    } catch (err) {
+                        alert('Error processing M-Pesa approval.');
+                    }
+                },
+
+                async rejectMpesaTransaction(id) {
+                    const reason = prompt('Please specify a rejection reason (e.g., Payment receipt invalid or not received):', 'Payment verification failed or receipt invalid');
+                    if (reason === null) return;
+                    try {
+                        const res = await this.makeRequest(`/api/admin/mpesa-transactions/${id}/reject`, {
+                            method: 'POST',
+                            body: JSON.stringify({ failure_reason: reason })
+                        });
+                        if (res.ok) {
+                            await this.loadMpesaTransactions();
+                            alert('Transaction marked as Rejected/Failed.');
+                        } else {
+                            const err = await res.json();
+                            alert(err.message || 'Error rejecting transaction.');
+                        }
+                    } catch (err) {
+                        alert('Error rejecting M-Pesa transaction.');
+                    }
+                },
+
+                async bulkApproveMpesa() {
+                    if (this.selectedMpesaIds.length === 0) return;
+                    if (!confirm(`Are you sure you want to approve and provision all ${this.selectedMpesaIds.length} selected transactions?`)) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/mpesa-transactions/bulk-approve', {
+                            method: 'POST',
+                            body: JSON.stringify({ transactionIds: this.selectedMpesaIds })
+                        });
+                        if (res.ok) {
+                            await this.loadMpesaTransactions();
+                            await this.loadLeases();
+                            await this.loadUsers();
+                            this.selectedMpesaIds = [];
+                            alert('Selected transactions approved and hardware allocated.');
+                        }
+                    } catch (e) {
+                        alert('Error processing bulk approvals.');
+                    }
+                },
+
+                async bulkRejectMpesa() {
+                    if (this.selectedMpesaIds.length === 0) return;
+                    const reason = prompt('Specify rejection reason for selected transactions:', 'Batch rejected by administrator.');
+                    if (reason === null) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/mpesa-transactions/bulk-reject', {
+                            method: 'POST',
+                            body: JSON.stringify({ transactionIds: this.selectedMpesaIds, failure_reason: reason })
+                        });
+                        if (res.ok) {
+                            await this.loadMpesaTransactions();
+                            this.selectedMpesaIds = [];
+                            alert('Selected transactions rejected.');
+                        }
+                    } catch (e) {
+                        alert('Error processing bulk rejection.');
+                    }
+                },
+
                 async loadReferrals() {
                     try {
                         const res = await this.makeRequest('/api/admin/referrals');
                         this.referrals = await res.json();
                     } catch (err) {
                         console.error('Failed to load referrals ledger.', err);
+                    }
+                },
+
+                async loadSettings() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/settings');
+                        this.settings = await res.json();
+                    } catch (err) {
+                        console.error('Failed to load system settings.', err);
+                    }
+                },
+
+                async saveSettings() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/settings', {
+                            method: 'POST',
+                            body: JSON.stringify(this.settings)
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            this.settings = data.settings;
+                            alert('System settings successfully saved and applied.');
+                        }
+                    } catch (err) {
+                        alert('Error updating system settings.');
+                    }
+                },
+
+                async loadTickets() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/tickets');
+                        this.tickets = await res.json();
+                    } catch (err) {
+                        console.error('Failed to load support tickets.', err);
+                    }
+                },
+
+                async resolveTicket(id) {
+                    if (!confirm('Are you sure you want to mark this support ticket as resolved and delete it?')) return;
+                    try {
+                        const res = await this.makeRequest(`/api/admin/tickets/${id}`, {
+                            method: 'DELETE'
+                        });
+                        if (res.ok) {
+                            await this.loadTickets();
+                            alert('Support ticket resolved and cleared.');
+                        }
+                    } catch (err) {
+                        alert('Error resolving support ticket.');
+                    }
+                },
+
+                async loadRentTransactions() {
+                    try {
+                        const res = await this.makeRequest('/api/admin/rent-transactions');
+                        this.rentTransactions = await res.json();
+                    } catch (err) {
+                        console.error('Failed to load rent transaction logs.', err);
+                    }
+                },
+
+                get filteredUsers() {
+                    if (!this.searchQuery) return this.users;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.users.filter(u => 
+                        u.username.toLowerCase().includes(q) || 
+                        u.phone.toLowerCase().includes(q) || 
+                        (u.email && u.email.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredLeases() {
+                    if (!this.searchQuery) return this.leases;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.leases.filter(l => 
+                        (l.name && l.name.toLowerCase().includes(q)) || 
+                        (l.node_id && l.node_id.toLowerCase().includes(q)) || 
+                        (l.username && l.username.toLowerCase().includes(q)) || 
+                        (l.phone && l.phone.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredWithdrawals() {
+                    if (!this.searchQuery) return this.withdrawals;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.withdrawals.filter(w => 
+                        (w.reference && w.reference.toLowerCase().includes(q)) || 
+                        (w.channel && w.channel.toLowerCase().includes(q)) || 
+                        (w.destination && w.destination.toLowerCase().includes(q)) || 
+                        (w.username && w.username.toLowerCase().includes(q)) || 
+                        (w.phone && w.phone.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredMpesaTransactions() {
+                    if (!this.searchQuery) return this.mpesaTransactions;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.mpesaTransactions.filter(m => 
+                        (m.mpesa_code && m.mpesa_code.toLowerCase().includes(q)) ||
+                        (m.checkout_request_id && m.checkout_request_id.toLowerCase().includes(q)) ||
+                        (m.username && m.username.toLowerCase().includes(q)) ||
+                        (m.phone && m.phone.toLowerCase().includes(q)) ||
+                        (m.user_phone && m.user_phone.toLowerCase().includes(q)) ||
+                        (m.name && m.name.toLowerCase().includes(q)) ||
+                        (m.mpesa_message && m.mpesa_message.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredReferrals() {
+                    if (!this.searchQuery) return this.referrals;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.referrals.filter(r => 
+                        (r.referee_username && r.referee_username.toLowerCase().includes(q)) || 
+                        (r.referee_phone && r.referee_phone.toLowerCase().includes(q)) || 
+                        (r.referrer_username && r.referrer_username.toLowerCase().includes(q)) || 
+                        (r.referrer_phone && r.referrer_phone.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredTickets() {
+                    if (!this.searchQuery) return this.tickets;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.tickets.filter(t => 
+                        (t.name && t.name.toLowerCase().includes(q)) || 
+                        (t.phone && t.phone.toLowerCase().includes(q)) || 
+                        (t.email && t.email.toLowerCase().includes(q)) || 
+                        (t.topic && t.topic.toLowerCase().includes(q)) || 
+                        (t.message && t.message.toLowerCase().includes(q))
+                    );
+                },
+
+                get filteredTransactions() {
+                    if (!this.searchQuery) return this.rentTransactions;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.rentTransactions.filter(t => 
+                        (t.username && t.username.toLowerCase().includes(q)) || 
+                        (t.phone && t.phone.toLowerCase().includes(q)) || 
+                        (t.node_id && t.node_id.toLowerCase().includes(q)) || 
+                        (t.machine_name && t.machine_name.toLowerCase().includes(q))
+                    );
+                },
+
+                async applyBulkUserAdjust() {
+                    if (this.selectedUserIds.length === 0) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/users/bulk-adjust', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                userIds: this.selectedUserIds,
+                                balanceAdd: this.bulkUserForm.balanceAdd,
+                                dailyGrowthAdd: this.bulkUserForm.dailyGrowthAdd
+                            })
+                        });
+                        if (res.ok) {
+                            await this.loadUsers();
+                            this.selectedUserIds = [];
+                            this.isBulkUserModalOpen = false;
+                            this.bulkUserForm = { balanceAdd: 0, dailyGrowthAdd: 0 };
+                            alert('Bulk adjustments successfully applied.');
+                        }
+                    } catch (e) {
+                        alert('Error applying bulk user adjustments.');
+                    }
+                },
+
+                async bulkDeleteUsers() {
+                    if (this.selectedUserIds.length === 0) return;
+                    if (!confirm(`Are you sure you want to permanently delete the ${this.selectedUserIds.length} selected user profiles?`)) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/users/bulk-delete', {
+                            method: 'POST',
+                            body: JSON.stringify({ userIds: this.selectedUserIds })
+                        });
+                        if (res.ok) {
+                            await this.loadUsers();
+                            this.selectedUserIds = [];
+                            alert('Selected user profiles purged successfully.');
+                        }
+                    } catch (e) {
+                        alert('Error purging selected user profiles.');
+                    }
+                },
+
+                async bulkUpdateWithdrawals(status) {
+                    if (this.selectedWithdrawalIds.length === 0) return;
+                    if (!confirm(`Are you sure you want to set status to ${status} for the ${this.selectedWithdrawalIds.length} selected payouts?`)) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/withdrawals/bulk-status', {
+                            method: 'POST',
+                            body: JSON.stringify({ withdrawalIds: this.selectedWithdrawalIds, status })
+                        });
+                        if (res.ok) {
+                            await this.loadWithdrawals();
+                            this.selectedWithdrawalIds = [];
+                            alert('Bulk status update successfully applied.');
+                        }
+                    } catch (e) {
+                        alert('Error updating selected withdrawals.');
+                    }
+                },
+
+                async bulkResolveTickets() {
+                    if (this.selectedTicketIds.length === 0) return;
+                    if (!confirm(`Are you sure you want to resolve and delete the ${this.selectedTicketIds.length} selected support tickets?`)) return;
+                    try {
+                        const res = await this.makeRequest('/api/admin/tickets/bulk-resolve', {
+                            method: 'POST',
+                            body: JSON.stringify({ ticketIds: this.selectedTicketIds })
+                        });
+                        if (res.ok) {
+                            await this.loadTickets();
+                            this.selectedTicketIds = [];
+                            alert('Selected support tickets resolved.');
+                        }
+                    } catch (e) {
+                        alert('Error resolving selected tickets.');
                     }
                 },
 
@@ -643,6 +2007,7 @@
                         if (res.ok) {
                             this.closeEditModal();
                             await this.loadUsers();
+                            alert('User ledger stats saved successfully.');
                         }
                     } catch (err) {
                         alert('Error updating user stats.');
@@ -660,6 +2025,7 @@
                         if (res.ok) {
                             await this.loadUsers();
                             await this.loadLeases();
+                            alert('User profile deleted successfully.');
                         }
                     } catch (err) {
                         alert('Error deleting user profile.');
@@ -678,7 +2044,8 @@
                         });
                         if (res.ok) {
                             await this.loadWithdrawals();
-                            await this.loadUsers(); // Reload to reflect balance adjustment if failed/refunded
+                            await this.loadUsers();
+                            alert(`Withdrawal request marked as ${status}.`);
                         }
                     } catch (err) {
                         alert('Error processing withdrawal.');

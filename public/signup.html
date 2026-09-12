@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <script>
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Miner Account | XM digitalproducts</title>
+    <title>Create Free Account | XM Holdings</title>
     <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,190 +16,243 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Currency Switcher & Theme utility -->
+    <script src="/public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            /* Cyber grid background */
+            background-color: #07080E;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-color: #040508;
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 36px 36px;
         }
-
         .font-tech {
             font-family: 'Orbitron', sans-serif;
         }
-
         .font-code {
             font-family: 'JetBrains Mono', monospace;
         }
-
         .glass-container {
-            background: rgba(6, 7, 12, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            /* Force zero border radius as requested */
-            border-radius: 0px !important;
-        }
-
-        .glass-input {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(13, 16, 28, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.2s ease-in-out;
-            /* Force zero border radius as requested */
-            border-radius: 0px !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
-
+        .glass-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.25s ease-in-out;
+        }
         .glass-input:focus {
             border-color: #FFD700;
             outline: none;
-            box-shadow: none;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            background: rgba(0, 0, 0, 0.7);
         }
 
-        /* Brutalist corners for tech styling */
-        .tech-corner {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            border-color: rgba(255, 215, 0, 0.4);
-            border-style: solid;
+        /* Light Mode Styles */
+        .theme-light {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            color: #0f172a;
+        }
+        .theme-light .glass-container {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+        }
+        .theme-light h1,
+        .theme-light h2,
+        .theme-light .text-white {
+            color: #0f172a !important;
+        }
+        .theme-light .text-slate-400 {
+            color: #475569 !important;
+        }
+        .theme-light .glass-input {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
+            color: #0f172a !important;
         }
     </style>
 </head>
 
 <body class="text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-[#FFD700] selection:text-black relative">
 
-    <!-- Glowing Lines (Not Rounded) -->
-    <div class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#FFD700] to-purple-600"></div>
+    <!-- Top Glowing Accent -->
+    <div class="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-500 via-[#FFD700] to-emerald-400 z-50"></div>
 
-    <!-- Header / Brand Link Bar -->
+    <!-- Header Navigation Bar -->
     <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10">
-        <a href="index.html" class="flex items-center space-x-2 group">
-            <div class="w-6 h-6 bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-xs shadow-[0_0_10px_rgba(255,215,0,0.2)]">
+        <a href="index.html" class="flex items-center space-x-3 group">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FFD700] to-amber-500 flex items-center justify-center font-black text-black font-tech tracking-tighter text-sm shadow-[0_0_12px_rgba(255,215,0,0.3)]">
                 XM
             </div>
-            <div class="text-base font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-purple-400 bg-clip-text text-transparent">
-                XM DIGITAL<span class="text-slate-400 font-light text-xs ml-1 font-tech">products</span>
+            <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-[#FFE55C] bg-clip-text text-transparent font-tech uppercase">
+                XM HOLDINGS
             </div>
         </a>
-        <a href="signin.html" class="text-xs font-semibold text-slate-400 hover:text-[#FFD700] transition">
-            [ Already registered? <span class="text-[#FFD700] underline">Authorise Login</span> ]
-        </a>
+        <div class="flex items-center space-x-4">
+            <button @click="$store.theme.toggle()" 
+                class="p-2 text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 cursor-pointer flex items-center justify-center focus:outline-none transition">
+                <svg x-show="!$store.theme.lightMode" class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+                <svg x-show="$store.theme.lightMode" class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+            <a href="signin.html" class="text-xs font-bold text-slate-300 hover:text-[#FFD700] transition">
+                Already registered? <span class="text-[#FFD700] underline">Sign In</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Main Registration Interface Frame -->
+    <!-- Main Registration Card Container -->
     <main class="w-full flex-1 flex items-center justify-center p-6 z-10">
         
         <div x-data="{ 
                 username: '', 
-                countryCode: '+254', 
-                phoneNum: '', 
+                email: '', 
                 password: '', 
                 referral: '', 
-                acceptedTerms: false 
+                acceptedTerms: true,
+                registrationEnabled: true,
+                maintenanceActive: false,
+                get passwordStrength() {
+                    if (this.password.length === 0) return { label: 'Enter password', color: 'text-slate-500', width: 'w-0' };
+                    if (this.password.length < 8) return { label: 'Too short (min 8 chars)', color: 'text-red-400', width: 'w-1/3 bg-red-500' };
+                    if (this.password.length < 12) return { label: 'Good security', color: 'text-amber-400', width: 'w-2/3 bg-amber-500' };
+                    return { label: 'Very Strong', color: 'text-emerald-400', width: 'w-full bg-emerald-500' };
+                },
+                async init() {
+                    try {
+                        const res = await fetch('/api/settings/public');
+                        const data = await res.json();
+                        this.registrationEnabled = data.registration_enabled;
+                        this.maintenanceActive = data.maintenance_mode;
+                        
+                        const params = new URLSearchParams(window.location.search);
+                        const refCode = params.get('ref') || params.get('referral');
+                        if (refCode) {
+                            this.referral = refCode.trim().toUpperCase();
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
              }" 
-             class="w-full max-w-md glass-container p-8 sm:p-10 shadow-2xl relative border-l-4 border-l-[#FFD700]">
+             class="w-full max-w-md glass-container p-8 sm:p-10 rounded-3xl shadow-2xl relative border-t-4 border-t-[#FFD700]">
 
-            <!-- Brutalist Tech Corners -->
-            <div class="tech-corner -top-1.5 -left-1.5 border-t-2 border-l-2"></div>
-            <div class="tech-corner -top-1.5 -right-1.5 border-t-2 border-r-2"></div>
-            <div class="tech-corner -bottom-1.5 -left-1.5 border-b-2 border-l-2"></div>
-            <div class="tech-corner -bottom-1.5 -right-1.5 border-b-2 border-r-2"></div>
-
-            <!-- Tech Details Header Panel -->
-            <div class="flex justify-between items-center mb-6 text-[9px] font-mono text-slate-500 border-b border-white/5 pb-2">
-                <span>VER: XM-AUTH-V4.2</span>
-                <span class="text-emerald-400 font-bold">SECURE CHANNEL // STABLE</span>
+            <div class="mb-6 text-left border-b border-white/10 pb-4">
+                <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight font-tech">Create Account</h1>
+                <p class="text-slate-400 text-xs mt-1">Start renting machines & earn money every 24 hours</p>
             </div>
 
-            <div class="mb-8 text-left">
-                <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight uppercase font-tech">Register User Node</h1>
-                <p class="text-slate-400 text-xs font-light mt-1">Configure credentials to allocate and launch computational hashing slots.</p>
+            <!-- Maintenance Alert -->
+            <div x-show="maintenanceActive" class="p-4 mb-4 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs rounded-2xl text-center leading-relaxed" style="display: none;">
+                ⚠️ <strong>Scheduled Maintenance:</strong> New signups are temporarily paused for a quick system upgrade. We will be right back!
             </div>
 
-            <!-- Form Submissions Element -->
-            <form action="/api/register" method="POST" class="space-y-5">
+            <!-- Registration Disabled Alert -->
+            <div x-show="!registrationEnabled && !maintenanceActive" class="p-4 mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-xs rounded-2xl text-center" style="display: none;">
+                🚫 New user registration is currently closed.
+            </div>
 
-                <!-- Username Field Entry -->
+            <!-- Form -->
+            <form action="/api/register" method="POST" class="space-y-4" :class="{ 'opacity-30 pointer-events-none': !registrationEnabled || maintenanceActive }">
+
+                <!-- Username Field -->
                 <div class="space-y-1.5">
-                    <label for="username" class="block text-xs font-mono uppercase tracking-wider text-slate-400">Account Username</label>
+                    <label for="username" class="block text-xs font-bold uppercase tracking-wider text-slate-300">Your Username</label>
                     <input type="text" id="username" name="username" x-model="username" required autocomplete="off"
-                        placeholder="e.g., jaspermine99"
-                        class="w-full glass-input px-4 py-3 text-sm text-white placeholder-slate-600 font-medium font-code">
+                        placeholder="e.g. jaspermine"
+                        class="w-full glass-input px-4 py-3.5 rounded-xl text-sm text-white placeholder-slate-500">
                 </div>
 
-                <!-- Phone Field Entry (Only USA and African Codes) -->
+                <!-- Email Field -->
                 <div class="space-y-1.5">
-                    <label for="phone" class="block text-xs font-mono uppercase tracking-wider text-slate-400">Authorized Phone Number</label>
-                    <div class="flex gap-2">
-                        <select x-model="countryCode" name="countryCode" class="glass-input px-2 py-3 text-sm text-white font-mono bg-[#0C0D14] border border-white/10 w-28">
-                            <option value="+1">🇺🇸 +1 (USA)</option>
-                            <option value="+254">🇰🇪 +254 (KE)</option>
-                            <option value="+234">🇳🇬 +234 (NG)</option>
-                            <option value="+27">🇿🇦 +27 (ZA)</option>
-                            <option value="+233">🇬🇭 +233 (GH)</option>
-                            <option value="+256">🇺🇬 +256 (UG)</option>
-                            <option value="+255">🇹🇿 +255 (TZ)</option>
-                            <option value="+250">🇷🇼 +250 (RW)</option>
-                            <option value="+251">🇪🇹 +251 (ET)</option>
-                            <option value="+20">🇪🇬 +20 (EG)</option>
-                        </select>
-                        <input type="tel" id="phone" name="phone" x-model="phoneNum" required autocomplete="tel"
-                            placeholder="700 000 000"
-                            class="flex-1 glass-input px-4 py-3 text-sm text-white placeholder-slate-600 font-mono">
-                    </div>
+                    <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-300">Email Address</label>
+                    <input type="email" id="email" name="email" x-model="email" required autocomplete="email"
+                        placeholder="e.g. you@example.com"
+                        class="w-full glass-input px-4 py-3.5 rounded-xl text-sm text-white placeholder-slate-500">
                 </div>
 
-                <!-- Password Field Entry -->
-                <div class="space-y-1.5">
-                    <label for="password" class="block text-xs font-mono uppercase tracking-wider text-slate-400">Access Password</label>
-                    <input type="password" id="password" name="password" x-model="password" required
-                        autocomplete="new-password" placeholder="••••••••••••"
-                        class="w-full glass-input px-4 py-3 text-sm text-white placeholder-slate-600 tracking-widest font-code">
-                </div>
-
-                <!-- Referral Code Field Entry (Optional) -->
+                <!-- Password Field -->
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
-                        <label for="referral" class="block text-xs font-mono uppercase tracking-wider text-slate-400">Referral Code</label>
-                        <span class="text-[9px] text-purple-400 font-mono tracking-wide">Optional Integration</span>
+                        <label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-300">Choose Password</label>
+                        <span class="text-[10px] font-semibold" :class="passwordStrength.color" x-text="passwordStrength.label"></span>
                     </div>
-                    <input type="text" id="referral" name="referral" x-model="referral" autocomplete="off"
-                        placeholder="XM-INVITE-CODE"
-                        class="w-full glass-input px-4 py-3 text-sm text-[#FFD700] placeholder-slate-600 font-mono tracking-wider uppercase">
+                    <input type="password" id="password" name="password" x-model="password" required
+                        autocomplete="new-password" placeholder="•••••••••••• (min 8 characters)"
+                        class="w-full glass-input px-4 py-3.5 rounded-xl text-sm text-white placeholder-slate-500">
+                    
+                    <!-- Strength bar indicator -->
+                    <div class="w-full h-1 bg-white/10 mt-1 rounded-full overflow-hidden">
+                        <div class="h-full transition-all duration-300 rounded-full" :class="passwordStrength.width"></div>
+                    </div>
                 </div>
 
-                <!-- Regulatory Compliance Checkbox -->
-                <div class="flex items-start gap-3 pt-1">
+                <!-- Referral Code (Optional) -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <label for="referral" class="block text-xs font-bold uppercase tracking-wider text-slate-300">Referral Code (Optional)</label>
+                        <span class="text-[10px] text-[#FFD700] font-semibold">Bonus Reward</span>
+                    </div>
+                    <input type="text" id="referral" name="referral" x-model="referral" autocomplete="off"
+                        placeholder="REFERRAL CODE OR USERNAME"
+                        class="w-full glass-input px-4 py-3 rounded-xl text-sm text-[#FFD700] placeholder-slate-600 uppercase font-mono">
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="flex items-start gap-2.5 pt-1">
                     <input type="checkbox" id="terms" x-model="acceptedTerms" required
-                        class="mt-1 w-4 h-4 border-white/10 bg-black/40 text-[#FFD700] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#FFD700]">
+                        class="mt-1 w-4 h-4 rounded border-white/10 bg-black/40 text-[#FFD700] focus:ring-0 cursor-pointer accent-[#FFD700]">
                     <label for="terms" class="text-xs text-slate-400 font-light leading-snug cursor-pointer select-none">
-                        I authorize system registration and acknowledge the <a href="index.html#disclaimer" class="text-purple-400 hover:underline">3-week runtime risk terms</a>.
+                        I agree to the <a href="privacy.html" class="text-[#FFD700] hover:underline">Privacy Policy</a> & acknowledge the <strong class="text-white">100% Capital Refund Guarantee</strong>.
                     </label>
                 </div>
 
-                <!-- Primary Action Cyber Yellow Button -->
-                <div class="pt-2">
-                    <button type="submit" :disabled="!acceptedTerms || !username || !phoneNum || !password"
-                        class="w-full py-3.5 px-4 font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200 text-center cursor-pointer font-tech rounded-none">
-                        Deploy System Profile
+                <!-- Submit Button -->
+                <div class="pt-3">
+                    <button type="submit" :disabled="!acceptedTerms || !username || !email || password.length < 8 || !registrationEnabled || maintenanceActive"
+                        class="w-full py-4 px-4 font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed transition-all duration-200 text-center cursor-pointer rounded-2xl shadow-[0_4px_20px_rgba(255,215,0,0.25)]">
+                        Create Free Account & Start Earning &rarr;
                     </button>
                 </div>
             </form>
 
+            <div class="mt-6 pt-4 border-t border-white/10 text-center text-xs text-slate-400">
+                Already have an account? 
+                <a href="signin.html" class="text-[#FFD700] font-bold hover:underline ml-1">Sign In here</a>
+            </div>
+
         </div>
     </main>
 
-    <!-- Clean Layout Footer Note -->
-    <footer class="w-full text-center py-6 text-[10px] font-mono tracking-widest text-slate-600 z-10">
-        [ XM DIGITALPRODUCTS CORE AUTH INTERFACE NODE // SECURE SSL SHA-256 ]
+    <!-- ─── FLOATING WHATSAPP LIVE SUPPORT ─── -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/447455909204" target="_blank"
+            class="flex items-center gap-2.5 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-extrabold text-xs rounded-full shadow-[0_4px_25px_rgba(37,211,102,0.4)] transition-all transform hover:scale-105 active:scale-95 group">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>💬 Live Support</span>
+        </a>
+    </div>
+
+    <!-- Simple Footer -->
+    <footer class="w-full py-6 text-center text-xs text-slate-500 font-light">
+        &copy; 2026 XM Digital Holdings. All rights reserved.
     </footer>
 
 </body>
-
 </html>

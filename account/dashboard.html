@@ -2,26 +2,39 @@
 <html lang="en">
 
 <head>
+    <script>
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miner Console | XM Digital Console</title>
-    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <title>My Mining Account | XM Digital</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Currency Switcher utility -->
-    <script src="../public/js/currency.js"></script>
-    <!-- AlpineJS for interactivity -->
+    <script src="/public/js/currency.js"></script>
+    <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- ApexCharts for dynamic charting -->
+    <!-- ApexCharts CDN for Yield graphs -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(255, 215, 0, 0.03) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.03) 0px, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
         }
         .font-tech {
             font-family: 'Orbitron', sans-serif;
@@ -29,26 +42,32 @@
         .font-code {
             font-family: 'JetBrains Mono', monospace;
         }
+        
+        /* Modern Glass Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 11, 25, 0.92) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .glass-card:hover {
+            border-color: rgba(255, 215, 0, 0.25);
+        }
+
         .glass-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease-in-out;
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
         }
         .glass-input:focus {
             border-color: #FFD700;
-            background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            background: rgba(3, 7, 18, 0.95);
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.18);
             outline: none;
         }
         
-        /* Hide default native scrollbars but retain swipe capabilities */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -56,86 +75,49 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        
-        .neon-glow-yellow {
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
-        }
-        .neon-glow-purple {
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
-        }
-        .neon-glow-emerald {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
-        }
-        
-        /* Custom scrollbar for logs panel */
+
         .custom-scroll::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
+            height: 5px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.4);
         }
         .custom-scroll::-webkit-scrollbar-thumb {
             background: rgba(255, 215, 0, 0.3);
-            border-radius: 999px;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
         }
 
-        /* Premium Light Mode Styles */
-        body.theme-light {
-            background-color: #F8FAFC !important;
-            color: #0F172A !important;
+        /* Light Mode Styles */
+        .theme-light {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(202, 138, 4, 0.05) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(147, 51, 234, 0.04) 0px, transparent 50%),
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            color: #0f172a;
         }
-        body.theme-light .glass-card {
-            background: rgba(255, 255, 255, 0.7) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05) !important;
+        .theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
         }
-        body.theme-light h1,
-        body.theme-light h2,
-        body.theme-light h3,
-        body.theme-light h4,
-        body.theme-light .text-white {
-            color: #0F172A !important;
+        .theme-light h1, .theme-light h2, .theme-light h3, .theme-light h4, .theme-light .text-white {
+            color: #0f172a !important;
         }
-        body.theme-light .text-slate-200,
-        body.theme-light .text-slate-300,
-        body.theme-light .text-slate-400 {
+        .theme-light .text-slate-100, .theme-light .text-slate-200, .theme-light .text-slate-300, .theme-light .text-slate-400 {
             color: #475569 !important;
         }
-        body.theme-light .text-slate-500 {
-            color: #64748B !important;
+        .theme-light .text-slate-500 {
+            color: #64748b !important;
         }
-        body.theme-light nav {
-            background-color: rgba(248, 250, 252, 0.8) !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .border-white\/5,
-        body.theme-light .border-white\/10 {
-            border-color: rgba(0, 0, 0, 0.06) !important;
-        }
-        body.theme-light .bg-white\/5 {
-            background-color: rgba(0, 0, 0, 0.03) !important;
-        }
-        body.theme-light .bg-white\/10 {
-            background-color: rgba(0, 0, 0, 0.05) !important;
-        }
-        body.theme-light .bg-black\/40 {
-            background-color: rgba(0, 0, 0, 0.02) !important;
-        }
-        body.theme-light .bg-black\/30 {
-            background-color: rgba(0, 0, 0, 0.01) !important;
-        }
-        body.theme-light .bg-black\/60 {
-            background-color: #E2E8F0 !important;
-            color: #0F172A !important;
-        }
-        body.theme-light .text-emerald-400 {
-            color: #15803D !important;
-        }
-        body.theme-light .text-purple-400 {
-            color: #7E22CE !important;
-        }
-        body.theme-light .text-[#FFD700] {
-            color: #B45309 !important;
+        .theme-light nav, .theme-light header {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(0, 0, 0, 0.07) !important;
         }
     </style>
 </head>
@@ -143,12 +125,15 @@
 <body x-data="{
     navDropdownOpen: false,
     notificationsOpen: false,
+    mobileMenuOpen: false,
     copied: false,
     balance: 0.00,
     leasedEarnings: 0.00,
     dailyGrowth: 0.00,
     username: 'Miner',
-    lightMode: false,
+    get lightMode() {
+        return Alpine.store('theme').lightMode;
+    },
     
     // Leases Array
     leases: [],
@@ -157,47 +142,178 @@
         return activeCount >= 3;
     },
 
-    // Rented machines catalog (10 Machines)
+    // 10 User-Friendly Named Mining Machines with Real-World Physical Hardware Photos
     catalog: [
-        { name: 'Volt Hashing Node (V1)', price: 3000, rate: 3.0, duration: 14, speed: '10.0 MH/s', daily: 90, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]', slots: 3, timer: { hours: 1, mins: 24, secs: 5, text: '01h 24m 05s' } },
-        { name: 'Pulse Matrix Node (P2)', price: 8500, rate: 3.2, duration: 14, speed: '25.0 MH/s', daily: 272, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 5, timer: { hours: 2, mins: 12, secs: 44, text: '02h 12m 44s' } },
-        { name: 'Quantum Cobalt V3', price: 15000, rate: 3.5, duration: 30, speed: '48.0 MH/s', daily: 525, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]', slots: 2, timer: { hours: 0, mins: 45, secs: 19, text: '00h 45m 19s' } },
-        { name: 'Aero Grid Core', price: 30000, rate: 3.8, duration: 30, speed: '95.0 MH/s', daily: 1140, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 4, timer: { hours: 3, mins: 15, secs: 2, text: '03h 15m 02s' } },
-        { name: 'Hyperion Reactor', price: 55000, rate: 4.0, duration: 45, speed: '180.0 MH/s', daily: 2200, image: '../public/images/hybrid_node.png', borderClass: 'border-t-cyan-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.25)]', slots: 6, timer: { hours: 1, mins: 55, secs: 30, text: '01h 55m 30s' } },
-        { name: 'Solar Storm Mainframe', price: 92000, rate: 4.2, duration: 45, speed: '320.0 MH/s', daily: 3864, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 3, timer: { hours: 0, mins: 59, secs: 59, text: '00h 59m 59s' } },
-        { name: 'Deep Ocean Server', price: 140000, rate: 4.5, duration: 180, speed: '512.0 MH/s', daily: 6300, image: '../public/images/blue_mainframe.png', borderClass: 'border-t-blue-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.25)]', slots: 2, timer: { hours: 4, mins: 10, secs: 15, text: '04h 10m 15s' } },
-        { name: 'Aurora Prime Node', price: 220000, rate: 4.8, duration: 180, speed: '850.0 MH/s', daily: 10560, image: '../public/images/hybrid_node.png', borderClass: 'border-t-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.25)]', slots: 4, timer: { hours: 2, mins: 30, secs: 40, text: '02h 30m 40s' } },
-        { name: 'Nebula Fusion Grid', price: 380000, rate: 5.2, duration: 180, speed: '1600.0 MH/s', daily: 19760, image: '../public/images/yellow_mainframe.png', borderClass: 'border-t-[#FFD700] hover:shadow-[0_0_20px_rgba(255,215,0,0.25)]', slots: 1, timer: { hours: 1, mins: 5, secs: 12, text: '01h 05m 12s' } },
-        { name: 'Apex Void Titan', price: 650000, rate: 5.6, duration: 180, speed: '3000.0 MH/s', daily: 36400, image: '../public/images/hybrid_node.png', borderClass: 'border-t-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.25)]', slots: 2, timer: { hours: 0, mins: 42, secs: 8, text: '00h 42m 08s' } }
+        { 
+            name: 'Starter Miner V1', 
+            slug: 'starter-miner-v1',
+            tierLabel: 'Starter Level',
+            price: 3000, 
+            rate: 3.0, 
+            duration: 14, 
+            speed: '10.0 MH/s', 
+            daily: 90, 
+            totalProfit: 1260,
+            image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+            slots: 3, 
+            timer: { hours: 1, mins: 24, secs: 5, text: '01h 24m 05s' } 
+        },
+        { 
+            name: 'Bronze Daily Miner', 
+            slug: 'bronze-daily-miner',
+            tierLabel: 'Bronze Level',
+            price: 8500, 
+            rate: 3.2, 
+            duration: 14, 
+            speed: '25.0 MH/s', 
+            daily: 272, 
+            totalProfit: 3808,
+            image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30',
+            slots: 5, 
+            timer: { hours: 2, mins: 12, secs: 44, text: '02h 12m 44s' } 
+        },
+        { 
+            name: 'Silver Profit Miner', 
+            slug: 'silver-profit-miner',
+            tierLabel: 'Silver Level',
+            price: 15000, 
+            rate: 3.5, 
+            duration: 30, 
+            speed: '48.0 MH/s', 
+            daily: 525, 
+            totalProfit: 15750,
+            image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+            slots: 2, 
+            timer: { hours: 0, mins: 45, secs: 19, text: '00h 45m 19s' } 
+        },
+        { 
+            name: 'Gold Power Miner', 
+            slug: 'gold-power-miner',
+            tierLabel: 'Gold Level',
+            price: 30000, 
+            rate: 3.8, 
+            duration: 30, 
+            speed: '95.0 MH/s', 
+            daily: 1140, 
+            totalProfit: 34200,
+            image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30',
+            slots: 4, 
+            timer: { hours: 3, mins: 15, secs: 2, text: '03h 15m 02s' } 
+        },
+        { 
+            name: 'Platinum Super Miner', 
+            slug: 'platinum-super-miner',
+            tierLabel: 'Platinum Level',
+            price: 55000, 
+            rate: 4.0, 
+            duration: 45, 
+            speed: '180.0 MH/s', 
+            daily: 2200, 
+            totalProfit: 99000,
+            image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+            slots: 6, 
+            timer: { hours: 1, mins: 55, secs: 30, text: '01h 55m 30s' } 
+        },
+        { 
+            name: 'Diamond Pro Miner', 
+            slug: 'diamond-pro-miner',
+            tierLabel: 'Diamond Level',
+            price: 92000, 
+            rate: 4.2, 
+            duration: 45, 
+            speed: '320.0 MH/s', 
+            daily: 3864, 
+            totalProfit: 173880,
+            image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+            slots: 3, 
+            timer: { hours: 0, mins: 59, secs: 59, text: '00h 59m 59s' } 
+        },
+        { 
+            name: 'Emerald Master Miner', 
+            slug: 'emerald-master-miner',
+            tierLabel: 'Emerald Level',
+            price: 140000, 
+            rate: 4.5, 
+            duration: 180, 
+            speed: '512.0 MH/s', 
+            daily: 6300, 
+            totalProfit: 1134000,
+            image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+            slots: 2, 
+            timer: { hours: 4, mins: 10, secs: 15, text: '04h 10m 15s' } 
+        },
+        { 
+            name: 'Ruby Ultra Miner', 
+            slug: 'ruby-ultra-miner',
+            tierLabel: 'Ruby Level',
+            price: 220000, 
+            rate: 4.8, 
+            duration: 180, 
+            speed: '850.0 MH/s', 
+            daily: 10560, 
+            totalProfit: 1900800,
+            image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+            slots: 4, 
+            timer: { hours: 2, mins: 30, secs: 40, text: '02h 30m 40s' } 
+        },
+        { 
+            name: 'Sapphire Giant Miner', 
+            slug: 'sapphire-giant-miner',
+            tierLabel: 'Sapphire Level',
+            price: 380000, 
+            rate: 5.2, 
+            duration: 180, 
+            speed: '1600.0 MH/s', 
+            daily: 19760, 
+            totalProfit: 3556800,
+            image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30',
+            slots: 1, 
+            timer: { hours: 1, mins: 5, secs: 12, text: '01h 05m 12s' } 
+        },
+        { 
+            name: 'Crown VIP Titan Miner', 
+            slug: 'crown-vip-titan-miner',
+            tierLabel: 'VIP Crown Level',
+            price: 650000, 
+            rate: 5.6, 
+            duration: 180, 
+            speed: '3000.0 MH/s', 
+            daily: 36400, 
+            totalProfit: 6552000,
+            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', 
+            badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+            slots: 2, 
+            timer: { hours: 0, mins: 42, secs: 8, text: '00h 42m 08s' } 
+        }
     ],
 
-    // Styling helper
+    getLeaseImage(name) {
+        const found = this.catalog.find(c => c.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(c.name.toLowerCase()));
+        return found ? found.image : 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80';
+    },
+
     getLeaseStyle(type) {
-        const styles = {
-            volt: { borderClass: 'border-t-blue-500', colorClass: 'text-blue-400', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
-            pulse: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-            quantum: { borderClass: 'border-t-blue-500', colorClass: 'text-blue-400', glowClass: 'shadow-[0_0_20px_rgba(59,130,246,0.25)]' },
-            aero: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-            hyperion: { borderClass: 'border-t-cyan-500', colorClass: 'text-cyan-400', glowClass: 'shadow-[0_0_20px_rgba(6,182,212,0.25)]' },
-            solar: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-            ocean: { borderClass: 'border-t-blue-600', colorClass: 'text-blue-500', glowClass: 'shadow-[0_0_20px_rgba(37,99,235,0.25)]' },
-            aurora: { borderClass: 'border-t-purple-500', colorClass: 'text-purple-400', glowClass: 'shadow-[0_0_20px_rgba(168,85,247,0.25)]' },
-            nebula: { borderClass: 'border-t-[#FFD700]', colorClass: 'text-[#FFD700]', glowClass: 'shadow-[0_0_20px_rgba(255,215,0,0.25)]' },
-            apex: { borderClass: 'border-t-emerald-500', colorClass: 'text-emerald-400', glowClass: 'shadow-[0_0_20px_rgba(16,185,129,0.25)]' }
-        };
-        return styles[type] || styles.volt;
+        return { colorClass: 'text-emerald-400', glowClass: 'border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)]' };
     },
 
     tryRentMachine(machine) {
-        const activeLease = this.leases.find(l => parseInt(l.remaining) > 0);
-        if (activeLease) {
-            alert('You can only rent one machine at a time. Please wait for your active machine to finish.');
+        if (this.hasActiveLease) {
+            alert('Limit reached: You can run up to 3 active mining machines at the same time.');
             return;
         }
-        window.location.href = 'lease-details.html?tier=' + machine.name.toLowerCase().replace(/\s+/g, '-');
+        window.location.href = 'lease-details.html?tier=' + machine.slug;
     },
     
-    // Interactive Terminal logs
+    // Interactive Activity logs
     showTerminal: false,
     activeTerminalNode: '',
     terminalLogs: [],
@@ -207,18 +323,17 @@
     chartRange: '7D',
     chart: null,
     
-    // Hashrate Estimator
+    // Estimator
     estimatorHashrate: 250,
     
     notifications: [
-        { id: 1, text: 'Payout node allocation successfully synchronized', time: '1 hr ago', read: false },
-        { id: 2, text: 'Authorized hardware optimization speed boost', time: '3 hrs ago', read: false }
+        { id: 1, text: 'Daily mining profits credited to your wallet', time: '1 hr ago', read: false },
+        { id: 2, text: 'Mining machines running smoothly and generating income', time: '3 hrs ago', read: false }
     ],
     get unreadNotificationsCount() {
         return this.notifications.filter(n => !n.read).length;
     },
     
-    // API Request Wrapper
     async fetchAPI(endpoint, options = {}) {
         const token = localStorage.getItem('xm_jwt_token');
         if (!token) {
@@ -232,9 +347,9 @@
         };
         try {
             const response = await fetch(endpoint, { ...options, headers });
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 503) {
                 localStorage.removeItem('xm_jwt_token');
-                window.location.href = '../public/signin.html';
+                window.location.href = '../public/signin.html?maintenance=true';
                 return null;
             }
             return response;
@@ -245,26 +360,17 @@
     },
     
     async init() {
-        // Read theme settings on start
-        if (localStorage.getItem('xm_theme') === 'light') {
-            this.lightMode = true;
-            document.body.classList.add('theme-light');
-        }
-
-        // Fetch Live profile stats
         const profileRes = await this.fetchAPI('/api/user/profile');
         if (profileRes) {
             const profile = await profileRes.json();
             this.username = profile.username;
-            this.balance = parseFloat(profile.balance);
-            this.leasedEarnings = parseFloat(profile.leased_earnings);
-            this.dailyGrowth = parseFloat(profile.daily_growth);
+            this.balance = parseFloat(profile.balance || 0);
+            this.leasedEarnings = parseFloat(profile.leased_earnings || 0);
+            this.dailyGrowth = parseFloat(profile.daily_growth || 0);
         }
         
-        // Fetch Active leases
+        await this.loadCatalog();
         await this.loadLeases();
-        
-        // Start timers & load ApexCharts
         this.startAvailabilityCountdowns();
         await this.initChart();
 
@@ -288,19 +394,39 @@
     },
     
     toggleTheme() {
-        this.lightMode = !this.lightMode;
-        if (this.lightMode) {
-            document.body.classList.add('theme-light');
-            localStorage.setItem('xm_theme', 'light');
-        } else {
-            document.body.classList.remove('theme-light');
-            localStorage.setItem('xm_theme', 'dark');
-        }
-        // Update ApexCharts axes colors if chart is loaded
+        Alpine.store('theme').toggle();
         if (this.chart) {
             this.chart.updateOptions({
-                chart: { foreColor: this.lightMode ? '#475569' : '#64748B' }
+                chart: { foreColor: this.lightMode ? '#475569' : '#94A3B8' }
             });
+        }
+    },
+
+    async loadCatalog() {
+        try {
+            const res = await fetch('/api/machines');
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    this.catalog = data.map((m, idx) => ({
+                        name: m.name,
+                        slug: m.slug,
+                        tierLabel: m.tagline || (m.name.split(' ')[0] + ' Level'),
+                        price: parseFloat(m.price),
+                        rate: 3.0,
+                        duration: parseInt(m.duration_days) || 30,
+                        speed: m.speed || '25.0 MH/s',
+                        daily: parseFloat(m.daily_income),
+                        totalProfit: parseFloat(m.total_profit),
+                        image: m.image,
+                        badgeColor: m.badge && m.badge.includes('VIP') ? 'bg-yellow-500/10 text-[#FFD700] border-yellow-500/30' : 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+                        slots: Math.max(1, (parseInt(m.slots_total || 50) - parseInt(m.slots_taken || 0))),
+                        timer: { hours: 1 + (idx % 3), mins: (idx * 7) % 60, secs: 30, text: '01h 30m 00s' }
+                    }));
+                }
+            }
+        } catch (e) {
+            console.warn('Could not fetch dynamic machines catalog:', e);
         }
     },
     
@@ -359,24 +485,27 @@
                 type: 'area',
                 height: '100%',
                 toolbar: { show: false },
-                background: 'transparent',
-                foreColor: this.lightMode ? '#475569' : '#64748B'
+                foreColor: this.lightMode ? '#475569' : '#94A3B8',
+                fontFamily: 'JetBrains Mono, monospace'
             },
-            stroke: { curve: 'smooth', width: 2, colors: ['#FFD700'] },
+            colors: ['#FFD700'],
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 2.5, colors: ['#FFD700'] },
             fill: {
                 type: 'gradient',
                 gradient: {
                     shadeIntensity: 1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.05,
-                    colorStops: [
-                        { offset: 0, color: '#FFD700', opacity: 0.3 },
-                        { offset: 100, color: '#FFD700', opacity: 0.0 }
-                    ]
+                    opacityFrom: 0.35,
+                    opacityTo: 0.02,
+                    stops: [0, 90, 100]
                 }
             },
-            dataLabels: { enabled: false },
-            grid: { borderColor: 'rgba(255,255,255,0.05)' },
+            grid: {
+                borderColor: 'rgba(255,255,255,0.06)',
+                strokeDashArray: 4,
+                xaxis: { lines: { show: true } },
+                yaxis: { lines: { show: true } }
+            },
             xaxis: {
                 categories: labels,
                 axisBorder: { show: false },
@@ -393,10 +522,25 @@
                     }
                 }
             },
-            tooltip: { theme: 'dark' }
+            tooltip: {
+                theme: 'dark',
+                y: {
+                    formatter: (val) => {
+                        const currentCurrency = localStorage.getItem('xm_currency') || 'KSh';
+                        if (currentCurrency === 'USD') {
+                            return '$' + (val / 130).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                        }
+                        return 'KSh ' + val.toLocaleString();
+                    }
+                }
+            }
         };
-        this.chart = new ApexCharts(document.querySelector('#earningsChart'), options);
-        this.chart.render();
+        
+        const chartEl = document.querySelector('#earningsChart');
+        if (chartEl) {
+            this.chart = new ApexCharts(chartEl, options);
+            this.chart.render();
+        }
     },
     
     async updateChartRange(range) {
@@ -413,153 +557,133 @@
         }
     },
     
+    // Reboot Node
     async rebootNode(index) {
-        const node = this.leases[index];
-        node.status = 'Rebooting...';
-        node.speed = '0.0 MH/s';
-        
-        await this.fetchAPI(`/api/user/leases/${node.id}/reboot`, { method: 'POST' });
-        
-        setTimeout(async () => {
-            await this.loadLeases();
-            
-            // Add notification
-            this.notifications.unshift({
-                id: Date.now(),
-                text: `${node.node_id || 'Node'} has completed soft-reboot sequence.`,
-                time: 'Just now',
-                read: false
-            });
-        }, 2500);
+        const lease = this.leases[index];
+        lease.status = 'Restarting...';
+        const res = await this.fetchAPI(`/api/user/leases/${lease.id}/reboot`, { method: 'POST' });
+        if (res && res.ok) {
+            setTimeout(() => {
+                lease.status = 'Working & Earning';
+            }, 5000);
+        } else {
+            lease.status = 'Working & Earning';
+            alert('Restart request acknowledged.');
+        }
     },
     
+    // Optimize Node
     async optimizeNode(index) {
-        const node = this.leases[index];
-        if (node.status === 'Optimizing...') return;
-        
-        node.status = 'Optimizing...';
-        
-        await this.fetchAPI(`/api/user/leases/${node.id}/optimize`, { method: 'POST' });
-        
-        setTimeout(async () => {
-            await this.loadLeases();
-            
-            // Add notification
-            this.notifications.unshift({
-                id: Date.now(),
-                text: `${node.node_id || 'Node'} has completed optimization boost check.`,
-                time: 'Just now',
-                read: false
-            });
-        }, 2000);
+        const lease = this.leases[index];
+        lease.status = 'Boosting...';
+        const res = await this.fetchAPI(`/api/user/leases/${lease.id}/optimize`, { method: 'POST' });
+        if (res && res.ok) {
+            setTimeout(() => {
+                lease.status = 'Boosted';
+            }, 6000);
+        } else {
+            lease.status = 'Working & Earning';
+            alert('Boost complete.');
+        }
     },
     
     openTerminal(nodeId) {
         this.activeTerminalNode = nodeId;
         this.showTerminal = true;
         this.terminalLogs = [
-            `[${new Date().toLocaleTimeString()}] ${nodeId}: Core operational boot initialized.`,
-            `[${new Date().toLocaleTimeString()}] ${nodeId}: Secure SSL handshake with pool successful.`,
-            `[${new Date().toLocaleTimeString()}] ${nodeId}: Hashing thread engines started.`
+            `[system] Connected to Machine [${nodeId}]`,
+            `[system] Machine is actively mining and collecting income.`
         ];
-        this.startLogsInterval();
-    },
-    
-    startLogsInterval() {
+        
         if (this.logsInterval) clearInterval(this.logsInterval);
+        
+        let counter = 0;
+        const logsTemplates = [
+            'STATUS: Machine running smoothly at 100% efficiency.',
+            'COOLING: Fans spinning normally. Temperature 46°C.',
+            'NETWORK: Stable connection to high-speed mining server.',
+            'INCOME: Daily earnings automatically added to your wallet.'
+        ];
+        
         this.logsInterval = setInterval(() => {
-            if (!this.showTerminal) return;
-            const node = this.leases.find(l => l.node_id === this.activeTerminalNode);
-            const speedVal = node ? node.speed : '55.2 MH/s';
-            const statusVal = node ? node.status : 'Hashing';
-            
-            const events = [
-                `Mempool scan complete. Checked 12 new block transactions.`,
-                `Hashing rate aligned. Operating at output speed: ${speedVal}.`,
-                `Giga-hash efficiency parameters check: Core stable (Temp: ${55 + Math.floor(Math.random()*15)}°C).`,
-                `Block slot validation job accepted. Epoch #${512 + Math.floor(Math.random()*10)}.`,
-                `Cryptographic share verified by pool nodes. Latency: ${20 + Math.floor(Math.random()*30)}ms.`,
-                `Memory allocator heap optimization completed.`,
-                `State verification: Node Status is current [${statusVal}].`
-            ];
-            
-            const randomEvent = events[Math.floor(Math.random() * events.length)];
-            const time = new Date().toLocaleTimeString();
-            this.terminalLogs.push(`[${time}] ${this.activeTerminalNode}: ${randomEvent}`);
-            
-            if (this.terminalLogs.length > 50) this.terminalLogs.shift();
-            
-            this.$nextTick(() => {
-                const el = document.getElementById('terminal-body');
-                if (el) el.scrollTop = el.scrollHeight;
-            });
+            if (counter < logsTemplates.length) {
+                const timestamp = new Date().toLocaleTimeString();
+                this.terminalLogs.push(`[${timestamp}] ${logsTemplates[counter]}`);
+                counter++;
+                setTimeout(() => {
+                    const el = document.getElementById('terminal-body');
+                    if (el) el.scrollTop = el.scrollHeight;
+                }, 50);
+            }
         }, 1500);
     },
     
     closeTerminal() {
         this.showTerminal = false;
-        if (this.logsInterval) {
-            clearInterval(this.logsInterval);
-            this.logsInterval = null;
-        }
+        if (this.logsInterval) clearInterval(this.logsInterval);
     }
-}" class="bg-[#06070B] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
+}" class="bg-[#030712] text-slate-100 font-sans antialiased min-h-screen selection:bg-[#FFD700] selection:text-black">
 
-    <!-- ─── NAVIGATION BAR ─── -->
-    <nav class="sticky top-0 z-40 bg-[#06070B]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+    <!-- ─── NAVIGATION HEADER ─── -->
+    <header class="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 transition-all">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="../public/index.html" class="flex items-center space-x-2 group">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FFD700] to-purple-600 flex items-center justify-center font-bold text-black font-tech tracking-tighter text-sm shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                    XM
+            
+            <!-- Brand Logo -->
+            <a href="../public/index.html" class="flex items-center space-x-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FFD700] via-amber-400 to-purple-600 p-[1.5px] shadow-[0_0_20px_rgba(255,215,0,0.3)] transition group-hover:scale-105">
+                    <div class="w-full h-full bg-[#030712] rounded-[10px] flex items-center justify-center font-black text-[#FFD700] font-tech text-base tracking-tighter">
+                        XM
+                    </div>
                 </div>
-                <div class="text-lg font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] via-amber-200 to-purple-400 bg-clip-text text-transparent">
-                    XM DIGITAL<span class="text-[#FFD700] font-light text-xs ml-1 font-tech">console</span>
+                <div>
+                    <div class="text-sm font-extrabold tracking-wider bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent font-tech uppercase">
+                        XM DIGITAL
+                    </div>
+                    <div class="flex items-center space-x-1.5 -mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-[9px] font-mono font-semibold text-emerald-400 uppercase tracking-widest">Mining Active</span>
+                    </div>
                 </div>
             </a>
 
-            <div class="flex items-center space-x-4">
-                <!-- Notifications Bell -->
-                <div class="relative">
-                    <button @click="notificationsOpen = !notificationsOpen" @click.away="notificationsOpen = false"
-                        class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-300 hover:text-white relative">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <template x-if="unreadNotificationsCount > 0">
-                            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#06070B]"></span>
-                        </template>
-                    </button>
+            <!-- Central Navigation -->
+            <nav class="hidden md:flex items-center space-x-1.5 bg-white/[0.03] border border-white/10 rounded-full p-1 font-tech text-xs backdrop-blur-md">
+                <a href="dashboard.html" class="px-4 py-2 rounded-full font-bold transition flex items-center space-x-2 bg-[#FFD700] text-black shadow-[0_2px_12px_rgba(255,215,0,0.25)]">
+                    <span>MY ACCOUNT</span>
+                </a>
+                <a href="#machines-catalog" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <span>RENT MACHINES</span>
+                </a>
+                <a href="withdraw.html" class="px-4 py-2 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-2">
+                    <span>WITHDRAW CASH</span>
+                </a>
+            </nav>
 
-                    <!-- Notifications Dropdown -->
-                    <div x-show="notificationsOpen" x-transition
-                        class="absolute right-0 mt-2 w-80 glass-card rounded-xl p-3 shadow-2xl space-y-2 z-50 text-xs"
-                        style="display: none;">
-                        <div class="flex justify-between items-center pb-2 border-b border-white/5">
-                            <span class="font-bold text-white uppercase tracking-wider font-tech">Notifications</span>
-                            <button @click="notifications.forEach(n => n.read = true)" class="text-slate-400 hover:text-[#FFD700] cursor-pointer">Clear all</button>
-                        </div>
-                        <div class="space-y-2 max-h-60 overflow-y-auto">
-                            <template x-for="item in notifications" :key="item.id">
-                                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.04]">
-                                    <p class="text-slate-200" x-text="item.text"></p>
-                                    <span class="text-[10px] text-slate-500 mt-1 block" x-text="item.time"></span>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
+            <!-- Right Toolbar -->
+            <div class="flex items-center space-x-2.5">
+                
+                <!-- Live Balance Pill -->
+                <div class="hidden sm:flex items-center space-x-2 bg-white/[0.04] border border-white/10 rounded-full px-3.5 py-1.5">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Balance:</span>
+                    <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="$store.currency.format(balance)"></span>
                 </div>
 
-                <!-- Currency Switcher Toggle -->
-                <button @click="$store.currency.toggle()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2 text-xs font-mono font-bold">
-                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                <!-- Currency Switcher -->
+                <button @click="$store.currency.toggle()" 
+                    title="Change Currency"
+                    class="px-2.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 hover:border-[#FFD700]/50 text-slate-300 hover:text-[#FFD700] transition text-[11px] font-mono font-bold flex items-center space-x-1 cursor-pointer">
+                    <span class="text-slate-500 text-[10px]">Currency:</span>
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KES (KSh)'"></span>
                 </button>
 
-                <!-- Theme Toggle Switch -->
-                <button @click="toggleTheme()" class="p-2 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition cursor-pointer text-slate-400 hover:text-[#FFD700] mr-2">
-                    <svg x-show="!lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Theme Toggle -->
+                <button @click="toggleTheme()" 
+                    title="Toggle Theme"
+                    class="p-2 rounded-full bg-white/[0.05] border border-white/10 hover:border-white/20 text-slate-400 hover:text-white transition cursor-pointer">
+                    <svg x-show="!lightMode" class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                     </svg>
-                    <svg x-show="lightMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                    <svg x-show="lightMode" class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
@@ -567,176 +691,219 @@
                 <!-- Profile Menu -->
                 <div class="relative">
                     <button @click="navDropdownOpen = !navDropdownOpen" @click.away="navDropdownOpen = false"
-                        class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition cursor-pointer">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span class="font-code text-xs text-slate-200" x-text="username"></span>
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="19 9l-7 7-7-7" />
-                        </svg>
+                        class="flex items-center space-x-2 bg-gradient-to-r from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-full text-xs transition cursor-pointer">
+                        <div class="w-5 h-5 rounded-full bg-purple-500/20 border border-purple-400 flex items-center justify-center font-bold text-purple-300 text-[10px]">
+                            <span x-text="username.charAt(0).toUpperCase()"></span>
+                        </div>
+                        <span class="font-mono text-slate-200 font-semibold" x-text="username"></span>
                     </button>
 
                     <div x-show="navDropdownOpen" x-transition
-                        class="absolute right-0 mt-2 w-48 glass-card rounded-xl p-2 shadow-2xl space-y-1 z-50"
+                        class="absolute right-0 mt-2 w-48 glass-card rounded-2xl p-2 shadow-2xl space-y-1 z-50 text-xs"
                         style="display: none;">
-                        <a href="../public/index.html"
-                            class="block px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">Landing Interface</a>
-                        <a href="admin.html"
-                            class="block px-4 py-2 text-sm text-slate-400 hover:text-[#FFD700] rounded-lg hover:bg-white/5 transition">Admin Dashboard</a>
-                        <hr class="border-white/5 my-1">
+                        <a href="dashboard.html" class="block px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">My Account</a>
+                        <a href="withdraw.html" class="block px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">Withdraw Money</a>
+                        <a href="../public/contact.html" class="block px-3 py-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition">Help & Support</a>
+                        <hr class="border-white/10 my-1">
                         <a href="../public/signin.html" @click="localStorage.removeItem('xm_jwt_token')"
-                            class="block px-4 py-2 text-sm text-red-400 font-medium rounded-lg hover:bg-red-500/10 transition">Terminate Session</a>
+                            class="block px-3 py-2 text-red-400 font-semibold rounded-xl hover:bg-red-500/10 transition">Log Out</a>
                     </div>
                 </div>
+
+                <!-- Mobile Hamburger -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                </button>
             </div>
         </div>
-    </nav>
 
-    <!-- ─── MAIN CONTENT ─── -->
-    <main class="max-w-7xl mx-auto px-6 py-10 space-y-8">
+        <!-- Mobile Drawer -->
+        <div x-show="mobileMenuOpen" x-transition class="md:hidden mt-3 pt-3 border-t border-white/10 space-y-2 pb-2 text-xs font-tech">
+            <a href="dashboard.html" class="block px-3 py-2 rounded-lg bg-[#FFD700] text-black font-bold">MY ACCOUNT</a>
+            <a href="#machines-catalog" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-white/5">RENT MACHINES</a>
+            <a href="withdraw.html" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-white/5">WITHDRAW CASH</a>
+            <a href="../public/contact.html" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-white/5">CUSTOMER SUPPORT</a>
+        </div>
+    </header>
 
-        <!-- Welcoming Alert card -->
-        <header class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl"></div>
-            <div>
-                <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-tech">Welcome, <span x-text="username"></span>!</h1>
-                <p class="text-slate-400 text-xs sm:text-sm font-light mt-0.5">Your rented machines are online and running.</p>
-            </div>
-            <div class="text-xs font-mono bg-white/5 px-3 py-1.5 border border-white/5 rounded-lg text-slate-400 shrink-0">
-                Last Synced: Just now
-            </div>
-        </header>
+    <!-- ─── DASHBOARD CONTENT ─── -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8">
 
-        <!-- Stats overview section -->
-        <section class="grid md:grid-cols-3 gap-6">
-            <!-- Balance Card -->
-            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 relative overflow-hidden">
-                <div class="absolute -right-8 -top-8 w-20 h-20 bg-[#FFD700]/5 rounded-full blur-xl"></div>
-                <div>
-                    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">My Wallet Balance</span>
-                    <h2 class="text-3xl font-black text-white mt-1 tracking-tight" x-text="$store.currency.format(balance)"></h2>
+        <!-- ─── WELCOME BANNER ─── -->
+        <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+            <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-gradient-to-br from-[#FFD700]/10 via-purple-600/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="space-y-1.5 z-10">
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Mining Active & Earning</span>
+                    </span>
                 </div>
-                <div class="text-[11px] text-slate-500 font-mono tracking-wide">● Ready for withdrawal</div>
+                <h1 class="text-2xl sm:text-3xl font-black text-white font-tech tracking-tight">
+                    Welcome back, <span class="bg-gradient-to-r from-[#FFD700] to-amber-300 bg-clip-text text-transparent" x-text="username"></span>!
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-xl font-light">
+                    Your rented machines are running automatically. Your daily profits are credited to your balance every day.
+                </p>
             </div>
 
-            <!-- Total Earnings -->
-            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4 relative overflow-hidden">
-                <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/5 rounded-full blur-xl"></div>
-                <div>
-                    <span class="text-[10px] font-mono uppercase tracking-widest text-slate-400">Total Earnings</span>
-                    <h2 class="text-3xl font-black text-slate-300 mt-1 tracking-tight" x-text="$store.currency.format(leasedEarnings)"></h2>
-                </div>
-                <div class="text-[11px] text-emerald-400 font-mono tracking-wide" x-text="$store.currency.current === 'USD' ? '↑ +$' + (dailyGrowth / 130).toFixed(2) + ' earned today' : '↑ +' + dailyGrowth.toLocaleString() + ' KSh earned today'"></div>
-            </div>
-
-            <!-- Trigger Payout Card -->
-            <div class="glass-card rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-dashed border-white/10 hover:border-[#FFD700]/30 transition group">
-                <p class="text-xs text-slate-400 mb-3.5 font-light max-w-[220px]">Do you want to withdraw your money?</p>
-                <a href="withdraw.html"
-                    class="w-full py-3.5 px-6 font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition text-center shadow-[0_4px_15px_rgba(255,215,0,0.15)] cursor-pointer font-tech">
+            <div class="flex items-center space-x-3 shrink-0 z-10 w-full sm:w-auto">
+                <a href="#machines-catalog" class="flex-1 sm:flex-none text-center px-5 py-3 rounded-xl bg-[#FFD700] hover:bg-[#FFE55C] text-black font-tech text-xs font-black uppercase tracking-wider shadow-[0_4px_20px_rgba(255,215,0,0.3)] transition transform hover:-translate-y-0.5">
+                    + Rent a Machine
+                </a>
+                <a href="withdraw.html" class="flex-1 sm:flex-none text-center px-5 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/10 font-tech text-xs font-bold uppercase tracking-wider transition">
                     Withdraw Cash
                 </a>
             </div>
+        </div>
+
+        <!-- ─── 4 SIMPLE METRICS ─── -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            <!-- 1. Wallet Balance -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">My Wallet Balance</span>
+                    <div class="text-2xl sm:text-3xl font-black text-white font-tech" x-text="$store.currency.format(balance)"></div>
+                </div>
+                <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+                    <span class="text-emerald-400 font-semibold">● Ready to Withdraw</span>
+                    <a href="withdraw.html" class="text-slate-400 hover:text-[#FFD700] transition">Cash Out →</a>
+                </div>
+            </div>
+
+            <!-- 2. Today's Profit -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Daily Income</span>
+                    <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-tech" x-text="$store.currency.format(dailyGrowth)"></div>
+                </div>
+                <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                    <span>Credited every 24 hours</span>
+                    <span class="text-[#FFD700] font-bold">Automatic</span>
+                </div>
+            </div>
+
+            <!-- 3. Total Profit Earned -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Profits Earned</span>
+                    <div class="text-2xl sm:text-3xl font-black text-purple-400 font-tech" x-text="$store.currency.format(leasedEarnings)"></div>
+                </div>
+                <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                    <span>Active Machines: <strong class="text-white" x-text="leases.length"></strong></span>
+                    <span>Max: 3 Machines</span>
+                </div>
+            </div>
+
+            <!-- 4. Invite Friends -->
+            <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Invite Friends Bonus</span>
+                    <p class="text-xs text-slate-300">Earn <strong class="text-[#FFD700]">KES 200</strong> for every friend you invite.</p>
+                </div>
+                <button @click="navigator.clipboard.writeText(window.location.origin + '/public/signup.html?ref=' + username); copied = true; setTimeout(() => copied = false, 2000)"
+                    class="w-full py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span x-text="copied ? 'Link Copied!' : 'Copy Invite Link'"></span>
+                </button>
+            </div>
+
         </section>
 
-        <!-- Earnings Visualization / Graph Panel -->
-        <section class="glass-card rounded-3xl p-6 relative">
-            <div class="flex items-center justify-between mb-4 border-b border-white/5 pb-4">
+        <!-- ─── EARNINGS GRAPH ─── -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-white/5 pb-4">
                 <div>
-                    <h3 class="text-base font-bold text-white tracking-tight font-tech">Earnings History</h3>
-                    <p class="text-slate-400 text-xs font-light mt-0.5">Real-time graph of your earnings.</p>
+                    <h2 class="text-lg font-bold text-white font-tech">Your Earnings Growth Graph</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Track how much money your machines are making daily.</p>
                 </div>
-                <!-- Chart filter controls -->
-                <div class="flex space-x-1.5 bg-black/40 border border-white/5 rounded-lg p-1 text-[10px] font-mono">
-                    <button @click="updateChartRange('24H')" :class="chartRange === '24H' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">24H</button>
-                    <button @click="updateChartRange('7D')" :class="chartRange === '7D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">7D</button>
-                    <button @click="updateChartRange('30D')" :class="chartRange === '30D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1 rounded transition cursor-pointer">30D</button>
+                
+                <div class="flex items-center space-x-1 bg-white/[0.04] border border-white/10 rounded-xl p-1 text-xs font-mono">
+                    <button @click="updateChartRange('24H')" :class="chartRange === '24H' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-3 py-1 rounded-lg transition cursor-pointer">24 Hours</button>
+                    <button @click="updateChartRange('7D')" :class="chartRange === '7D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-3 py-1 rounded-lg transition cursor-pointer">7 Days</button>
+                    <button @click="updateChartRange('30D')" :class="chartRange === '30D' ? 'bg-[#FFD700] text-black font-bold' : 'text-slate-400 hover:text-white'" class="px-3 py-1 rounded-lg transition cursor-pointer">30 Days</button>
                 </div>
             </div>
             
-            <!-- ApexCharts Mount Node -->
-            <div class="w-full h-72">
+            <div class="w-full h-64">
                 <div id="earningsChart"></div>
             </div>
         </section>
 
-        <!-- Active hardware computational leases -->
+        <!-- ─── MY RUNNING MACHINES ─── -->
         <section class="space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-bold text-white tracking-tight font-tech">My Rented Machines</h3>
-                    <p class="text-slate-400 text-xs font-light">Scroll sideways to see your running machines.</p>
+                    <h2 class="text-lg font-bold text-white font-tech">My Running Machines</h2>
+                    <p class="text-xs text-slate-400">These machines are actively working for you right now.</p>
                 </div>
-                <div class="text-xs font-mono text-purple-400 hidden sm:block">Swipe Track ──→</div>
+                <div class="text-xs font-mono text-slate-400">
+                    Running: <strong class="text-[#FFD700]" x-text="leases.length"></strong> / 3 Max
+                </div>
             </div>
 
-            <!-- Cards Container -->
-            <div class="flex gap-6 overflow-x-auto pb-4 pt-1 snap-x no-scrollbar">
-                
+            <!-- Empty State -->
+            <template x-if="leases.length === 0">
+                <div class="glass-card rounded-2xl p-8 text-center space-y-3 border-dashed border-white/15">
+                    <div class="text-3xl">⚙️</div>
+                    <h3 class="text-base font-bold text-white font-tech">You have no machines running yet</h3>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto">Choose a machine from the catalog below to start earning daily income.</p>
+                    <a href="#machines-catalog" class="inline-block px-5 py-2.5 rounded-xl bg-[#FFD700] text-black font-tech text-xs font-bold uppercase tracking-wider transition">
+                        View Available Machines
+                    </a>
+                </div>
+            </template>
+
+            <!-- Active Machines Carousel -->
+            <div x-show="leases.length > 0" class="flex gap-5 overflow-x-auto pb-4 pt-1 snap-x no-scrollbar">
                 <template x-for="(lease, index) in leases" :key="lease.id">
-                    <div class="w-[280px] sm:w-[320px] shrink-0 snap-start glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border-t-2 transition-all duration-300"
-                        :class="[getLeaseStyle(lease.type).borderClass, getLeaseStyle(lease.type).glowClass]">
+                    <div class="w-[300px] sm:w-[330px] shrink-0 snap-start glass-card rounded-2xl p-5 flex flex-col justify-between border border-emerald-500/30">
                         
-                        <div class="space-y-4">
+                        <div class="space-y-3">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h4 class="font-extrabold text-white tracking-tight text-sm font-tech" x-text="lease.name"></h4>
-                                    <span class="text-[9px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-md mt-1 inline-block"
-                                        :class="{
-                                            'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': lease.status === 'Hashing' || lease.status === 'Optimized',
-                                            'bg-yellow-500/10 text-[#FFD700] border border-yellow-500/20': lease.status === 'Rebooting...' || lease.status === 'Optimizing...'
-                                        }"
-                                        x-text="lease.status"></span>
+                                    <h3 class="font-bold text-white text-sm font-tech" x-text="lease.name"></h3>
+                                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full inline-block mt-1">
+                                        ● Working & Earning
+                                    </span>
                                 </div>
-                                <span class="text-[10px] font-code text-slate-500" x-text="lease.node_id"></span>
+                                <span class="text-[10px] font-mono text-slate-400 bg-white/5 px-2 py-1 rounded" x-text="lease.node_id"></span>
                             </div>
 
-                            <!-- Real pictures used for active leases! -->
-                            <div class="w-full h-32 rounded-xl border border-white/5 relative overflow-hidden group">
-                                <img :src="lease.image || '../public/images/blue_mainframe.png'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Rig Image">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between px-3 pb-2">
-                                    <span class="text-[9px] text-slate-300 font-mono tracking-widest uppercase">Machine Stats</span>
-                                    <span class="text-[10px] font-code font-bold text-[#FFD700]" x-text="lease.speed"></span>
+                            <!-- Real Machine Hardware Photo -->
+                            <div class="w-full h-36 rounded-xl overflow-hidden bg-black/60 relative">
+                                <img :src="getLeaseImage(lease.name)" class="w-full h-full object-cover" alt="Mining Machine">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-between p-2.5">
+                                    <span class="text-[10px] text-slate-300 font-mono uppercase">Speed</span>
+                                    <span class="text-xs font-bold text-[#FFD700]" x-text="lease.speed"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Progress indicator and actions -->
-                        <div class="space-y-4 pt-4 border-t border-white/5 mt-4">
-                            <div class="space-y-1.5 text-xs font-mono">
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Daily Profit Rate:</span>
-                                    <span class="text-white font-bold" x-text="lease.rate + '%'"></span>
-                                </div>
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Daily Earnings:</span>
-                                    <span class="text-emerald-400 font-bold" x-text="$store.currency.format(lease.daily_earnings)"></span>
-                                </div>
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Purchase Value:</span>
-                                    <span class="text-white font-semibold" x-text="$store.currency.format(lease.cost)"></span>
-                                </div>
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Expected Settlement:</span>
-                                    <span class="text-[#FFD700] font-semibold" x-text="$store.currency.format(lease.daily_earnings * lease.duration)"></span>
-                                </div>
-                                <div class="flex justify-between text-[10px] text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
-                                    <span>Time Remaining:</span>
-                                    <span :class="getLeaseStyle(lease.type).colorClass" class="font-bold" x-text="lease.remaining + ' Days Left'"></span>
-                                </div>
+                        <div class="space-y-2 pt-3 border-t border-white/10 mt-3 text-xs font-mono">
+                            <div class="flex justify-between text-slate-400">
+                                <span>Daily Income:</span>
+                                <span class="text-emerald-400 font-bold" x-text="$store.currency.format(lease.daily_earnings)"></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400">
+                                <span>Purchase Value:</span>
+                                <span class="text-white" x-text="$store.currency.format(lease.cost)"></span>
+                            </div>
+                            <div class="flex justify-between text-slate-400 border-t border-white/5 pt-1.5">
+                                <span>Days Remaining:</span>
+                                <span class="text-purple-400 font-bold" x-text="lease.remaining + ' Days Left'"></span>
                             </div>
 
-                            <!-- Interactive Hardware Control Panel -->
-                            <div class="grid grid-cols-3 gap-1">
-                                <button @click="rebootNode(index)" :disabled="lease.status !== 'Hashing' && lease.status !== 'Optimized'"
-                                    class="py-1.5 px-2 bg-white/5 hover:bg-white/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-white/5 hover:border-white/10 text-slate-300 hover:text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-                                    Reboot
+                            <div class="grid grid-cols-3 gap-1.5 pt-2">
+                                <button @click="rebootNode(index)" class="py-1.5 bg-white/5 hover:bg-white/10 text-[10px] font-bold rounded-lg text-slate-300 transition">
+                                    Restart
                                 </button>
-                                <button @click="optimizeNode(index)" :disabled="lease.status !== 'Hashing'"
-                                    class="py-1.5 px-2 bg-[#FFD700]/5 hover:bg-[#FFD700]/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-[#FFD700]/10 hover:border-[#FFD700]/20 text-[#FFD700] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-                                    Optimize
+                                <button @click="optimizeNode(index)" class="py-1.5 bg-[#FFD700]/10 hover:bg-[#FFD700]/20 text-[10px] font-bold rounded-lg text-[#FFD700] transition">
+                                    Boost
                                 </button>
-                                <button @click="openTerminal(lease.node_id)"
-                                    class="py-1.5 px-2 bg-purple-500/5 hover:bg-purple-500/10 text-[9px] font-mono font-bold uppercase rounded-lg border border-purple-500/10 hover:border-purple-500/20 text-purple-400 cursor-pointer">
+                                <button @click="openTerminal(lease.node_id)" class="py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-[10px] font-bold rounded-lg text-purple-300 transition">
                                     Logs
                                 </button>
                             </div>
@@ -744,163 +911,154 @@
 
                     </div>
                 </template>
-
             </div>
         </section>
 
-        <!-- Available hardware mainframes catalog -->
-        <section class="space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2">
+        <!-- ─── MACHINES AVAILABLE TO RENT ─── -->
+        <section id="machines-catalog" class="space-y-6 pt-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-4">
                 <div>
-                    <h3 class="text-base font-bold text-white tracking-tight font-tech">Machines Available to Rent</h3>
-                    <p class="text-slate-400 text-xs font-light">Select a machine below to rent and start earning.</p>
+                    <h2 class="text-xl font-extrabold text-white font-tech">Mining Machines Available to Rent</h2>
+                    <p class="text-xs text-slate-300 mt-0.5">Select a machine below. Your machine starts working immediately and pays you daily.</p>
+                </div>
+                <div class="text-xs text-emerald-400 font-semibold flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>10 Plans Ready</span>
                 </div>
             </div>
 
-            <!-- Active Lease Limit Notification Banner -->
+            <!-- Active Limit Lock Notice -->
             <div x-show="hasActiveLease" x-transition
-                class="p-4 bg-purple-950/30 border border-purple-500/20 text-purple-300 text-xs font-mono rounded-xl flex items-center justify-between shadow-[0_0_15px_rgba(168,85,247,0.05)]"
+                class="p-4 bg-purple-950/40 border border-purple-500/30 text-purple-200 text-xs rounded-2xl flex items-center justify-between"
                 style="display: none;">
-                <div class="flex items-center space-x-3">
-                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                    <span>⚠️ <strong>HARDWARE CONTRACT LOCKED:</strong> You currently have 3 active contracts running. You can only rent up to 3 machines at a time.</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-base">⚠️</span>
+                    <span><strong>Limit Reached:</strong> You currently have 3 machines running. You can rent more once one finishes its cycle.</span>
                 </div>
             </div>
 
-            <!-- Rentable Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <template x-for="machine in catalog" :key="machine.name">
-                    <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-t-2 hover:scale-[1.01] transition duration-200 relative overflow-hidden" :class="machine.borderClass">
-                        <!-- Brutalist Tech Corners -->
-                        <div class="tech-corner -top-0.5 -left-0.5 border-t border-l opacity-25"></div>
-                        <div class="tech-corner -top-0.5 -right-0.5 border-t border-r opacity-25"></div>
-                        <div class="tech-corner -bottom-0.5 -left-0.5 border-b border-l opacity-25"></div>
-                        <div class="tech-corner -bottom-0.5 -right-0.5 border-b border-r opacity-25"></div>
-
-                        <div>
-                            <div class="relative rounded-xl overflow-hidden mb-4 border border-white/5 bg-black/40">
-                                <img :src="machine.image" :alt="machine.name" class="w-full h-44 object-cover">
-                                <span class="absolute top-2 right-2 bg-yellow-500/10 border border-yellow-500/20 text-[#FFD700] font-mono text-[9px] px-2 py-0.5 rounded-full font-bold">Only <span x-text="machine.slots"></span> Left</span>
-                            </div>
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-extrabold text-white text-sm font-tech" x-text="machine.name"></h4>
-                                <span class="text-[10px] font-mono text-slate-400" x-text="machine.rate + '% Daily Profit'"></span>
-                            </div>
-                            <p class="text-slate-400 text-xs font-light mb-4 leading-relaxed font-sans" x-text="'Rent Duration: ' + machine.duration + ' Days'"></p>
-                        </div>
+            <!-- Machine Grid Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="machine in catalog" :key="machine.slug">
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border hover:-translate-y-1 transition duration-300 group">
                         
-                        <div class="space-y-4">
-                            <div class="bg-black/30 border border-white/5 rounded-xl p-3 space-y-1.5 text-[11px] font-mono">
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Mining Speed:</span>
-                                    <span class="text-white" x-text="machine.speed"></span>
+                        <div>
+                            <!-- Real Hardware Photo -->
+                            <div class="relative h-48 w-full overflow-hidden bg-black/60">
+                                <img :src="machine.image" :alt="machine.name" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#030712] via-black/20 to-transparent"></div>
+                                
+                                <div class="absolute top-3 left-3 right-3 flex justify-between items-center">
+                                    <span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold backdrop-blur-md"
+                                        :class="machine.badgeColor"
+                                        x-text="machine.rate + '% Daily Profit'"></span>
+                                    
+                                    <span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold bg-black/70 border border-white/15 text-[#FFD700] backdrop-blur-md">
+                                        ⚡ Only <span x-text="machine.slots"></span> Left
+                                    </span>
                                 </div>
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Duration:</span>
-                                    <span class="text-white" x-text="machine.duration + ' Days'"></span>
-                                </div>
-                                <div class="flex justify-between text-slate-500">
-                                    <span>Daily Earnings:</span>
-                                    <span class="text-emerald-400" x-text="$store.currency.format(machine.daily)"></span>
-                                </div>
-                                <div class="flex justify-between text-slate-500 border-t border-white/5 pt-1.5 mt-1.5">
-                                    <span>Time Left to Rent:</span>
-                                    <span class="text-purple-400" x-text="machine.timer.text"></span>
+
+                                <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                                    <div>
+                                        <h3 class="font-bold text-white text-base font-tech drop-shadow-md" x-text="machine.name"></h3>
+                                        <span class="text-[11px] text-slate-300 font-mono" x-text="'Contract: ' + machine.duration + ' Days'"></span>
+                                    </div>
+                                    <span class="text-xs font-bold text-cyan-400 font-mono" x-text="machine.speed"></span>
                                 </div>
                             </div>
-                            
-                            <div class="flex items-center justify-between mt-4">
-                                <span class="text-base font-extrabold text-white font-tech" x-text="$store.currency.format(machine.price)"></span>
+
+                            <!-- Clear Profit Summary Box -->
+                            <div class="p-5 space-y-3">
+                                <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3.5 space-y-2 text-xs font-mono">
+                                    <div class="flex justify-between items-center text-slate-300">
+                                        <span>Daily Income:</span>
+                                        <span class="text-emerald-400 font-bold text-sm" x-text="$store.currency.format(machine.daily) + ' / day'"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-slate-300">
+                                        <span>Total Net Profit:</span>
+                                        <span class="text-purple-400 font-bold" x-text="$store.currency.format(machine.totalProfit)"></span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-slate-300 border-t border-white/5 pt-2">
+                                        <span>Total Return at End:</span>
+                                        <span class="text-[#FFD700] font-bold" x-text="$store.currency.format(machine.price + machine.totalProfit)"></span>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-slate-400 font-light leading-relaxed">
+                                    Your rent money is 100% returned to you together with all profits when the <span x-text="machine.duration"></span> days end.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="p-5 pt-0">
+                            <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 block uppercase font-mono">Price to Rent</span>
+                                    <span class="text-lg font-black text-white font-tech" x-text="$store.currency.format(machine.price)"></span>
+                                </div>
+
                                 <button @click="tryRentMachine(machine)"
                                     :disabled="hasActiveLease"
-                                    :class="hasActiveLease ? 'bg-slate-800/40 text-slate-500 border border-slate-800 cursor-not-allowed' : 'bg-[#FFD700] hover:bg-[#FFE55C] text-black cursor-pointer shadow-[0_4px_15px_rgba(255,215,0,0.15)] hover:shadow-[0_4px_25px_rgba(255,215,0,0.35)]'"
-                                    class="py-2 px-4 text-[10px] font-bold uppercase rounded-lg transition font-tech">
-                                    <span x-text="hasActiveLease ? 'LOCKED' : 'Buy / Rent'"></span>
+                                    :class="hasActiveLease ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-[#FFD700] hover:bg-[#FFE55C] text-black font-black shadow-[0_4px_15px_rgba(255,215,0,0.25)] cursor-pointer'"
+                                    class="py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider font-tech transition transform active:scale-95">
+                                    <span x-text="hasActiveLease ? 'LOCKED' : 'Rent Machine'"></span>
                                 </button>
                             </div>
                         </div>
+
                     </div>
                 </template>
             </div>
         </section>
 
-        <!-- Live Terminal logs drawer (Overlay panel on right or inline) -->
-        <section x-show="showTerminal" x-transition
-            class="glass-card rounded-3xl p-6 border-t-2 border-t-purple-500 relative" style="display: none;">
-            <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
-                <div class="flex items-center space-x-2.5 text-purple-400">
-                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                    <h3 class="text-sm font-bold text-white tracking-wide uppercase font-tech">Live Machine Logs: <span class="font-code text-purple-400 text-xs" x-text="activeTerminalNode"></span></h3>
-                </div>
-                <button @click="closeTerminal()" class="text-slate-400 hover:text-white font-mono text-sm cursor-pointer">✕ Close logs</button>
+        <!-- ─── PROFIT CALCULATOR ─── -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+            <div class="lg:col-span-1 space-y-1">
+                <span class="text-xs font-mono font-semibold text-[#FFD700] uppercase">Calculator</span>
+                <h3 class="text-xl font-bold text-white font-tech">Daily Earnings Calculator</h3>
+                <p class="text-xs text-slate-300 font-light">See how much profit you can make every day.</p>
             </div>
             
-            <!-- Log output block -->
-            <div id="terminal-body" class="w-full h-44 bg-black/60 border border-white/5 rounded-2xl p-4 font-code text-[10px] text-emerald-400 overflow-y-auto leading-relaxed space-y-1.5 custom-scroll">
-                <template x-for="log in terminalLogs" :key="log">
-                    <p x-text="log" class="whitespace-pre-line"></p>
-                </template>
-            </div>
-        </section>
-
-        <!-- Dynamic Yield Estimator Calculator -->
-        <section class="glass-card rounded-3xl p-6 grid md:grid-cols-3 gap-6 items-center">
-            <div class="md:col-span-1">
-                <h3 class="text-base font-bold text-white tracking-tight font-tech">Earnings Calculator</h3>
-                <p class="text-slate-400 text-xs font-light mt-0.5">Move the slider to estimate how much you can earn.</p>
-            </div>
-            
-            <!-- Selector Sliders -->
-            <div class="md:col-span-2 grid sm:grid-cols-2 gap-6">
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div class="space-y-2">
-                    <div class="flex justify-between text-xs font-mono text-slate-400">
-                        <span>Mining Speed:</span>
+                    <div class="flex justify-between text-xs font-mono text-slate-300">
+                        <span>Mining Power:</span>
                         <span class="text-[#FFD700] font-bold" x-text="estimatorHashrate + ' MH/s'"></span>
                     </div>
                     <input type="range" min="50" max="1000" step="10" x-model="estimatorHashrate"
-                        class="w-full accent-[#FFD700] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer">
+                        class="w-full accent-[#FFD700] h-2 bg-white/10 rounded-full appearance-none cursor-pointer">
                 </div>
                 
-                <!-- Output statistics -->
-                <div class="grid grid-cols-3 gap-2 bg-black/40 border border-white/5 rounded-2xl p-3 text-center">
+                <div class="grid grid-cols-3 gap-2 bg-white/[0.02] border border-white/5 rounded-xl p-3 text-center font-mono">
                     <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Daily Earnings</span>
-                        <span class="text-xs font-bold text-white font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4)"></span>
+                        <span class="text-[9px] text-slate-400 block uppercase">Daily</span>
+                        <span class="text-xs font-bold text-white" x-text="$store.currency.format(estimatorHashrate * 10.4)"></span>
                     </div>
                     <div class="space-y-1 border-x border-white/5">
-                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Monthly Earnings</span>
-                        <span class="text-xs font-bold text-[#FFD700] font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4 * 30)"></span>
+                        <span class="text-[9px] text-slate-400 block uppercase">Monthly</span>
+                        <span class="text-xs font-bold text-[#FFD700]" x-text="$store.currency.format(estimatorHashrate * 10.4 * 30)"></span>
                     </div>
                     <div class="space-y-1">
-                        <span class="text-[9px] font-mono text-slate-500 block uppercase">Yearly Earnings</span>
-                        <span class="text-xs font-bold text-purple-400 font-tech" x-text="$store.currency.format(estimatorHashrate * 10.4 * 365)"></span>
+                        <span class="text-[9px] text-slate-400 block uppercase">Annual</span>
+                        <span class="text-xs font-bold text-purple-400" x-text="$store.currency.format(estimatorHashrate * 10.4 * 365)"></span>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Affiliate Section -->
-        <section class="glass-card rounded-2xl p-6 grid md:grid-cols-3 gap-6 items-center">
-            <div class="md:col-span-1">
-                <h3 class="text-base font-bold text-white tracking-tight font-tech">Invite & Earn Program</h3>
-                <p class="text-slate-400 text-xs font-light mt-0.5">Share your link below to earn bonuses when others rent machines.</p>
-            </div>
-            <div class="md:col-span-2 flex flex-col sm:flex-row gap-3">
-                <div class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between font-mono text-xs text-[#FFD700] tracking-wider select-all">
-                    <span>https://xmdigitalproducts.com/register?ref=MINER4902</span>
-                    <svg class="w-4 h-4 text-slate-500 shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-2" />
-                    </svg>
-                </div>
-                <button @click="copied = true; setTimeout(() => copied = false, 2000)"
-                    class="px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-black transition cursor-pointer shrink-0 text-center"
-                    :class="copied ? 'bg-emerald-400' : 'bg-[#FFD700] hover:bg-[#FFE55C]'">
-                    <span x-text="copied ? 'Copied Success' : 'Copy Invite Link'"></span>
-                </button>
             </div>
         </section>
 
     </main>
+
+    <!-- ─── FLOATING 24/7 WHATSAPP SUPPORT WIDGET (NO DIRECT PHONE NUMBER SHOWN) ─── -->
+    <aside aria-label="Official Customer Support" class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/447455909204?text=Hello%20XM%20Support,%20I%20need%20assistance%20with%20my%20miner%20account."
+           target="_blank"
+           class="flex items-center space-x-2 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-tech text-xs font-black uppercase tracking-wider rounded-full shadow-[0_6px_25px_rgba(37,211,102,0.45)] transition-all transform hover:-translate-y-1 group">
+            <svg class="w-5 h-5 text-black shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span class="text-black font-tech">Live Support</span>
+        </a>
+    </aside>
 
 </body>
 
