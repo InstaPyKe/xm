@@ -16,6 +16,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- Currency Switcher & Theme utility -->
     <script src="/public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
@@ -126,6 +128,9 @@
                 acceptedTerms: true,
                 registrationEnabled: true,
                 maintenanceActive: false,
+                isLoading: false,
+                errorMessage: '',
+                successMessage: '',
                 get passwordStrength() {
                     if (this.password.length === 0) return { label: 'Enter password', color: 'text-slate-500', width: 'w-0' };
                     if (this.password.length < 8) return { label: 'Too short (min 8 chars)', color: 'text-red-400', width: 'w-1/3 bg-red-500' };
@@ -134,7 +139,7 @@
                 },
                 async init() {
                     try {
-                        const res = await fetch('/api/settings/public');
+                        const res = await apiFetch('/api/settings/public');
                         const data = await res.json();
                         this.registrationEnabled = data.registration_enabled;
                         this.maintenanceActive = data.maintenance_mode;
@@ -146,6 +151,40 @@
                         }
                     } catch (e) {
                         console.error(e);
+                    }
+                },
+                async handleRegister() {
+                    if (!this.acceptedTerms || !this.username || !this.email || this.password.length < 8) return;
+                    this.isLoading = true;
+                    this.errorMessage = '';
+                    this.successMessage = '';
+
+                    try {
+                        const response = await apiFetch('/api/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                username: this.username.trim(),
+                                email: this.email.trim(),
+                                password: this.password,
+                                referral: this.referral.trim()
+                            })
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+
+                        if (response.ok && data.success !== false) {
+                            this.successMessage = data.message || 'Account successfully created! Redirecting to Sign In...';
+                            setTimeout(() => {
+                                window.location.href = 'signin.html?registered=true';
+                            }, 1200);
+                        } else {
+                            this.errorMessage = data.message || (typeof data === 'string' ? data : 'Registration failed. Please check your details.');
+                        }
+                    } catch (err) {
+                        this.errorMessage = 'Network connection problem. Please verify backend connectivity and try again.';
+                    } finally {
+                        this.isLoading = false;
                     }
                 }
              }" 
@@ -166,8 +205,14 @@
                 🚫 New user registration is currently closed.
             </div>
 
+            <!-- Error Banner -->
+            <div x-show="errorMessage" x-text="errorMessage" class="p-3.5 mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-xs rounded-xl text-center font-medium" style="display: none;"></div>
+
+            <!-- Success Banner -->
+            <div x-show="successMessage" x-text="successMessage" class="p-3.5 mb-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs rounded-xl text-center font-bold" style="display: none;"></div>
+
             <!-- Form -->
-            <form action="/api/register" method="POST" class="space-y-4" :class="{ 'opacity-30 pointer-events-none': !registrationEnabled || maintenanceActive }">
+            <form @submit.prevent="handleRegister()" class="space-y-4" :class="{ 'opacity-30 pointer-events-none': !registrationEnabled || maintenanceActive }">
 
                 <!-- Username Field -->
                 <div class="space-y-1.5">
@@ -223,9 +268,16 @@
 
                 <!-- Submit Button -->
                 <div class="pt-3">
-                    <button type="submit" :disabled="!acceptedTerms || !username || !email || password.length < 8 || !registrationEnabled || maintenanceActive"
-                        class="w-full py-4 px-4 font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed transition-all duration-200 text-center cursor-pointer rounded-2xl shadow-[0_4px_20px_rgba(255,215,0,0.25)]">
-                        Create Free Account & Start Earning &rarr;
+                    <button type="submit" :disabled="!acceptedTerms || !username || !email || password.length < 8 || !registrationEnabled || maintenanceActive || isLoading"
+                        class="w-full py-4 px-4 font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed transition-all duration-200 text-center cursor-pointer rounded-2xl shadow-[0_4px_20px_rgba(255,215,0,0.25)] flex items-center justify-center gap-2">
+                        <span x-show="!isLoading">Create Free Account & Start Earning &rarr;</span>
+                        <span x-show="isLoading" style="display: none;" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                            Creating Account...
+                        </span>
                     </button>
                 </div>
             </form>

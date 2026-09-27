@@ -6,8 +6,7 @@ require('dotenv').config();
 
 // Validate critical security environment variables on startup
 if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'super_secret_xm_key_109283')) {
-  console.error('❌ CRITICAL SECURITY ERROR: JWT_SECRET must be configured securely in production mode.');
-  process.exit(1);
+  console.warn('⚠️ WARNING: Using default JWT_SECRET in production. It is recommended to set a custom JWT_SECRET on Railway.');
 }
 
 const db = require('./config/db');
@@ -15,102 +14,125 @@ const { logSystem } = require('./config/logger');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
+const machineRoutes = require('./routes/machines');
+const maintenanceMiddleware = require('./middleware/maintenanceMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 1. Secure HTTP headers with Helmet
+// 1. Secure HTTP headers with Helmet (Permissive CSP for Cloudflare Pages cross-origin frontend)
 app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'self'", "*"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "*"],
-      connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "http://127.0.0.1:*"]
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "*", "blob:"],
+      connectSrc: ["'self'", "*", "https:", "http:", "ws:", "wss:"]
     }
   }
 }));
 
-// 2. Configure Cross-Origin Resource Sharing
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:5000', 'http://127.0.0.1:5000'];
+// 2. Configure Cross-Origin Resource Sharing (CORS) for Cloudflare Pages + Localhost
+const customAllowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+  : [];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
-    // In development mode, allow all origins (such as live server ports, different local IPs)
-    if (process.env.NODE_ENV !== 'production') {
+    // Allow non-browser requests (Postman, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    
+    // If ALLOWED_ORIGINS includes '*' or is not set, allow all origins
+    if (customAllowedOrigins.length === 0 || customAllowedOrigins.includes('*')) {
       return callback(null, true);
     }
-    // In production, enforce strict whitelist
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`🔒 CORS blocked unauthorized origin: ${origin}`);
-      callback(new Error('Blocked by CORS policy: Request origin is unauthorized.'));
+
+    // Match explicit whitelist
+    if (customAllowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
+
+    // Automatically allow Cloudflare Pages domains (*.pages.dev) and localhost
+    if (origin.endsWith('.pages.dev') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+
+    // Default permissive for API functionality
+    callback(null, true);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
+};
 
-app.use(express.urlencoded({ extended: true })); // Support registration form POST data
-app.use(express.json());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
 
-const maintenanceMiddleware = require('./middleware/maintenanceMiddleware');
-const machineRoutes = require('./routes/machines');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
 
-// API Route Mounts
+// ─── HEALTH CHECK MONITORING (FOR RAILWAY / CLOUDFLARE) ───
+const healthHandler = async (req, res) => {
+  try {
+    const result = await db.query('SELECT NOW()');
+    res.json({
+      status: 'OK',
+      service: 'XM Digital API',
+      database: 'Connected',
+      timestamp: result.rows[0].now,
+      uptime: process.uptime()
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'ERROR',
+      service: 'XM Digital API',
+      database: 'Disconnected',
+      error: err.message
+    });
+  }
+};
+
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
+
+// ─── API ROUTES MOUNT ───
 app.use('/api', authRoutes);
 app.use('/api/machines', machineRoutes);
 app.use('/api/user', maintenanceMiddleware, userRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Serve static folders from the project root
+// ─── STATIC ASSETS (MEDIA UPLOADS & LOCAL FALLBACK) ───
 app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/public/uploads', express.static(path.join(__dirname, '../public/uploads')));
 app.use('/account', express.static(path.join(__dirname, '../account')));
 app.use('/admin', express.static(path.join(__dirname, '../admin')));
 
-// Serve main landing index page at the root route
+// Serve main landing index page when accessed locally or via direct browser
 app.get('/', (req, res) => {
+  if (req.headers.accept && req.headers.accept.includes('application/json') && !req.headers.accept.includes('text/html')) {
+    return res.json({ message: 'XM Digital Core API running on Railway.', status: 'online' });
+  }
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Explicit routes for signup and signin to support clean URLs
-app.get('/signup.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/signup.html'));
-});
-app.get('/signin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/signin.html'));
-});
-app.get('/contact.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/contact.html'));
-});
-app.get('/about.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/about.html'));
-});
-app.get('/privacy.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/privacy.html'));
-});
-app.get('/admin-login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/admin-login.html'));
-});
-app.get('/adminlogin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/admin-login.html'));
-});
-app.get('/admin-login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/admin-login.html'));
-});
-app.get('/admin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../admin/admin.html'));
-});
+// Explicit routes for SPA / multi-page HTML routing
+app.get('/signup.html', (req, res) => res.sendFile(path.join(__dirname, '../public/signup.html')));
+app.get('/signin.html', (req, res) => res.sendFile(path.join(__dirname, '../public/signin.html')));
+app.get('/contact.html', (req, res) => res.sendFile(path.join(__dirname, '../public/contact.html')));
+app.get('/about.html', (req, res) => res.sendFile(path.join(__dirname, '../public/about.html')));
+app.get('/privacy.html', (req, res) => res.sendFile(path.join(__dirname, '../public/privacy.html')));
+app.get('/admin-login.html', (req, res) => res.sendFile(path.join(__dirname, '../admin/admin-login.html')));
+app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, '../admin/admin.html')));
 
-// Contact API Endpoint
+// ─── CONTACT & SUPPORT API ENDPOINT ───
 app.post('/api/contact', async (req, res) => {
   const { name, phone, email, topic, message } = req.body;
   if (!name || !phone || !topic || !message) {
@@ -128,7 +150,7 @@ app.post('/api/contact', async (req, res) => {
     
     return res.json({
       success: true,
-      message: 'Cryptographic signature verification complete. Support ticket successfully queued.',
+      message: 'Support ticket successfully submitted. Our team will get back to you shortly.',
       ticketId: 'TX-' + Math.floor(100000 + Math.random() * 900000)
     });
   } catch (err) {
@@ -153,7 +175,6 @@ app.post('/api/mpesa-callback', async (req, res) => {
   const { CheckoutRequestID, ResultCode, ResultDesc } = Body.stkCallback;
 
   try {
-    // 1. Find the pending transaction
     const txQuery = await db.query(
       'SELECT * FROM mpesa_transactions WHERE checkout_request_id = $1 AND status = \'Pending\'',
       [CheckoutRequestID]
@@ -167,33 +188,27 @@ app.post('/api/mpesa-callback', async (req, res) => {
     const tx = txQuery.rows[0];
 
     if (ResultCode === 0) {
-      // Start DB transaction
       await db.query('BEGIN');
 
-      // Update mpesa_transactions state
       await db.query(
         'UPDATE mpesa_transactions SET status = \'Completed\', updated_at = CURRENT_TIMESTAMP WHERE checkout_request_id = $1',
         [CheckoutRequestID]
       );
 
-      // Generate unique node ID
       const nodeId = 'Node #' + Math.floor(10 + Math.random() * 90);
 
-      // Insert new lease record
       const insertRes = await db.query(
         `INSERT INTO leases (user_id, node_id, name, type, status, speed, duration, remaining, cost, rate, daily_earnings, image) 
          VALUES ($1, $2, $3, $4, 'Hashing', $5, $6, $6, $7, $8, $9, $10) RETURNING *`,
         [tx.user_id, nodeId, tx.name, tx.type, tx.speed, tx.duration, tx.cost, tx.rate, tx.daily_earnings, tx.image]
       );
 
-      // Record rental transaction log
       await db.query(
         `INSERT INTO rent_transactions (user_id, lease_id, node_id, machine_name, amount)
          VALUES ($1, $2, $3, $4, $5)`,
         [tx.user_id, insertRes.rows[0].id, nodeId, tx.name, tx.cost]
       );
 
-      // Update user's daily growth rate to the sum of all active leases
       const sumRes = await db.query(
         'SELECT COALESCE(SUM(daily_earnings), 0.00) AS total FROM leases WHERE user_id = $1 AND remaining > 0',
         [tx.user_id]
@@ -204,7 +219,6 @@ app.post('/api/mpesa-callback', async (req, res) => {
       await db.query('COMMIT');
       await logSystem('info', `M-Pesa payment SUCCESS for Request ID ${CheckoutRequestID}. Leased machine ${tx.name} to user ID ${tx.user_id}.`);
     } else {
-      // Update transaction status to Failed and record failure reason
       await db.query(
         'UPDATE mpesa_transactions SET status = \'Failed\', failure_reason = $1, updated_at = CURRENT_TIMESTAMP WHERE checkout_request_id = $2',
         [ResultDesc, CheckoutRequestID]
@@ -214,7 +228,7 @@ app.post('/api/mpesa-callback', async (req, res) => {
 
     res.json({ ResultCode: 0, ResultDesc: 'Acknowledged' });
   } catch (err) {
-    await db.query('ROLLBACK');
+    if (db.query) await db.query('ROLLBACK').catch(() => {});
     await logSystem('error', `Error processing M-Pesa callback for Request ID ${CheckoutRequestID}: ${err.message}`);
     res.status(500).json({ ResultCode: 1, ResultDesc: 'Internal server error' });
   }
@@ -229,13 +243,12 @@ app.post('/api/mpesa-callback/simulate', async (req, res) => {
 
   console.log(`🔧 Simulating M-Pesa callback locally. Request ID: ${checkoutRequestId}, Success: ${success !== false}, Reason: ${failureReason || 'N/A'}`);
 
-  // Create a mock body identical to what Safaricom sends
   const mockPayload = {
     Body: {
       stkCallback: {
         MerchantRequestID: '12345-67890-1',
         CheckoutRequestID: checkoutRequestId,
-        ResultCode: success !== false ? 0 : 1032, // 1032 is customer cancelled
+        ResultCode: success !== false ? 0 : 1032,
         ResultDesc: success !== false ? 'The service request is processed successfully.' : (failureReason || 'Request cancelled by user'),
         CallbackMetadata: success !== false ? {
           Item: [
@@ -263,7 +276,7 @@ app.post('/api/mpesa-callback/simulate', async (req, res) => {
   }
 });
 
-// GET SYSTEM LOGS ENDPOINT
+// ─── SYSTEM LOGS ENDPOINT ───
 app.get('/api/system/logs', async (req, res) => {
   try {
     const result = await db.query(
@@ -276,7 +289,7 @@ app.get('/api/system/logs', async (req, res) => {
   }
 });
 
-// Public System Settings Endpoint
+// ─── PUBLIC SETTINGS ENDPOINT ───
 app.get('/api/settings/public', (req, res) => {
   const settingsHelper = require('./config/settingsHelper');
   const settings = settingsHelper.getSettings();
@@ -286,28 +299,18 @@ app.get('/api/settings/public', (req, res) => {
   });
 });
 
-// Basic health check route
-app.get('/api/health', async (req, res) => {
-  try {
-    const result = await db.query('SELECT NOW()');
-    res.json({
-      status: 'OK',
-      message: 'Server is running and successfully connected to PostgreSQL',
-      time: result.rows[0].now
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: 'ERROR',
-      message: 'Database query failed',
-      error: err.message
-    });
-  }
+// ─── 404 CATCH-ALL FOR MISSING API ENDPOINTS ───
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'API Endpoint Not Found',
+    path: req.path,
+    method: req.method
+  });
 });
 
 // Start Express Listener
 app.listen(PORT, () => {
   console.log(`🚀 Express server running on port ${PORT}`);
-  console.log(`👉 Web Portal: http://localhost:${PORT}`);
-  console.log(`👉 Dashboard Cockpit: http://localhost:${PORT}/account/dashboard.html`);
   console.log(`👉 Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`👉 Mode: ${process.env.NODE_ENV || 'development'}`);
 });

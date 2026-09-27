@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
+    <!-- AlpineJS CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         body {
             font-family: 'JetBrains Mono', monospace;
@@ -55,7 +59,7 @@
     loading: true,
     async fetchLogs() {
         try {
-            const res = await fetch('/api/system/logs');
+            const res = await apiFetch('/api/system/logs');
             if (res.ok) {
                 this.logs = await res.json();
             }

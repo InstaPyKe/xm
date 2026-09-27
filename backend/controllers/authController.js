@@ -4,22 +4,33 @@ const db = require('../config/db');
 const { logSystem } = require('../config/logger');
 require('dotenv').config();
 
-// 1. REGISTRATION (Browser Form redirect handler)
+// 1. REGISTRATION (Supports both AJAX JSON and Browser Form redirect)
 exports.register = async (req, res) => {
+  const isJson = req.is('json') || (req.headers.accept && req.headers.accept.includes('application/json')) || (req.headers['content-type'] && req.headers['content-type'].includes('application/json'));
+  const sendResponse = (statusCode, message, success = false, extraData = {}) => {
+    if (isJson) {
+      return res.status(statusCode).json({ success, message, ...extraData });
+    }
+    if (!success) {
+      return res.status(statusCode).send(message);
+    }
+    return res.redirect('/signin.html?registered=true');
+  };
+
   const settingsHelper = require('../config/settingsHelper');
   const settings = settingsHelper.getSettings();
   if (!settings.registration_enabled) {
-    return res.status(403).send('New user registration is currently disabled by system administrators.');
+    return sendResponse(403, 'New user registration is currently disabled by system administrators.');
   }
 
   const { username, email, password, referral } = req.body;
   
   if (!username || !email || !password) {
-    return res.status(400).send('All registration fields (Username, Email, Password) are required.');
+    return sendResponse(400, 'All registration fields (Username, Email, Password) are required.');
   }
 
   if (password.length < 8) {
-    return res.status(400).send('Security Requirement: Password must be at least 8 characters long.');
+    return sendResponse(400, 'Security Requirement: Password must be at least 8 characters long.');
   }
 
   const cleanEmail = email.trim().toLowerCase();
@@ -28,7 +39,7 @@ exports.register = async (req, res) => {
     // Check if email already registered
     const userCheck = await db.query('SELECT * FROM users WHERE email = $1', [cleanEmail]);
     if (userCheck.rows.length > 0) {
-      return res.status(400).send('Email address already registered. Please go to Sign In.');
+      return sendResponse(400, 'Email address already registered. Please go to Sign In.');
     }
 
     // Hash the password securely
@@ -61,11 +72,10 @@ exports.register = async (req, res) => {
 
     await logSystem('info', `New user registered: ${username} (${cleanEmail})`);
 
-    // Registration success -> Redirect browser to clean sign-in portal
-    res.redirect('/signin.html?registered=true');
+    return sendResponse(201, 'Account successfully created! Please sign in.', true, { username, email: cleanEmail });
   } catch (err) {
     await logSystem('error', `Registration failed for ${username} (${cleanEmail}): ${err.message}`);
-    res.status(500).send('System registration failed. Please try again.');
+    return sendResponse(500, 'System registration failed. Please try again.');
   }
 };
 

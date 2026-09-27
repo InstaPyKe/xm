@@ -17,6 +17,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- Currency Switcher utility -->
     <script src="/public/js/currency.js"></script>
     <!-- AlpineJS for interactivity -->
@@ -465,7 +467,7 @@
         isLoading: true,
         async init() {
             try {
-                const res = await fetch('/api/machines');
+                const res = await apiFetch('/api/machines');
                 const data = await res.json();
                 if (data.success && data.machines && data.machines.length > 0) {
                     this.machines = data.machines;
@@ -535,7 +537,7 @@
                     <div>
                         <!-- Machine Real Photo Frame -->
                         <div class="h-60 bg-black/50 overflow-hidden relative border-b border-white/10">
-                            <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <img :src="resolveImageUrl(item.image)" :alt="item.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-transparent to-transparent"></div>
                             
                             <!-- Badges -->

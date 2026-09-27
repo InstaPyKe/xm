@@ -16,6 +16,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- Currency Switcher utility -->
     <script src="/public/js/currency.js"></script>
     <!-- AlpineJS for interactivity -->
@@ -283,7 +285,7 @@
                     this.isSubmitting = true;
                     this.errorMessage = '';
                     try {
-                        const response = await fetch('/api/contact', {
+                        const response = await apiFetch('/api/contact', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({

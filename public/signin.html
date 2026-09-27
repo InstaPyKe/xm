@@ -16,6 +16,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- Currency Switcher & Theme utility -->
     <script src="/public/js/currency.js"></script>
     <!-- AlpineJS CDN -->
@@ -125,6 +127,7 @@
                 errorMessage: '',
                 registeredSuccess: false,
                 maintenanceActive: false,
+                sessionExpired: false,
                 async init() {
                     const params = new URLSearchParams(window.location.search);
                     if (params.get('registered') === 'true') {
@@ -133,8 +136,11 @@
                     if (params.get('maintenance') === 'true') {
                         this.maintenanceActive = true;
                     }
+                    if (params.get('session') === 'expired') {
+                        this.sessionExpired = true;
+                    }
                     try {
-                        const res = await fetch('/api/settings/public');
+                        const res = await apiFetch('/api/settings/public');
                         const data = await res.json();
                         if (data.maintenance_mode) {
                             this.maintenanceActive = true;
@@ -147,9 +153,10 @@
                     this.isLoading = true;
                     this.errorMessage = '';
                     this.registeredSuccess = false;
+                    this.sessionExpired = false;
                     
                     try {
-                        const response = await fetch('/api/login', {
+                        const response = await apiFetch('/api/login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email: this.email, password: this.password })
@@ -186,6 +193,13 @@
                 class="p-4 mb-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs rounded-2xl"
                 style="display: none;">
                 🎉 <strong>Account Created!</strong> Please enter your password below to sign in.
+            </div>
+
+            <!-- Session Expired Alert -->
+            <div x-show="sessionExpired" x-transition
+                class="p-4 mb-4 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs rounded-2xl"
+                style="display: none;">
+                🔒 <strong>Session Ended:</strong> Please sign in again to access your account.
             </div>
 
             <!-- Error Feedback -->
