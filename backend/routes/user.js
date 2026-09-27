@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
+const { transactionLimiter } = require('../middleware/securityMiddleware');
 const db = require('../config/db');
 const { logSystem } = require('../config/logger');
 
@@ -123,7 +124,7 @@ router.get('/leases', authMiddleware, async (req, res) => {
 });
 
 // 3. POST PURCHASE LEASE (Spins up a new hardware node)
-router.post('/leases', authMiddleware, async (req, res) => {
+router.post('/leases', authMiddleware, transactionLimiter, async (req, res) => {
   const { name, type, speed, duration, cost, rate, daily_earnings, image } = req.body;
 
   if (!name || !type || !speed || !duration || !cost || !rate || !daily_earnings) {
@@ -193,8 +194,8 @@ router.post('/leases', authMiddleware, async (req, res) => {
   }
 });
 
-// 4. POST WITHDRAWAL REQUEST
-router.post('/withdraw', authMiddleware, async (req, res) => {
+// 4. POST WITHDRAWAL REQUEST (Protected by Rate Limit Shield)
+router.post('/withdraw', authMiddleware, transactionLimiter, async (req, res) => {
   const { 
     amount, 
     fee, 

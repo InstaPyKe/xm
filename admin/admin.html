@@ -18,6 +18,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -1040,14 +1042,14 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                         <div class="space-y-1">
                             <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Rent Price (KES) *</label>
-                            <input type="number" step="0.01" required x-model="machineForm.price" placeholder="3000"
+                            <input type="number" step="0.01" required x-model="machineForm.price" placeholder="500"
                                 class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-[#FFD700] font-bold rounded-xl">
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-mono text-slate-300 light:text-slate-700 font-bold">Daily Income (KES) *</label>
                             <input type="number" step="0.01" required x-model="machineForm.daily_income" 
                                 @input="machineForm.total_profit = (parseFloat(machineForm.daily_income || 0) * parseInt(machineForm.duration_days || 30)).toFixed(2)"
-                                placeholder="150"
+                                placeholder="35"
                                 class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-emerald-400 font-bold rounded-xl">
                         </div>
                         <div class="space-y-1">
@@ -1062,8 +1064,8 @@
                     <!-- Total Profit, Speed, Badge -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                         <div class="space-y-1">
-                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Total 30-Day Return (KES)</label>
-                            <input type="number" step="0.01" required x-model="machineForm.total_profit" placeholder="4500"
+                            <label class="block text-xs font-mono text-slate-300 light:text-slate-700">Total Term Return (KES)</label>
+                            <input type="number" step="0.01" required x-model="machineForm.total_profit" placeholder="1050"
                                 class="w-full glass-input px-3.5 py-2.5 text-xs font-mono text-purple-300 light:text-purple-600 font-bold rounded-xl">
                         </div>
                         <div class="space-y-1">
@@ -1392,32 +1394,32 @@
                     name: '',
                     slug: '',
                     tagline: '',
-                    price: 3000,
-                    daily_income: 150,
+                    price: 500,
+                    daily_income: 35,
                     duration_days: 30,
-                    total_profit: 4500,
-                    speed: '25 MH/s',
+                    total_profit: 1050,
+                    speed: '15 MH/s',
                     slots_total: 100,
                     slots_taken: 0,
-                    badge: '⚡ POPULAR',
+                    badge: '⚡ 500 ENTRY',
                     image: '',
                     status: 'Active',
                     sort_order: 1
                 },
                 assigningUser: { id: null, username: '' },
                 editingUser: { id: null, balance: 0, leased_earnings: 0, daily_growth: 0 },
-                leaseForm: { name: '', node_id: '', type: '', speed: '', duration: 14, cost: 0, rate: 0, daily_earnings: 0, image: '' },
+                leaseForm: { name: '', node_id: '', type: '', speed: '', duration: 30, cost: 500, rate: 7.0, daily_earnings: 35, image: '' },
                 catalogTemplates: [
-                    { name: 'Volt Hashing Node (V1)', price: 3000, rate: 3.0, duration: 14, speed: '10.0 MH/s', daily: 90, type: 'volt', image: '../public/images/blue_mainframe.png' },
-                    { name: 'Pulse Matrix Node (P2)', price: 8500, rate: 3.2, duration: 14, speed: '25.0 MH/s', daily: 272, type: 'pulse', image: '../public/images/yellow_mainframe.png' },
-                    { name: 'Quantum Cobalt V3', price: 15000, rate: 3.5, duration: 30, speed: '48.0 MH/s', daily: 525, type: 'quantum', image: '../public/images/blue_mainframe.png' },
-                    { name: 'Aero Grid Core', price: 30000, rate: 3.8, duration: 30, speed: '95.0 MH/s', daily: 1140, type: 'aero', image: '../public/images/yellow_mainframe.png' },
-                    { name: 'Hyperion Reactor', price: 55000, rate: 4.0, duration: 45, speed: '180.0 MH/s', daily: 2200, type: 'hyperion', image: '../public/images/hybrid_node.png' },
-                    { name: 'Solar Storm Mainframe', price: 92000, rate: 4.2, duration: 45, speed: '320.0 MH/s', daily: 3864, type: 'solar', image: '../public/images/yellow_mainframe.png' },
-                    { name: 'Deep Ocean Server', price: 140000, rate: 4.5, duration: 180, speed: '512.0 MH/s', daily: 6300, type: 'ocean', image: '../public/images/blue_mainframe.png' },
-                    { name: 'Aurora Prime Node', price: 220000, rate: 4.8, duration: 180, speed: '850.0 MH/s', daily: 10560, type: 'aurora', image: '../public/images/hybrid_node.png' },
-                    { name: 'Nebula Fusion Grid', price: 380000, rate: 5.2, duration: 180, speed: '1600.0 MH/s', daily: 19760, type: 'nebula', image: '../public/images/yellow_mainframe.png' },
-                    { name: 'Apex Void Titan', price: 650000, rate: 5.6, duration: 180, speed: '3000.0 MH/s', daily: 36400, type: 'apex', image: '../public/images/hybrid_node.png' }
+                    { name: 'Starter Miner V1', price: 500, rate: 7.0, duration: 30, speed: '15.0 MH/s', daily: 35, type: 'starter', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Bronze Daily Miner', price: 1500, rate: 7.3, duration: 30, speed: '45.0 MH/s', daily: 110, type: 'bronze', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Silver Profit Miner', price: 4000, rate: 7.7, duration: 30, speed: '110.0 MH/s', daily: 310, type: 'silver', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Gold Power Miner', price: 10000, rate: 8.2, duration: 30, speed: '280.0 MH/s', daily: 820, type: 'gold', image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Platinum Super Miner', price: 25000, rate: 9.0, duration: 25, speed: '650.0 MH/s', daily: 2250, type: 'platinum', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Diamond Pro Miner', price: 60000, rate: 10.0, duration: 21, speed: '1.5 GH/s', daily: 6000, type: 'diamond', image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Emerald Master Miner', price: 150000, rate: 11.0, duration: 18, speed: '3.6 GH/s', daily: 16500, type: 'emerald', image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Ruby Ultra Miner', price: 350000, rate: 12.0, duration: 14, speed: '8.5 GH/s', daily: 42000, type: 'ruby', image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Sapphire Giant Miner', price: 800000, rate: 13.1, duration: 14, speed: '18.0 GH/s', daily: 105000, type: 'sapphire', image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80' },
+                    { name: 'Crown VIP Titan Miner', price: 2000000, rate: 14.0, duration: 14, speed: '45.0 GH/s', daily: 280000, type: 'crown', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80' }
                 ],
                 
                 toggleLightMode() {
@@ -1492,14 +1494,14 @@
                         name: '',
                         slug: '',
                         tagline: '',
-                        price: 3000,
-                        daily_income: 150,
+                        price: 500,
+                        daily_income: 35,
                         duration_days: 30,
-                        total_profit: 4500,
-                        speed: '25 MH/s',
+                        total_profit: 1050,
+                        speed: '15 MH/s',
                         slots_total: 100,
                         slots_taken: 0,
-                        badge: '⚡ POPULAR',
+                        badge: '⚡ 500 ENTRY',
                         image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
                         status: 'Active',
                         sort_order: (this.machines.length + 1)
@@ -1595,11 +1597,8 @@
                     this.uploadingImage = true;
                     const token = localStorage.getItem('xm_admin_token');
                     try {
-                        const res = await fetch('/api/admin/machines/upload-image', {
+                        const res = await apiFetch('/api/admin/machines/upload-image', {
                             method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            },
                             body: formData
                         });
                         
@@ -1619,14 +1618,7 @@
                 },
 
                 async makeRequest(url, options = {}) {
-                    const token = localStorage.getItem('xm_admin_token');
-                    const headers = {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        ...(options.headers || {})
-                    };
-                    
-                    const response = await fetch(url, { ...options, headers });
+                    const response = await apiFetch(url, options);
                     if (response.status === 401 || response.status === 403) {
                         localStorage.removeItem('xm_admin_token');
                         window.location.href = 'admin-login.html';

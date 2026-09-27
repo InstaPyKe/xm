@@ -24,3 +24,6 @@
 /admin/ /admin/admin.html 200
 /admin-login /admin/admin-login.html 200
 /admin-login.html /admin/admin-login.html 200
+/admin/admin-login.html /admin/admin-login.html 200
+/admin/login /admin/admin-login.html 200
+

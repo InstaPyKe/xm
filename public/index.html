@@ -469,7 +469,9 @@
             try {
                 const res = await apiFetch('/api/machines');
                 const data = await res.json();
-                if (data.success && data.machines && data.machines.length > 0) {
+                if (Array.isArray(data) && data.length > 0) {
+                    this.machines = data;
+                } else if (data.success && data.machines && data.machines.length > 0) {
                     this.machines = data.machines;
                 } else {
                     this.loadFallback();
@@ -482,22 +484,22 @@
         },
         loadFallback() {
             this.machines = [
-                { id: 1, slug: 'starter-miner-v1', name: 'Starter Miner V1', tagline: 'Ideal for beginners & fast daily returns', price: 3000, daily_income: 150, duration_days: 30, total_profit: 4500, speed: '25 MH/s', slots_total: 100, slots_taken: 88, badge: '⚡ POPULAR', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 2, slug: 'bronze-daily-miner', name: 'Bronze Daily Miner', tagline: 'Steady daily growth with proven reliability', price: 8500, daily_income: 450, duration_days: 30, total_profit: 13500, speed: '75 MH/s', slots_total: 100, slots_taken: 74, badge: '🔥 HOT', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 3, slug: 'silver-profit-miner', name: 'Silver Profit Miner', tagline: 'Great balance of cost and high daily earnings', price: 15000, daily_income: 825, duration_days: 30, total_profit: 24750, speed: '140 MH/s', slots_total: 80, slots_taken: 61, badge: '⭐ BEST VALUE', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 4, slug: 'gold-power-miner', name: 'Gold Power Miner', tagline: 'High output rig for serious daily miners', price: 30000, daily_income: 1750, duration_days: 30, total_profit: 52500, speed: '310 MH/s', slots_total: 60, slots_taken: 49, badge: '🏆 POPULAR CHOICE', image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 5, slug: 'platinum-super-miner', name: 'Platinum Super Miner', tagline: 'Top-tier performance with massive monthly profit', price: 65000, daily_income: 4000, duration_days: 30, total_profit: 120000, speed: '720 MH/s', slots_total: 50, slots_taken: 38, badge: '💎 HIGH EARNER', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 6, slug: 'diamond-pro-miner', name: 'Diamond Pro Miner', tagline: 'Professional industrial power and peak efficiency', price: 120000, daily_income: 7800, duration_days: 30, total_profit: 234000, speed: '1.4 GH/s', slots_total: 40, slots_taken: 31, badge: '🚀 PRO MINER', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 7, slug: 'emerald-master-miner', name: 'Emerald Master Miner', tagline: 'Heavy-duty enterprise mining machine', price: 250000, daily_income: 17000, duration_days: 30, total_profit: 510000, speed: '3.1 GH/s', slots_total: 30, slots_taken: 22, badge: '🌟 ENTERPRISE', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 8, slug: 'ruby-ultra-miner', name: 'Ruby Ultra Miner', tagline: 'Ultra-fast hash matrix with exceptional daily returns', price: 500000, daily_income: 36000, duration_days: 30, total_profit: 1080000, speed: '6.8 GH/s', slots_total: 20, slots_taken: 16, badge: '👑 VIP TIER', image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 9, slug: 'sapphire-giant-miner', name: 'Sapphire Giant Miner', tagline: 'Gigantic data center cluster for elite wealth builders', price: 1000000, daily_income: 75000, duration_days: 30, total_profit: 2250000, speed: '14.5 GH/s', slots_total: 15, slots_taken: 12, badge: '🏛️ ELITE CLUB', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', status: 'Active' },
-                { id: 10, slug: 'crown-vip-titan-miner', name: 'Crown VIP Titan Miner', tagline: 'Maximum power server farm with ultimate wealth creation', price: 2500000, daily_income: 200000, duration_days: 30, total_profit: 6000000, speed: '38.0 GH/s', slots_total: 10, slots_taken: 9, badge: '👑 TITAN VIP', image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80', status: 'Active' }
+                { id: 1, slug: 'starter-miner-v1', name: 'Starter Miner V1', tagline: 'Entry miner for beginners — 1-month steady daily returns', price: 500, daily_income: 35, duration_days: 30, total_profit: 1050, speed: '15 MH/s', slots_total: 200, slots_taken: 164, badge: '⚡ 500 ENTRY', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 2, slug: 'bronze-daily-miner', name: 'Bronze Daily Miner', tagline: 'Affordable daily growth with proven reliability', price: 1500, daily_income: 110, duration_days: 30, total_profit: 3300, speed: '45 MH/s', slots_total: 150, slots_taken: 118, badge: '⚡ POPULAR', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 3, slug: 'silver-profit-miner', name: 'Silver Profit Miner', tagline: 'High-efficiency dual-fan optimized hash unit', price: 4000, daily_income: 310, duration_days: 30, total_profit: 9300, speed: '110 MH/s', slots_total: 100, slots_taken: 72, badge: '🔥 BEST VALUE', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 4, slug: 'gold-power-miner', name: 'Gold Power Miner', tagline: 'Heavy-duty multi-fan rig for maximum monthly yield', price: 10000, daily_income: 820, duration_days: 30, total_profit: 24600, speed: '280 MH/s', slots_total: 80, slots_taken: 63, badge: '⭐ TOP RATED', image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 5, slug: 'platinum-super-miner', name: 'Platinum Super Miner', tagline: 'Commercial mining system with accelerated 25-day cycle', price: 25000, daily_income: 2250, duration_days: 25, total_profit: 56250, speed: '650 MH/s', slots_total: 60, slots_taken: 47, badge: '⚡ FAST CYCLE', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 6, slug: 'diamond-pro-miner', name: 'Diamond Pro Miner', tagline: 'Industrial-grade rig with rapid 21-day maturity', price: 60000, daily_income: 6000, duration_days: 21, total_profit: 126000, speed: '1.5 GH/s', slots_total: 40, slots_taken: 32, badge: '💎 PRO LEVEL', image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 7, slug: 'emerald-master-miner', name: 'Emerald Master Miner', tagline: 'Liquid-cooled enterprise rack with 18-day turnaround', price: 150000, daily_income: 16500, duration_days: 18, total_profit: 297000, speed: '3.6 GH/s', slots_total: 25, slots_taken: 19, badge: '🚀 ENTERPRISE', image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 8, slug: 'ruby-ultra-miner', name: 'Ruby Ultra Miner', tagline: 'High-power mainframe with ultra-fast 2-week maturity', price: 350000, daily_income: 42000, duration_days: 14, total_profit: 588000, speed: '8.5 GH/s', slots_total: 15, slots_taken: 11, badge: '🔥 2-WEEK MATURITY', image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 9, slug: 'sapphire-giant-miner', name: 'Sapphire Giant Miner', tagline: 'Commercial server cluster yielding massive 14-day income', price: 800000, daily_income: 105000, duration_days: 14, total_profit: 1470000, speed: '18.0 GH/s', slots_total: 10, slots_taken: 7, badge: '⚡ 14-DAY RAPID', image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 10, slug: 'crown-vip-titan-miner', name: 'Crown VIP Titan Miner', tagline: 'Hyperscale institutional power plant — elite 2-week payout', price: 2000000, daily_income: 280000, duration_days: 14, total_profit: 3920000, speed: '45.0 GH/s', slots_total: 5, slots_taken: 3, badge: '👑 14-DAY VIP TITAN', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', status: 'Active' }
             ];
         },
         get filteredMachines() {
-            if (this.filter === 'starter') return this.machines.filter(m => parseFloat(m.price) <= 30000);
-            if (this.filter === 'pro') return this.machines.filter(m => parseFloat(m.price) > 30000 && parseFloat(m.price) <= 250000);
-            if (this.filter === 'vip') return this.machines.filter(m => parseFloat(m.price) > 250000);
+            if (this.filter === 'starter') return this.machines.filter(m => parseFloat(m.price) <= 10000);
+            if (this.filter === 'pro') return this.machines.filter(m => parseFloat(m.price) > 10000 && parseFloat(m.price) <= 150000);
+            if (this.filter === 'vip') return this.machines.filter(m => parseFloat(m.price) > 150000);
             return this.machines;
         }
     }" class="max-w-7xl mx-auto px-6 py-20">
@@ -505,11 +507,11 @@
         <!-- Catalog Header -->
         <div class="mb-12 text-center space-y-3">
             <span class="text-xs font-bold uppercase tracking-widest text-[#FFD700] bg-[#FFD700]/10 px-3.5 py-1.5 rounded-full border border-[#FFD700]/20">
-                100% Capital Refund At 30 Days
+                100% Capital Refund At Term Maturity
             </span>
             <h2 class="text-3xl sm:text-5xl font-black text-white font-tech tracking-tight">Available Mining Machines</h2>
             <p class="text-slate-300 max-w-2xl mx-auto font-light text-sm sm:text-base">
-                Pick the machine tier that fits your goal. Your daily earnings are deposited every 24 hours and your entire capital is returned in full at day 30.
+                Start from just <strong class="text-[#FFD700]">KSh 500</strong>. Lower tiers run for 1 month for steady compounding returns, while higher-tier VIP rigs deliver rapid payouts in just 2 weeks.
             </p>
 
             <!-- Filter Tabs -->
@@ -518,13 +520,13 @@
                     All Machines (10)
                 </button>
                 <button @click="filter = 'starter'" :class="filter === 'starter' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-                    Starter Tiers (KSh 3,000 - 30,000)
+                    Starter Tiers (KSh 500 - 10,000 • 30 Days)
                 </button>
                 <button @click="filter = 'pro'" :class="filter === 'pro' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-                    Pro Tiers (KSh 65,000 - 250,000)
+                    Pro Tiers (KSh 25,000 - 150,000 • Rapid)
                 </button>
                 <button @click="filter = 'vip'" :class="filter === 'vip' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-                    VIP Titan Tiers (KSh 500,000+)
+                    VIP Titan Tiers (KSh 350,000+ • 14 Days ⚡)
                 </button>
             </div>
         </div>
@@ -571,11 +573,11 @@
                             <!-- Transparent Returns Breakdown -->
                             <div class="space-y-2 text-xs font-medium">
                                 <div class="flex justify-between py-1.5 border-b border-white/5">
-                                    <span class="text-slate-400">Duration</span>
-                                    <span class="text-white font-bold" x-text="item.duration_days + ' Days' "></span>
+                                    <span class="text-slate-400">Maturity Period</span>
+                                    <span class="text-white font-bold" x-text="item.duration_days + ' Days' + (parseInt(item.duration_days) === 14 ? ' (2 Weeks ⚡)' : (parseInt(item.duration_days) === 30 ? ' (1 Month)' : ''))"></span>
                                 </div>
                                 <div class="flex justify-between py-1.5 border-b border-white/5">
-                                    <span class="text-slate-400">Total 30-Day Profit</span>
+                                    <span class="text-slate-400">Total Term Profit</span>
                                     <span class="text-emerald-400 font-bold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + parseFloat(item.total_profit).toLocaleString('en-US') : '$' + (parseFloat(item.total_profit) / 130).toFixed(2)"></span>
                                 </div>
                                 <div class="flex justify-between py-1.5 border-b border-white/5">
@@ -618,19 +620,19 @@
     <!-- ─── INTERACTIVE DAILY PROFIT SIMULATOR / CALCULATOR ─── -->
     <section id="calculator" class="max-w-7xl mx-auto px-6 py-16 border-t border-white/10">
         <div x-data="{
-            selectedTier: 'gold',
+            selectedTier: 'starter',
             quantity: 1,
             tiers: {
-                starter: { name: 'Starter Miner V1', price: 3000, daily: 150, days: 30 },
-                bronze: { name: 'Bronze Daily Miner', price: 8500, daily: 450, days: 30 },
-                silver: { name: 'Silver Profit Miner', price: 15000, daily: 825, days: 30 },
-                gold: { name: 'Gold Power Miner', price: 30000, daily: 1750, days: 30 },
-                platinum: { name: 'Platinum Super Miner', price: 65000, daily: 4000, days: 30 },
-                diamond: { name: 'Diamond Pro Miner', price: 120000, daily: 7800, days: 30 },
-                emerald: { name: 'Emerald Master Miner', price: 250000, daily: 17000, days: 30 },
-                ruby: { name: 'Ruby Ultra Miner', price: 500000, daily: 36000, days: 30 },
-                sapphire: { name: 'Sapphire Giant Miner', price: 1000000, daily: 75000, days: 30 },
-                crown: { name: 'Crown VIP Titan Miner', price: 2500000, daily: 200000, days: 30 }
+                starter: { name: 'Starter Miner V1', price: 500, daily: 35, days: 30 },
+                bronze: { name: 'Bronze Daily Miner', price: 1500, daily: 110, days: 30 },
+                silver: { name: 'Silver Profit Miner', price: 4000, daily: 310, days: 30 },
+                gold: { name: 'Gold Power Miner', price: 10000, daily: 820, days: 30 },
+                platinum: { name: 'Platinum Super Miner', price: 25000, daily: 2250, days: 25 },
+                diamond: { name: 'Diamond Pro Miner', price: 60000, daily: 6000, days: 21 },
+                emerald: { name: 'Emerald Master Miner', price: 150000, daily: 16500, days: 18 },
+                ruby: { name: 'Ruby Ultra Miner', price: 350000, daily: 42000, days: 14 },
+                sapphire: { name: 'Sapphire Giant Miner', price: 800000, daily: 105000, days: 14 },
+                crown: { name: 'Crown VIP Titan Miner', price: 2000000, daily: 280000, days: 14 }
             },
             get current() {
                 return this.tiers[this.selectedTier];
@@ -641,11 +643,11 @@
             get totalDailyIncome() {
                 return this.current.daily * this.quantity;
             },
-            get total30DayProfit() {
+            get totalProfit() {
                 return this.totalDailyIncome * this.current.days;
             },
             get totalMoneyReturned() {
-                return this.total30DayProfit + this.totalRent;
+                return this.totalProfit + this.totalRent;
             }
         }" class="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden border border-white/15">
 
@@ -663,7 +665,7 @@
                         </span>
                         <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight mt-2 font-tech">Calculate Your Exact Profit</h2>
                         <p class="text-slate-300 mt-2 font-light text-sm sm:text-base">
-                            Select any machine tier below to see your guaranteed daily income and total 30-day payout.
+                            Select any machine tier below to see your guaranteed daily income, duration, and total payout.
                         </p>
                     </div>
 
@@ -671,16 +673,16 @@
                     <div class="space-y-2">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">1. Select Machine Tier</label>
                         <select x-model="selectedTier" class="w-full bg-[#07080E] border border-white/20 text-white rounded-2xl p-4 text-sm font-semibold focus:border-[#FFD700] focus:outline-none cursor-pointer">
-                            <option value="starter">Starter Miner V1 — KSh 3,000 (KSh 150/day)</option>
-                            <option value="bronze">Bronze Daily Miner — KSh 8,500 (KSh 450/day)</option>
-                            <option value="silver">Silver Profit Miner — KSh 15,000 (KSh 825/day)</option>
-                            <option value="gold" selected>Gold Power Miner — KSh 30,000 (KSh 1,750/day)</option>
-                            <option value="platinum">Platinum Super Miner — KSh 65,000 (KSh 4,000/day)</option>
-                            <option value="diamond">Diamond Pro Miner — KSh 120,000 (KSh 7,800/day)</option>
-                            <option value="emerald">Emerald Master Miner — KSh 250,000 (KSh 17,000/day)</option>
-                            <option value="ruby">Ruby Ultra Miner — KSh 500,000 (KSh 36,000/day)</option>
-                            <option value="sapphire">Sapphire Giant Miner — KSh 1,000,000 (KSh 75,000/day)</option>
-                            <option value="crown">Crown VIP Titan Miner — KSh 2,500,000 (KSh 200,000/day)</option>
+                            <option value="starter" selected>Starter Miner V1 — KSh 500 (KSh 35/day • 30 Days / 1 Month)</option>
+                            <option value="bronze">Bronze Daily Miner — KSh 1,500 (KSh 110/day • 30 Days / 1 Month)</option>
+                            <option value="silver">Silver Profit Miner — KSh 4,000 (KSh 310/day • 30 Days / 1 Month)</option>
+                            <option value="gold">Gold Power Miner — KSh 10,000 (KSh 820/day • 30 Days / 1 Month)</option>
+                            <option value="platinum">Platinum Super Miner — KSh 25,000 (KSh 2,250/day • 25 Days)</option>
+                            <option value="diamond">Diamond Pro Miner — KSh 60,000 (KSh 6,000/day • 21 Days / 3 Weeks)</option>
+                            <option value="emerald">Emerald Master Miner — KSh 150,000 (KSh 16,500/day • 18 Days)</option>
+                            <option value="ruby">Ruby Ultra Miner — KSh 350,000 (KSh 42,000/day • 14 Days / 2 Weeks ⚡)</option>
+                            <option value="sapphire">Sapphire Giant Miner — KSh 800,000 (KSh 105,000/day • 14 Days / 2 Weeks ⚡)</option>
+                            <option value="crown">Crown VIP Titan Miner — KSh 2,000,000 (KSh 280,000/day • 14 Days / 2 Weeks ⚡)</option>
                         </select>
                     </div>
 
@@ -717,8 +719,8 @@
                             <span class="text-[#FFD700] font-extrabold font-tech text-sm" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalDailyIncome.toLocaleString('en-US') + ' / day' : '$' + (totalDailyIncome / 130).toFixed(2) + ' / day'"></span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b border-white/5">
-                            <span class="text-slate-400">30-Day Total Profit</span>
-                            <span class="text-emerald-400 font-extrabold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + total30DayProfit.toLocaleString('en-US') : '$' + (total30DayProfit / 130).toFixed(2)"></span>
+                            <span class="text-slate-400" x-text="current.days + '-Day Total Profit'"></span>
+                            <span class="text-emerald-400 font-extrabold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalProfit.toLocaleString('en-US') : '$' + (totalProfit / 130).toFixed(2)"></span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b border-white/5">
                             <span class="text-slate-400">Capital Returned at End</span>
@@ -730,7 +732,7 @@
                     <div class="bg-gradient-to-tr from-[#FFD700]/15 to-emerald-500/10 border border-[#FFD700]/30 rounded-2xl p-5 space-y-1 text-center">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-slate-300 block">Total Money You Collect</span>
                         <span class="text-3xl font-black text-[#FFD700] font-tech block" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalMoneyReturned.toLocaleString('en-US') : '$' + (totalMoneyReturned / 130).toFixed(2)"></span>
-                        <span class="text-[10px] text-emerald-400 font-semibold block">Profit (30 Days) + 100% Capital Refund</span>
+                        <span class="text-[10px] text-emerald-400 font-semibold block" x-text="'Profit (' + current.days + ' Days) + 100% Capital Refund'"></span>
                     </div>
 
                     <a href="signup.html" class="block w-full py-4 text-center font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-2xl transition shadow-[0_4px_20px_rgba(255,215,0,0.25)]">

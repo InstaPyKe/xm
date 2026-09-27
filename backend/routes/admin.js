@@ -40,8 +40,10 @@ const uploadMachineImage = multer({
   }
 });
 
-// 1. POST ADMIN LOGIN
-router.post('/login', async (req, res) => {
+const { adminPinBruteForceLimiter } = require('../middleware/securityMiddleware');
+
+// 1. POST ADMIN LOGIN (Protected by High-Security PIN Brute-Force Shield)
+router.post('/login', adminPinBruteForceLimiter, async (req, res) => {
   const { pin } = req.body;
   if (pin === '222222') {
     // Generate Admin JWT Token

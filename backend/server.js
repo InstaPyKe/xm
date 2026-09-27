@@ -16,9 +16,13 @@ const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
 const machineRoutes = require('./routes/machines');
 const maintenanceMiddleware = require('./middleware/maintenanceMiddleware');
+const { globalSiteLimiter, contactSpamLimiter } = require('./middleware/securityMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Enable reverse proxy support (Cloudflare Pages, Railway, Nginx load balancers)
+app.set('trust proxy', 1);
 
 // 1. Secure HTTP headers with Helmet (Permissive CSP for Cloudflare Pages cross-origin frontend)
 app.use(helmet({
@@ -74,6 +78,9 @@ app.options('*', cors(corsOptions)); // Handle preflight for all routes
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '10mb' }));
+
+// 3. Mount Global Site Shield against DDoS and Brute Force Flooding
+app.use(globalSiteLimiter);
 
 // ─── HEALTH CHECK MONITORING (FOR RAILWAY / CLOUDFLARE) ───
 const healthHandler = async (req, res) => {
@@ -132,8 +139,8 @@ app.get('/privacy.html', (req, res) => res.sendFile(path.join(__dirname, '../pub
 app.get('/admin-login.html', (req, res) => res.sendFile(path.join(__dirname, '../admin/admin-login.html')));
 app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, '../admin/admin.html')));
 
-// ─── CONTACT & SUPPORT API ENDPOINT ───
-app.post('/api/contact', async (req, res) => {
+// ─── CONTACT & SUPPORT API ENDPOINT (WITH SPAM SHIELD) ───
+app.post('/api/contact', contactSpamLimiter, async (req, res) => {
   const { name, phone, email, topic, message } = req.body;
   if (!name || !phone || !topic || !message) {
     return res.status(400).json({

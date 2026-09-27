@@ -1,17 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const rateLimiter = require('../middleware/rateLimitMiddleware');
-
-// Limit authorization & validation attempts: max 5 requests per 60 seconds
-const authRateLimit = rateLimiter(5, 60000);
-
-// 1. REGISTRATION (Form Submit target redirecting browser)
-router.post('/register', authRateLimit, authController.register);
-
+const { authBruteForceLimiter } = require('../middleware/securityMiddleware');
 const maintenanceMiddleware = require('../middleware/maintenanceMiddleware');
 
-// 2. LOGIN (AJAX JSON receiver)
-router.post('/login', authRateLimit, maintenanceMiddleware, authController.login);
+// 1. REGISTRATION (With Brute Force Shield)
+router.post('/register', authBruteForceLimiter, authController.register);
+
+// 2. LOGIN (With Brute Force Shield & Maintenance Check)
+router.post('/login', authBruteForceLimiter, maintenanceMiddleware, authController.login);
 
 module.exports = router;
+

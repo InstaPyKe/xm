@@ -18,6 +18,8 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
     <!-- AlpineJS CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -143,7 +145,7 @@
                     this.errorMessage = '';
                     
                     try {
-                        const response = await fetch('/api/admin/login', {
+                        const response = await apiFetch('/api/admin/login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ pin: this.pin })
