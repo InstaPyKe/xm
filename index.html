@@ -1,14 +1,886 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/public/index.html">
-    <title>XM | Redirecting...</title>
     <script>
-        window.location.replace('/public/index.html');
+        if (localStorage.getItem('xm_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+        }
     </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XM | Rent Mining Machines & Earn Daily Income</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Orbitron, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Universal API Resolver -->
+    <script src="/public/js/api.js"></script>
+    <!-- Currency Switcher utility -->
+    <script src="/public/js/currency.js"></script>
+    <!-- AlpineJS for interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #07080E;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-panel {
+            background: rgba(13, 16, 28, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+        }
+        .glass-dropdown {
+            background: rgba(8, 10, 18, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glow-gold {
+            box-shadow: 0 0 35px rgba(255, 215, 0, 0.22);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.22);
+        }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07080E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.5);
+        }
+
+        /* Light Mode Styling */
+        .theme-light {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            color: #0f172a;
+        }
+        .theme-light .glass-panel {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
+        }
+        .theme-light h1,
+        .theme-light h2,
+        .theme-light h3,
+        .theme-light h4,
+        .theme-light .text-white {
+            color: #0f172a !important;
+        }
+        .theme-light .text-slate-100,
+        .theme-light .text-slate-200,
+        .theme-light .text-slate-300,
+        .theme-light .text-slate-400 {
+            color: #334155 !important;
+        }
+        .theme-light .text-slate-500,
+        .theme-light .text-slate-600 {
+            color: #64748b !important;
+        }
+        .theme-light nav {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+        .theme-light .border-white\/5,
+        .theme-light .border-white\/10,
+        .theme-light .border-white\/20 {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+        .theme-light .bg-white\/5 {
+            background-color: rgba(0, 0, 0, 0.03) !important;
+        }
+        .theme-light .bg-white\/10 {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+        .theme-light .bg-black\/40,
+        .theme-light .bg-black\/50,
+        .theme-light .bg-black\/60 {
+            background-color: rgba(255, 255, 255, 0.75) !important;
+        }
+    </style>
 </head>
-<body style="background:#07080E; color:#fff; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
-    <p>Redirecting to <a href="/public/index.html" style="color:#FFD700;">XM Digital Platform</a>...</p>
+
+<body class="bg-[#07080E] text-slate-100 antialiased selection:bg-[#FFD700] selection:text-black">
+
+    <!-- ─── TOP ANNOUNCEMENT TICKER ─── -->
+    <div class="bg-gradient-to-r from-amber-500/10 via-[#FFD700]/20 to-emerald-500/10 border-b border-[#FFD700]/20 py-2 px-4 text-center text-xs font-medium text-slate-300">
+        <span class="inline-flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-bold text-[#FFD700]">LIVE:</span> Over <span class="font-bold text-white">4,900+</span> mining machines active today | Instant Daily Payouts to M-Pesa & Bank
+            <a href="#machines" class="ml-2 underline font-bold text-[#FFD700] hover:text-white transition">View Machines &rarr;</a>
+        </span>
+    </div>
+
+    <!-- ─── NAVIGATION BAR ─── -->
+    <nav x-data="{ mobileMenuOpen: false, desktopMenuOpen: false }"
+        class="sticky top-0 z-50 backdrop-blur-xl bg-[#07080E]/85 border-b border-white/10 px-6 py-4 transition-all">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+            <!-- Company Brand Identity -->
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FFD700] to-amber-500 flex items-center justify-center font-black text-black font-tech tracking-tighter text-base shadow-[0_0_15px_rgba(255,215,0,0.35)] group-hover:scale-105 transition-transform">
+                    XM
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-[#FFD700] to-[#FFE55C] bg-clip-text text-transparent font-tech uppercase">
+                        XM HOLDINGS
+                    </span>
+                    <span class="text-[9px] font-code text-slate-400 tracking-widest uppercase">Smart Mining Platform</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden lg:flex items-center space-x-8 text-sm font-semibold text-slate-300">
+                <a href="index.html" class="text-[#FFD700] border-b-2 border-[#FFD700] pb-1 transition-colors">Home</a>
+                <a href="#machines" class="hover:text-[#FFD700] transition-colors">Mining Machines</a>
+                <a href="#calculator" class="hover:text-[#FFD700] transition-colors">Earnings Calculator</a>
+                <a href="#how-it-works" class="hover:text-[#FFD700] transition-colors">How It Works</a>
+                <a href="about.html" class="hover:text-[#FFD700] transition-colors">About Us</a>
+                <a href="contact.html" class="hover:text-[#FFD700] transition-colors">Support</a>
+
+                <!-- Account Dropdown -->
+                <div class="relative" @click.away="desktopMenuOpen = false">
+                    <button @click="desktopMenuOpen = !desktopMenuOpen"
+                        class="flex items-center space-x-1.5 hover:text-[#FFD700] transition cursor-pointer px-3 py-1.5 rounded-lg hover:bg-white/5">
+                        <span>My Account</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': desktopMenuOpen}"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-show="desktopMenuOpen" x-transition
+                        class="glass-dropdown absolute right-0 mt-3 w-56 rounded-2xl p-2 shadow-2xl space-y-1 z-50 border border-white/10"
+                        style="display: none;">
+                        <a href="signup.html" class="block px-4 py-2.5 text-sm rounded-xl hover:bg-[#FFD700] hover:text-black font-bold transition">
+                            Create Free Account
+                        </a>
+                        <a href="signin.html" class="block px-4 py-2.5 text-sm rounded-xl hover:bg-[#FFD700] hover:text-black font-bold transition">
+                            Sign In to Account
+                        </a>
+                        <hr class="border-white/10 my-1">
+                        <a href="../account/dashboard.html" class="block px-4 py-2.5 text-sm rounded-xl hover:bg-white/5 transition text-emerald-400 font-semibold">
+                            Go to User Dashboard &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Currency Switcher & CTAs -->
+            <div class="hidden md:flex items-center space-x-3">
+                <!-- Currency Toggle -->
+                <button @click="$store.currency.toggle()" 
+                    class="px-3.5 py-2 text-xs font-bold font-tech uppercase tracking-wider text-slate-200 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 cursor-pointer transition flex items-center gap-1.5">
+                    <span class="text-[#FFD700]">💱</span>
+                    <span x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button @click="$store.theme.toggle()" 
+                    class="p-2 text-slate-300 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 cursor-pointer flex items-center justify-center focus:outline-none transition">
+                    <svg x-show="!$store.theme.lightMode" class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                    </svg>
+                    <svg x-show="$store.theme.lightMode" class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+
+                <a href="signin.html"
+                    class="px-4 py-2.5 text-xs font-bold text-slate-300 hover:text-white transition">
+                    Sign In
+                </a>
+
+                <a href="signup.html"
+                    class="px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-black bg-[#FFD700] rounded-xl hover:bg-[#FFE55C] active:scale-95 transition-all shadow-[0_0_20px_rgba(255,215,0,0.3)]">
+                    Start Earning
+                </a>
+            </div>
+
+            <!-- Hamburger Button for Mobile -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-slate-300 p-2 rounded-lg bg-white/5 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div x-show="mobileMenuOpen" x-transition
+            class="lg:hidden mt-4 bg-[#0D0F18]/98 border border-white/10 rounded-2xl p-5 space-y-3"
+            style="display: none;">
+            <a href="index.html" @click="mobileMenuOpen = false" class="block py-2 text-[#FFD700] font-bold">Home</a>
+            <a href="#machines" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">Mining Machines</a>
+            <a href="#calculator" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">Earnings Calculator</a>
+            <a href="#how-it-works" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">How It Works</a>
+            <a href="about.html" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">About Us</a>
+            <a href="contact.html" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">Customer Support</a>
+            <a href="privacy.html" @click="mobileMenuOpen = false" class="block py-2 text-slate-300 hover:text-[#FFD700]">Privacy Policy</a>
+            <hr class="border-white/10 my-2">
+            <div class="flex items-center justify-between py-2">
+                <span class="text-xs text-slate-400">Currency</span>
+                <button @click="$store.currency.toggle()" class="text-xs font-mono font-bold text-[#FFD700] bg-white/5 px-3 py-1.5 rounded-lg border border-white/10" x-text="$store.currency.current === 'USD' ? 'USD ($)' : 'KSh (KES)'"></button>
+            </div>
+            <div class="flex items-center justify-between py-2">
+                <span class="text-xs text-slate-400">Theme</span>
+                <button @click="$store.theme.toggle()" class="text-xs font-mono font-bold text-[#FFD700] bg-white/5 px-3 py-1.5 rounded-lg border border-white/10" x-text="$store.theme.lightMode ? 'LIGHT' : 'DARK'"></button>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <a href="signin.html" class="block text-center py-2.5 text-xs font-bold text-white bg-white/10 rounded-xl">Sign In</a>
+                <a href="signup.html" class="block text-center py-2.5 text-xs font-bold text-black bg-[#FFD700] rounded-xl">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── HERO SECTION ─── -->
+    <header class="relative max-w-7xl mx-auto px-6 pt-12 sm:pt-20 pb-20 overflow-hidden">
+        <!-- Glowing background orbs -->
+        <div class="absolute top-1/4 left-1/4 -translate-x-1/2 w-[400px] h-[400px] bg-[#FFD700]/10 rounded-full blur-[140px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-1/4 translate-x-1/2 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Headline & Call to Action -->
+            <div class="lg:col-span-7 text-center lg:text-left space-y-6 z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#FFD700] bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-full backdrop-blur-md">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>100% CAPITAL REFUND GUARANTEE</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white font-tech">
+                    Rent A Mining Machine.<br>
+                    <span class="bg-gradient-to-r from-[#FFD700] via-yellow-200 to-emerald-400 bg-clip-text text-transparent">
+                        Earn Daily Income.
+                    </span>
+                </h1>
+
+                <p class="text-slate-300 max-w-xl text-base sm:text-lg font-normal leading-relaxed">
+                    Choose your machine, rent it in 1 minute using M-Pesa or Account Balance, and get paid automatically every 24 hours. Your full rent capital is 100% returned at the end of 30 days!
+                </p>
+
+                <!-- Key Value Props Checklist -->
+                <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 pt-2 text-xs sm:text-sm font-semibold text-slate-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400 text-base">✓</span> Daily Automatic Payouts
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400 text-base">✓</span> 100% Capital Safety
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400 text-base">✓</span> M-Pesa & Bank Supported
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400 text-base">✓</span> Zero Tech Skills Needed
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                    <a href="signup.html"
+                        class="w-full sm:w-auto px-8 py-4 font-black text-center text-sm uppercase tracking-wider text-black bg-[#FFD700] rounded-2xl hover:bg-[#FFE55C] active:scale-95 transition shadow-[0_4px_30px_rgba(255,215,0,0.35)] flex items-center justify-center gap-2">
+                        <span>Create Free Account & Start</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="#machines"
+                        class="w-full sm:w-auto px-8 py-4 font-bold text-center text-sm text-slate-200 bg-white/5 border border-white/15 rounded-2xl hover:bg-white/10 transition backdrop-blur-md">
+                        View Available Machines
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Visual Showcase: Tactile Real-World Machine -->
+            <div class="lg:col-span-5 relative flex items-center justify-center z-10">
+                <div class="relative w-full max-w-[450px] rounded-3xl glass-panel p-5 flex flex-col justify-between border border-white/15 shadow-2xl group">
+                    <!-- Glow effect -->
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-[#FFD700]/10 via-transparent to-emerald-500/10 pointer-events-none"></div>
+
+                    <!-- Machine Image Frame -->
+                    <div class="relative w-full h-[280px] rounded-2xl overflow-hidden bg-black/60 border border-white/10 shadow-inner">
+                        <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1000&q=85" 
+                             alt="Gold Power Miner Rig" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-black/20 to-transparent"></div>
+                        
+                        <!-- Badges -->
+                        <div class="absolute top-3 left-3 bg-[#07080E]/90 border border-[#FFD700]/30 px-3 py-1 rounded-lg text-[10px] font-bold font-tech text-[#FFD700] backdrop-blur-md">
+                            ⭐ FEATURED: GOLD POWER MINER
+                        </div>
+                        <div class="absolute top-3 right-3 bg-emerald-500/20 border border-emerald-500/40 px-3 py-1 rounded-lg text-[10px] font-bold text-emerald-400 backdrop-blur-md flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
+                            ACTIVE & MINING
+                        </div>
+
+                        <!-- Card Bottom Overlay Details -->
+                        <div class="absolute bottom-3 left-4 right-4 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-300">Daily Earning Rate</p>
+                                <p class="text-xl font-black text-[#FFD700] font-tech">
+                                    <span x-text="$store.currency.current === 'KSh' ? 'KSh 1,750' : '$13.46'"></span>
+                                    <span class="text-xs text-white font-sans font-normal">/ day</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded">
+                                    100% Capital Returned
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specs Breakdown -->
+                    <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                            <p class="text-[10px] text-slate-400 uppercase">Rent Price</p>
+                            <p class="font-extrabold text-white font-tech mt-0.5" x-text="$store.currency.current === 'KSh' ? 'KSh 30,000' : '$230.77'"></p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                            <p class="text-[10px] text-slate-400 uppercase">Duration</p>
+                            <p class="font-extrabold text-[#FFD700] font-tech mt-0.5">30 Days</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-2.5">
+                            <p class="text-[10px] text-slate-400 uppercase">Total Profit</p>
+                            <p class="font-extrabold text-emerald-400 font-tech mt-0.5" x-text="$store.currency.current === 'KSh' ? 'KSh 52,500' : '$403.85'"></p>
+                        </div>
+                    </div>
+
+                    <a href="signup.html" class="mt-4 w-full py-3 text-center font-bold text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-xl transition shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+                        Rent Gold Power Miner Now &rarr;
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ─── PLATFORM LIVE STATS SECTION ─── -->
+    <section class="max-w-7xl mx-auto px-6 py-10 border-y border-white/10 bg-white/[0.01]">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs uppercase font-bold tracking-wider text-slate-400">TOTAL MACHINES ACTIVE</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-[#FFD700] font-tech">4,912 Units</h3>
+                <p class="text-xs text-emerald-400 font-medium">● 99.9% Online Uptime</p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs uppercase font-bold tracking-wider text-slate-400">REGISTERED USERS</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white font-tech">28,450+</h3>
+                <p class="text-xs text-slate-400">Earning daily in Kenya & worldwide</p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs uppercase font-bold tracking-wider text-slate-400">TOTAL MONEY PAID OUT</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-emerald-400 font-tech">
+                    <span x-text="$store.currency.current === 'KSh' ? 'KSh 3.23B' : '$24.9M'"></span>
+                </h3>
+                <p class="text-xs text-slate-400">Sent to M-Pesa & Bank Accounts</p>
+            </div>
+            <div class="text-center md:text-left space-y-1">
+                <span class="text-xs uppercase font-bold tracking-wider text-slate-400">CAPITAL SAFETY</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white font-tech">100% Refundable</h3>
+                <p class="text-xs text-emerald-400">Guaranteed return at 30 days</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── HOW IT WORKS SECTION (SIMPLE 3 STEPS) ─── -->
+    <section id="how-it-works" class="max-w-7xl mx-auto px-6 py-20">
+        <div class="text-center space-y-3 mb-16">
+            <span class="text-xs font-bold uppercase tracking-widest text-[#FFD700] bg-[#FFD700]/10 px-3.5 py-1.5 rounded-full border border-[#FFD700]/20">
+                Simple 3-Step Process
+            </span>
+            <h2 class="text-3xl sm:text-5xl font-black text-white font-tech tracking-tight">How It Works</h2>
+            <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto font-light">
+                No technical skills, hardware setup, or electricity management needed. Everything is automated.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="glass-panel p-8 rounded-3xl border border-white/10 relative space-y-4 hover:border-[#FFD700]/40 transition group">
+                <div class="w-14 h-14 rounded-2xl bg-[#FFD700]/10 border border-[#FFD700]/30 flex items-center justify-center text-2xl font-black text-[#FFD700] font-tech group-hover:scale-110 transition">
+                    1
+                </div>
+                <h3 class="text-xl font-bold text-white">Create Free Account</h3>
+                <p class="text-slate-400 text-sm font-light leading-relaxed">
+                    Sign up in less than 30 seconds with just your name, phone number, and password. No complex KYC delays.
+                </p>
+                <div class="text-xs text-[#FFD700] font-semibold pt-2">⚡ Takes 30 seconds</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="glass-panel p-8 rounded-3xl border border-white/10 relative space-y-4 hover:border-[#FFD700]/40 transition group">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl font-black text-emerald-400 font-tech group-hover:scale-110 transition">
+                    2
+                </div>
+                <h3 class="text-xl font-bold text-white">Choose & Rent a Machine</h3>
+                <p class="text-slate-400 text-sm font-light leading-relaxed">
+                    Select any machine tier based on your budget. Pay instantly using M-Pesa STK Prompt, Paybill, or Wallet balance.
+                </p>
+                <div class="text-xs text-emerald-400 font-semibold pt-2">💳 M-Pesa & Paybill Ready</div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="glass-panel p-8 rounded-3xl border border-white/10 relative space-y-4 hover:border-[#FFD700]/40 transition group">
+                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl font-black text-purple-400 font-tech group-hover:scale-110 transition">
+                    3
+                </div>
+                <h3 class="text-xl font-bold text-white">Collect Daily & Withdraw</h3>
+                <p class="text-slate-400 text-sm font-light leading-relaxed">
+                    Your machine generates daily profit every 24 hours. Withdraw your earnings straight to your M-Pesa or Bank anytime!
+                </p>
+                <div class="text-xs text-purple-400 font-semibold pt-2">💰 Withdraw Anytime</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── HARDWARE MINING MACHINES CATALOGUE ─── -->
+    <section id="machines" x-data="{
+        filter: 'all',
+        machines: [],
+        isLoading: true,
+        async init() {
+            try {
+                const res = await apiFetch('/api/machines');
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    this.machines = data;
+                } else if (data.success && data.machines && data.machines.length > 0) {
+                    this.machines = data.machines;
+                } else {
+                    this.loadFallback();
+                }
+            } catch (err) {
+                this.loadFallback();
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        loadFallback() {
+            this.machines = [
+                { id: 1, slug: 'starter-miner-v1', name: 'Starter Miner V1', tagline: 'Entry miner for beginners — 1-month steady daily returns', price: 500, daily_income: 35, duration_days: 30, total_profit: 1050, speed: '15 MH/s', slots_total: 200, slots_taken: 164, badge: '⚡ 500 ENTRY', image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 2, slug: 'bronze-daily-miner', name: 'Bronze Daily Miner', tagline: 'Affordable daily growth with proven reliability', price: 1500, daily_income: 110, duration_days: 30, total_profit: 3300, speed: '45 MH/s', slots_total: 150, slots_taken: 118, badge: '⚡ POPULAR', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 3, slug: 'silver-profit-miner', name: 'Silver Profit Miner', tagline: 'High-efficiency dual-fan optimized hash unit', price: 4000, daily_income: 310, duration_days: 30, total_profit: 9300, speed: '110 MH/s', slots_total: 100, slots_taken: 72, badge: '🔥 BEST VALUE', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 4, slug: 'gold-power-miner', name: 'Gold Power Miner', tagline: 'Heavy-duty multi-fan rig for maximum monthly yield', price: 10000, daily_income: 820, duration_days: 30, total_profit: 24600, speed: '280 MH/s', slots_total: 80, slots_taken: 63, badge: '⭐ TOP RATED', image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 5, slug: 'platinum-super-miner', name: 'Platinum Super Miner', tagline: 'Commercial mining system with accelerated 25-day cycle', price: 25000, daily_income: 2250, duration_days: 25, total_profit: 56250, speed: '650 MH/s', slots_total: 60, slots_taken: 47, badge: '⚡ FAST CYCLE', image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 6, slug: 'diamond-pro-miner', name: 'Diamond Pro Miner', tagline: 'Industrial-grade rig with rapid 21-day maturity', price: 60000, daily_income: 6000, duration_days: 21, total_profit: 126000, speed: '1.5 GH/s', slots_total: 40, slots_taken: 32, badge: '💎 PRO LEVEL', image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 7, slug: 'emerald-master-miner', name: 'Emerald Master Miner', tagline: 'Liquid-cooled enterprise rack with 18-day turnaround', price: 150000, daily_income: 16500, duration_days: 18, total_profit: 297000, speed: '3.6 GH/s', slots_total: 25, slots_taken: 19, badge: '🚀 ENTERPRISE', image: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 8, slug: 'ruby-ultra-miner', name: 'Ruby Ultra Miner', tagline: 'High-power mainframe with ultra-fast 2-week maturity', price: 350000, daily_income: 42000, duration_days: 14, total_profit: 588000, speed: '8.5 GH/s', slots_total: 15, slots_taken: 11, badge: '🔥 2-WEEK MATURITY', image: 'https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 9, slug: 'sapphire-giant-miner', name: 'Sapphire Giant Miner', tagline: 'Commercial server cluster yielding massive 14-day income', price: 800000, daily_income: 105000, duration_days: 14, total_profit: 1470000, speed: '18.0 GH/s', slots_total: 10, slots_taken: 7, badge: '⚡ 14-DAY RAPID', image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80', status: 'Active' },
+                { id: 10, slug: 'crown-vip-titan-miner', name: 'Crown VIP Titan Miner', tagline: 'Hyperscale institutional power plant — elite 2-week payout', price: 2000000, daily_income: 280000, duration_days: 14, total_profit: 3920000, speed: '45.0 GH/s', slots_total: 5, slots_taken: 3, badge: '👑 14-DAY VIP TITAN', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80', status: 'Active' }
+            ];
+        },
+        get filteredMachines() {
+            if (this.filter === 'starter') return this.machines.filter(m => parseFloat(m.price) <= 10000);
+            if (this.filter === 'pro') return this.machines.filter(m => parseFloat(m.price) > 10000 && parseFloat(m.price) <= 150000);
+            if (this.filter === 'vip') return this.machines.filter(m => parseFloat(m.price) > 150000);
+            return this.machines;
+        }
+    }" class="max-w-7xl mx-auto px-6 py-20">
+
+        <!-- Catalog Header -->
+        <div class="mb-12 text-center space-y-3">
+            <span class="text-xs font-bold uppercase tracking-widest text-[#FFD700] bg-[#FFD700]/10 px-3.5 py-1.5 rounded-full border border-[#FFD700]/20">
+                100% Capital Refund At Term Maturity
+            </span>
+            <h2 class="text-3xl sm:text-5xl font-black text-white font-tech tracking-tight">Available Mining Machines</h2>
+            <p class="text-slate-300 max-w-2xl mx-auto font-light text-sm sm:text-base">
+                Start from just <strong class="text-[#FFD700]">KSh 500</strong>. Lower tiers run for 1 month for steady compounding returns, while higher-tier VIP rigs deliver rapid payouts in just 2 weeks.
+            </p>
+
+            <!-- Filter Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 pt-6">
+                <button @click="filter = 'all'" :class="filter === 'all' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+                    All Machines (10)
+                </button>
+                <button @click="filter = 'starter'" :class="filter === 'starter' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+                    Starter Tiers (KSh 500 - 10,000 • 30 Days)
+                </button>
+                <button @click="filter = 'pro'" :class="filter === 'pro' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+                    Pro Tiers (KSh 25,000 - 150,000 • Rapid)
+                </button>
+                <button @click="filter = 'vip'" :class="filter === 'vip' ? 'bg-[#FFD700] text-black font-extrabold shadow-md' : 'bg-white/5 text-slate-300 hover:bg-white/10'" class="px-5 py-2 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+                    VIP Titan Tiers (KSh 350,000+ • 14 Days ⚡)
+                </button>
+            </div>
+        </div>
+
+        <!-- Machines Cards Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <template x-for="item in filteredMachines" :key="item.id">
+                <div class="glass-panel rounded-3xl overflow-hidden hover:border-[#FFD700]/50 transition-all duration-300 flex flex-col justify-between group relative border border-white/10 shadow-xl">
+                    
+                    <div>
+                        <!-- Machine Real Photo Frame -->
+                        <div class="h-60 bg-black/50 overflow-hidden relative border-b border-white/10">
+                            <img :src="resolveImageUrl(item.image)" :alt="item.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#07080E] via-transparent to-transparent"></div>
+                            
+                            <!-- Badges -->
+                            <div class="absolute top-3 left-3 flex gap-2">
+                                <span x-show="item.badge" class="bg-[#FFD700] text-black text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider uppercase" x-text="item.badge"></span>
+                            </div>
+                            <span class="absolute top-3 right-3 bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-code text-slate-200 px-2.5 py-1 rounded-md" x-text="'Speed: ' + item.speed"></span>
+
+                            <!-- Machine Name Inside Bottom Image -->
+                            <div class="absolute bottom-3 left-4 right-4">
+                                <h3 class="text-xl font-black text-white group-hover:text-[#FFD700] transition-colors" x-text="item.name"></h3>
+                                <p class="text-slate-300 text-xs font-light line-clamp-1" x-text="item.tagline"></p>
+                            </div>
+                        </div>
+
+                        <!-- Card Body Specs -->
+                        <div class="p-6 space-y-5">
+                            
+                            <!-- Price & Daily Income Highlights -->
+                            <div class="grid grid-cols-2 gap-3 bg-white/5 border border-white/10 rounded-2xl p-4">
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold">Rent Price</p>
+                                    <p class="text-lg font-black text-white font-tech mt-0.5" x-text="$store.currency.current === 'KSh' ? 'KSh ' + parseFloat(item.price).toLocaleString('en-US') : '$' + (parseFloat(item.price) / 130).toFixed(2)"></p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold">Daily Income</p>
+                                    <p class="text-lg font-black text-[#FFD700] font-tech mt-0.5" x-text="$store.currency.current === 'KSh' ? 'KSh ' + parseFloat(item.daily_income).toLocaleString('en-US') + ' / d' : '$' + (parseFloat(item.daily_income) / 130).toFixed(2) + ' / d'"></p>
+                                </div>
+                            </div>
+
+                            <!-- Transparent Returns Breakdown -->
+                            <div class="space-y-2 text-xs font-medium">
+                                <div class="flex justify-between py-1.5 border-b border-white/5">
+                                    <span class="text-slate-400">Maturity Period</span>
+                                    <span class="text-white font-bold" x-text="item.duration_days + ' Days' + (parseInt(item.duration_days) === 14 ? ' (2 Weeks ⚡)' : (parseInt(item.duration_days) === 30 ? ' (1 Month)' : ''))"></span>
+                                </div>
+                                <div class="flex justify-between py-1.5 border-b border-white/5">
+                                    <span class="text-slate-400">Total Term Profit</span>
+                                    <span class="text-emerald-400 font-bold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + parseFloat(item.total_profit).toLocaleString('en-US') : '$' + (parseFloat(item.total_profit) / 130).toFixed(2)"></span>
+                                </div>
+                                <div class="flex justify-between py-1.5 border-b border-white/5">
+                                    <span class="text-slate-400">Capital Safety Guarantee</span>
+                                    <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[11px]">100% Refunded at End</span>
+                                </div>
+                                <div class="flex justify-between py-1.5">
+                                    <span class="text-slate-400">Payout Frequency</span>
+                                    <span class="text-[#FFD700] font-bold">Automatic Every 24h</span>
+                                </div>
+                            </div>
+
+                            <!-- Capacity Progress Bar -->
+                            <div class="space-y-1.5 pt-1">
+                                <div class="flex justify-between text-[11px] text-slate-400">
+                                    <span>Available Units</span>
+                                    <span class="text-white font-semibold" x-text="(item.slots_total - item.slots_taken) + ' / ' + item.slots_total + ' Left'"></span>
+                                </div>
+                                <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-[#FFD700] to-emerald-400 rounded-full transition-all duration-500" :style="'width: ' + ((item.slots_taken / item.slots_total) * 100) + '%'"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Card Footer Actions -->
+                    <div class="px-6 pb-6 pt-2">
+                        <a :href="'signup.html?tier=' + item.slug" class="block w-full py-3.5 text-center font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] active:scale-95 rounded-xl transition shadow-[0_4px_15px_rgba(255,215,0,0.2)]">
+                            Rent This Machine &rarr;
+                        </a>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+
+    </section>
+
+    <!-- ─── INTERACTIVE DAILY PROFIT SIMULATOR / CALCULATOR ─── -->
+    <section id="calculator" class="max-w-7xl mx-auto px-6 py-16 border-t border-white/10">
+        <div x-data="{
+            selectedTier: 'starter',
+            quantity: 1,
+            tiers: {
+                starter: { name: 'Starter Miner V1', price: 500, daily: 35, days: 30 },
+                bronze: { name: 'Bronze Daily Miner', price: 1500, daily: 110, days: 30 },
+                silver: { name: 'Silver Profit Miner', price: 4000, daily: 310, days: 30 },
+                gold: { name: 'Gold Power Miner', price: 10000, daily: 820, days: 30 },
+                platinum: { name: 'Platinum Super Miner', price: 25000, daily: 2250, days: 25 },
+                diamond: { name: 'Diamond Pro Miner', price: 60000, daily: 6000, days: 21 },
+                emerald: { name: 'Emerald Master Miner', price: 150000, daily: 16500, days: 18 },
+                ruby: { name: 'Ruby Ultra Miner', price: 350000, daily: 42000, days: 14 },
+                sapphire: { name: 'Sapphire Giant Miner', price: 800000, daily: 105000, days: 14 },
+                crown: { name: 'Crown VIP Titan Miner', price: 2000000, daily: 280000, days: 14 }
+            },
+            get current() {
+                return this.tiers[this.selectedTier];
+            },
+            get totalRent() {
+                return this.current.price * this.quantity;
+            },
+            get totalDailyIncome() {
+                return this.current.daily * this.quantity;
+            },
+            get totalProfit() {
+                return this.totalDailyIncome * this.current.days;
+            },
+            get totalMoneyReturned() {
+                return this.totalProfit + this.totalRent;
+            }
+        }" class="glass-panel rounded-3xl p-8 md:p-12 relative overflow-hidden border border-white/15">
+
+            <!-- Glowing background accents -->
+            <div class="absolute -right-24 -top-24 w-80 h-80 bg-[#FFD700]/10 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute -left-24 -bottom-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="grid lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- Calculator Inputs (Left) -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-[#FFD700] bg-[#FFD700]/10 px-3 py-1 rounded-full border border-[#FFD700]/20">
+                            Transparent Income Simulator
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight mt-2 font-tech">Calculate Your Exact Profit</h2>
+                        <p class="text-slate-300 mt-2 font-light text-sm sm:text-base">
+                            Select any machine tier below to see your guaranteed daily income, duration, and total payout.
+                        </p>
+                    </div>
+
+                    <!-- Step 1: Machine Selector Dropdown / Grid -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">1. Select Machine Tier</label>
+                        <select x-model="selectedTier" class="w-full bg-[#07080E] border border-white/20 text-white rounded-2xl p-4 text-sm font-semibold focus:border-[#FFD700] focus:outline-none cursor-pointer">
+                            <option value="starter" selected>Starter Miner V1 — KSh 500 (KSh 35/day • 30 Days / 1 Month)</option>
+                            <option value="bronze">Bronze Daily Miner — KSh 1,500 (KSh 110/day • 30 Days / 1 Month)</option>
+                            <option value="silver">Silver Profit Miner — KSh 4,000 (KSh 310/day • 30 Days / 1 Month)</option>
+                            <option value="gold">Gold Power Miner — KSh 10,000 (KSh 820/day • 30 Days / 1 Month)</option>
+                            <option value="platinum">Platinum Super Miner — KSh 25,000 (KSh 2,250/day • 25 Days)</option>
+                            <option value="diamond">Diamond Pro Miner — KSh 60,000 (KSh 6,000/day • 21 Days / 3 Weeks)</option>
+                            <option value="emerald">Emerald Master Miner — KSh 150,000 (KSh 16,500/day • 18 Days)</option>
+                            <option value="ruby">Ruby Ultra Miner — KSh 350,000 (KSh 42,000/day • 14 Days / 2 Weeks ⚡)</option>
+                            <option value="sapphire">Sapphire Giant Miner — KSh 800,000 (KSh 105,000/day • 14 Days / 2 Weeks ⚡)</option>
+                            <option value="crown">Crown VIP Titan Miner — KSh 2,000,000 (KSh 280,000/day • 14 Days / 2 Weeks ⚡)</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: Number of Machines -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="uppercase tracking-wider text-slate-300">2. Number of Machines</span>
+                            <span class="text-[#FFD700] font-tech text-sm" x-text="quantity + ' Units'"></span>
+                        </div>
+                        <input type="range" min="1" max="10" step="1" x-model="quantity" class="w-full h-2 rounded-full bg-white/10 accent-[#FFD700] cursor-pointer">
+                        <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                            <span>1 Machine</span>
+                            <span>3 Machines</span>
+                            <span>5 Machines</span>
+                            <span>10 Machines</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Payout Summary (Right Card) -->
+                <div class="lg:col-span-5 bg-black/60 border border-white/15 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
+                    <div class="border-b border-white/10 pb-4">
+                        <h3 class="text-lg font-black text-white font-tech">Your Earnings Summary</h3>
+                        <p class="text-slate-400 text-xs font-light" x-text="quantity + 'x ' + current.name"></p>
+                    </div>
+
+                    <div class="space-y-3.5 text-xs font-medium">
+                        <div class="flex justify-between items-center py-1 border-b border-white/5">
+                            <span class="text-slate-400">Total Machine Cost</span>
+                            <span class="text-white font-bold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalRent.toLocaleString('en-US') : '$' + (totalRent / 130).toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-b border-white/5">
+                            <span class="text-slate-400">Daily Automatic Payout</span>
+                            <span class="text-[#FFD700] font-extrabold font-tech text-sm" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalDailyIncome.toLocaleString('en-US') + ' / day' : '$' + (totalDailyIncome / 130).toFixed(2) + ' / day'"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-b border-white/5">
+                            <span class="text-slate-400" x-text="current.days + '-Day Total Profit'"></span>
+                            <span class="text-emerald-400 font-extrabold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalProfit.toLocaleString('en-US') : '$' + (totalProfit / 130).toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-b border-white/5">
+                            <span class="text-slate-400">Capital Returned at End</span>
+                            <span class="text-white font-bold font-tech" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalRent.toLocaleString('en-US') : '$' + (totalRent / 130).toFixed(2)"></span>
+                        </div>
+                    </div>
+
+                    <!-- Total Cash Received Highlight -->
+                    <div class="bg-gradient-to-tr from-[#FFD700]/15 to-emerald-500/10 border border-[#FFD700]/30 rounded-2xl p-5 space-y-1 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-300 block">Total Money You Collect</span>
+                        <span class="text-3xl font-black text-[#FFD700] font-tech block" x-text="$store.currency.current === 'KSh' ? 'KSh ' + totalMoneyReturned.toLocaleString('en-US') : '$' + (totalMoneyReturned / 130).toFixed(2)"></span>
+                        <span class="text-[10px] text-emerald-400 font-semibold block" x-text="'Profit (' + current.days + ' Days) + 100% Capital Refund'"></span>
+                    </div>
+
+                    <a href="signup.html" class="block w-full py-4 text-center font-black text-xs uppercase tracking-wider text-black bg-[#FFD700] hover:bg-[#FFE55C] rounded-2xl transition shadow-[0_4px_20px_rgba(255,215,0,0.25)]">
+                        Start Earning Today &rarr;
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── GREEN GLOBAL DATACENTERS SECTION ─── -->
+    <section id="datacenters" class="max-w-7xl mx-auto px-6 py-20">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Left Info -->
+            <div class="space-y-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-[#FFD700] bg-[#FFD700]/10 px-3.5 py-1.5 rounded-full border border-[#FFD700]/20">
+                        100% Green Energy Facilities
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight mt-3 font-tech">Where Your Machines Run</h2>
+                    <p class="text-slate-300 mt-4 font-light text-sm sm:text-base leading-relaxed">
+                        Our physical mining rigs are housed in purpose-built, high-security server facilities around the globe, running 24/7 on clean renewable energy.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center font-black text-purple-400 font-tech shrink-0">IS</div>
+                        <div>
+                            <h4 class="font-bold text-white text-base">Reykjavik Facility, Iceland</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">100% Geothermal energy with natural Arctic cold-air cooling for non-stop performance.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-black text-amber-400 font-tech shrink-0">US</div>
+                        <div>
+                            <h4 class="font-bold text-white text-base">West Texas Solar Array, USA</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">Mega-scale solar power with automated industrial battery storage for continuous power.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border border-white/10 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-black text-emerald-400 font-tech shrink-0">NO</div>
+                        <div>
+                            <h4 class="font-bold text-white text-base">Oslo Hydro Farm, Norway</h4>
+                            <p class="text-slate-400 text-xs mt-0.5 font-light">Clean hydroelectric power with liquid immersion cooling delivering 99.9% uptime.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Visual -->
+            <div class="relative w-full h-[420px] rounded-3xl overflow-hidden glass-panel p-3 border border-white/15 shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1000&q=80" alt="Datacenter Mining Farm" class="w-full h-full object-cover rounded-2xl">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                
+                <div class="absolute bottom-6 left-6 right-6 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold">
+                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
+                            ALL FACILITIES ACTIVE & SECURE
+                        </span>
+                    </div>
+                    <span class="text-slate-300 font-tech font-bold">24/7 AUTOMATED</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ─── TRUSTED TECHNOLOGY PARTNERS ─── -->
+    <section class="max-w-7xl mx-auto px-6 py-12 border-t border-white/10">
+        <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">SUPPORTED NETWORKS & HARDWARE MANUFACTURERS</p>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center opacity-60">
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">BITCOIN</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">ETHEREUM</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">NVIDIA</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">AMD TECH</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">INTEL</span>
+            <span class="text-white font-extrabold tracking-tight font-tech text-sm md:text-base">SAFARICOM</span>
+        </div>
+    </section>
+
+    <!-- ─── FLOATING WHATSAPP LIVE SUPPORT (PHONE NUMBER HIDDEN FROM FLOAT) ─── -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/447455909204" target="_blank"
+            class="flex items-center gap-2.5 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-extrabold text-xs rounded-full shadow-[0_4px_25px_rgba(37,211,102,0.4)] transition-all transform hover:scale-105 active:scale-95 group">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>💬 Live Support</span>
+        </a>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="bg-[#040509] border-t border-white/10 pt-16 pb-12 px-6">
+        <div class="max-w-7xl mx-auto">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+                <!-- Branding Context -->
+                <div class="space-y-4">
+                    <div class="text-xl font-black tracking-wider text-[#FFD700] font-tech">XM HOLDINGS</div>
+                    <p class="text-xs text-slate-400 font-light leading-relaxed">
+                        Making mining accessible, profitable, and 100% secure for everyone. Automated daily earnings with full capital safety.
+                    </p>
+                </div>
+
+                <!-- Platform Columns -->
+                <div>
+                    <h4 class="text-xs uppercase font-bold text-[#FFD700] tracking-widest mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-slate-400 font-light">
+                        <li><a href="signup.html" class="hover:text-white transition">Create Account</a></li>
+                        <li><a href="signin.html" class="hover:text-white transition">Login to Portal</a></li>
+                        <li><a href="#machines" class="hover:text-white transition">Mining Machines</a></li>
+                        <li><a href="#calculator" class="hover:text-white transition">Earnings Calculator</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Columns -->
+                <div>
+                    <h4 class="text-xs uppercase font-bold text-purple-400 tracking-widest mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-slate-400 font-light">
+                        <li><a href="about.html" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition">Contact & Support</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="about.html#datacenters" class="hover:text-white transition">Green Datacenters</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Risk Warning -->
+            <div id="disclaimer" class="border-t border-white/10 pt-6 bg-white/[0.01] p-6 rounded-2xl border border-white/5 text-[11px] text-slate-400 leading-relaxed space-y-2">
+                <p class="font-bold text-slate-300 uppercase tracking-wider text-xs font-tech">⚠️ Safe Mining & Capital Return Notice</p>
+                <p>
+                    All rented machines operate under automated computing agreements for a fixed duration of 30 days. Daily profits are credited directly every 24 hours. Your principal rental amount is 100% refundable upon lease completion.
+                </p>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-8 pt-4 border-t border-white/5 text-center text-xs text-slate-600 font-light">
+                &copy; 2026 XM Digital Holdings. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
 </body>
+
 </html>

@@ -1,29 +1,21 @@
 # Cloudflare Pages Routing & Redirects
 
-# Page Navigation Aliases
-/ /public/index.html 200
-/index.html /public/index.html 200
-/signin /public/signin.html 200
-/signin.html /public/signin.html 200
-/signup /public/signup.html 200
-/signup.html /public/signup.html 200
-/contact /public/contact.html 200
-/contact.html /public/contact.html 200
-/about /public/about.html 200
-/about.html /public/about.html 200
-/privacy /public/privacy.html 200
-/privacy.html /public/privacy.html 200
-/logs /public/logs.html 200
-/logs.html /public/logs.html 200
-/account /account/dashboard.html 200
-/account/ /account/dashboard.html 200
-/account/dashboard /account/dashboard.html 200
-/account/lease-details /account/lease-details.html 200
-/account/withdraw /account/withdraw.html 200
-/admin /admin/admin.html 200
-/admin/ /admin/admin.html 200
-/admin-login /admin/admin-login.html 200
-/admin-login.html /admin/admin-login.html 200
-/admin/admin-login.html /admin/admin-login.html 200
-/admin/login /admin/admin-login.html 200
+# Authentication & Public Pages
+/signin         /public/signin.html       302
+/signup         /public/signup.html       302
+/contact        /public/contact.html      302
+/about          /public/about.html        302
+/privacy        /public/privacy.html      302
+/logs           /public/logs.html         302
 
+# User Account Pages
+/account                /account/dashboard.html     302
+/account/dashboard      /account/dashboard.html     302
+/account/lease-details  /account/lease-details.html 302
+/account/withdraw       /account/withdraw.html      302
+/dashboard              /account/dashboard.html     302
+
+# Admin Portal Pages
+/admin          /admin/admin.html         302
+/admin-login    /admin/admin-login.html   302
+/admin/login    /admin/admin-login.html   302
