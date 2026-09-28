@@ -1,12 +1,12 @@
 # Cloudflare Pages Routing & Redirects
 
 # Authentication & Public Pages
-/signin         /public/signin.html       302
-/signup         /public/signup.html       302
-/contact        /public/contact.html      302
-/about          /public/about.html        302
-/privacy        /public/privacy.html      302
-/logs           /public/logs.html         302
+/signin         /signin.html              302
+/signup         /signup.html              302
+/contact        /contact.html             302
+/about          /about.html               302
+/privacy        /privacy.html             302
+/logs           /logs.html                302
 
 # User Account Pages
 /account                /account/dashboard.html     302
