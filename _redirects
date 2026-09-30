@@ -1,21 +1,8 @@
-# Cloudflare Pages Routing & Redirects
+# Cloudflare Pages Routing & Shortcuts
+# NOTE: Do NOT add rules matching existing file basenames (e.g. /signin -> /signin.html)
+# as Cloudflare's pretty-URL normalization will trigger infinite redirect loops.
 
-# Authentication & Public Pages
-/signin         /signin.html              302
-/signup         /signup.html              302
-/contact        /contact.html             302
-/about          /about.html               302
-/privacy        /privacy.html             302
-/logs           /logs.html                302
-
-# User Account Pages
-/account                /account/dashboard.html     302
-/account/dashboard      /account/dashboard.html     302
-/account/lease-details  /account/lease-details.html 302
-/account/withdraw       /account/withdraw.html      302
+# Cross-directory shortcuts
 /dashboard              /account/dashboard.html     302
-
-# Admin Portal Pages
-/admin          /admin/admin.html         302
-/admin-login    /admin/admin-login.html   302
-/admin/login    /admin/admin-login.html   302
+/admin-login            /admin/admin-login.html     302
+/admin/login            /admin/admin-login.html     302

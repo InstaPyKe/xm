@@ -223,7 +223,7 @@ router.post('/leases', adminMiddleware, async (req, res) => {
         parseFloat(cost),
         parseFloat(rate),
         parseFloat(daily_earnings),
-        image || '../public/images/blue_mainframe.png'
+        image || '/public/images/blue_mainframe.png'
       ]
     );
 
@@ -447,7 +447,7 @@ router.post('/mpesa-transactions/:id/approve', adminMiddleware, async (req, res)
     const insertRes = await db.query(
       `INSERT INTO leases (user_id, node_id, name, type, status, speed, duration, remaining, cost, rate, daily_earnings, image)
        VALUES ($1, $2, $3, $4, 'Hashing', $5, $6, $6, $7, $8, $9, $10) RETURNING *`,
-      [tx.user_id, nodeId, tx.name, tx.type, tx.speed, tx.duration, tx.cost, tx.rate, tx.daily_earnings, tx.image || '../public/images/blue_mainframe.png']
+      [tx.user_id, nodeId, tx.name, tx.type, tx.speed, tx.duration, tx.cost, tx.rate, tx.daily_earnings, tx.image || '/public/images/blue_mainframe.png']
     );
 
     // Record rental transaction log
@@ -529,7 +529,7 @@ router.post('/mpesa-transactions/bulk-approve', adminMiddleware, async (req, res
         const insertRes = await db.query(
           `INSERT INTO leases (user_id, node_id, name, type, status, speed, duration, remaining, cost, rate, daily_earnings, image)
            VALUES ($1, $2, $3, $4, 'Hashing', $5, $6, $6, $7, $8, $9, $10) RETURNING *`,
-          [tx.user_id, nodeId, tx.name, tx.type, tx.speed, tx.duration, tx.cost, tx.rate, tx.daily_earnings, tx.image || '../public/images/blue_mainframe.png']
+          [tx.user_id, nodeId, tx.name, tx.type, tx.speed, tx.duration, tx.cost, tx.rate, tx.daily_earnings, tx.image || '/public/images/blue_mainframe.png']
         );
         await db.query(
           `INSERT INTO rent_transactions (user_id, lease_id, node_id, machine_name, amount) VALUES ($1, $2, $3, $4, $5)`,

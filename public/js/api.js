@@ -114,7 +114,7 @@
                 if (isProtectedUserPage) {
                     localStorage.removeItem('xm_jwt_token');
                     if (!window.location.pathname.includes('signin')) {
-                        window.location.href = '/public/signin.html?session=expired';
+                        window.location.href = '/signin.html?session=expired';
                     }
                 } else if (isProtectedAdminPage) {
                     localStorage.removeItem('xm_admin_token');

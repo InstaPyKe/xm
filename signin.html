@@ -166,7 +166,7 @@
                         
                         if (response.ok && data.token) {
                             localStorage.setItem('xm_jwt_token', data.token);
-                            window.location.href = '../account/dashboard.html';
+                            window.location.href = '/account/dashboard.html';
                         } else {
                             this.errorMessage = data.message || 'Incorrect email or password. Please check and try again.';
                         }
