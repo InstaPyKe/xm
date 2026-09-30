@@ -7,7 +7,7 @@
 
     // 1. Resolve Backend Base URL
     function getApiBaseUrl() {
-        // Priority 1: Explicit global override in HTML or environment
+        // Priority 1: Explicit global override in HTML or window
         if (window.XM_API_BASE && typeof window.XM_API_BASE === 'string' && window.XM_API_BASE.trim()) {
             return window.XM_API_BASE.replace(/\/+$/, '');
         }
@@ -18,17 +18,23 @@
             return storedUrl.trim().replace(/\/+$/, '');
         }
 
-        // Priority 3: Local development ports detection
+        // Priority 3: Local development detection
         const hostname = window.location.hostname;
         const port = window.location.port;
 
-        // If running frontend on a dev server (e.g. port 3000, 5173, 8080, Live Server 5500)
+        // Dev servers on other ports (e.g. 3000, 5173, 8080, Live Server 5500)
         if ((hostname === 'localhost' || hostname === '127.0.0.1') && port && port !== '5000') {
             return 'http://localhost:5000';
         }
 
-        // If running directly on Express backend port 5000 or using relative Cloudflare proxy
-        return '';
+        // Direct backend server port 5000
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port === '5000') {
+            return '';
+        }
+
+        // Priority 4: Production Cloudflare Pages -> Railway Backend fallback
+        // When deployed on Cloudflare Pages, use stored URL or Railway custom endpoint
+        return window.XM_RAILWAY_URL || '';
     }
 
     // 2. Generate Full API URL

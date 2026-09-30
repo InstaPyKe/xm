@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || process
 }
 
 const db = require('./config/db');
+const { initializeDatabase } = require('./config/schemaInitializer');
 const { logSystem } = require('./config/logger');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -316,8 +317,9 @@ app.all('/api/*', (req, res) => {
 });
 
 // Start Express Listener
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Express server running on port ${PORT}`);
   console.log(`👉 Health Check: http://localhost:${PORT}/api/health`);
   console.log(`👉 Mode: ${process.env.NODE_ENV || 'development'}`);
+  await initializeDatabase();
 });
